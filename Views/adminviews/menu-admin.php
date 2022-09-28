@@ -14,7 +14,6 @@ Utils::checkNav();
     <br><br>
     <section class="d-flex align-items-center justify-content-center height-50">
 
-
         <div class="container-menu px-12 px-lg-3 text-center ">
             <!-- <div class="view-container"> -->
 

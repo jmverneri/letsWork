@@ -8,14 +8,23 @@
 
     class CareerDAO implements ICareerDAO{
 
-        private $careerList = array();
+        private $connection;
+        private $career;
+        private $careerBD;
+        private $careerList;
 
         public function __construct(){
-            
+            $this->career = new Career();
+            $this->careerBD = new Career();
+            $this->careerList = array();
         }
 
+        public function getAll(){
+            $this->consumeFromApi();
+           return $this->careerList;
+        }
 
-        public function GetAll(){
+        public function GetAllFromBD(){
             
             $sql = "SELECT * FROM careers WHERE active=:active";
             $parameters['active']=1;
@@ -86,7 +95,7 @@
 
         }
 
-      public function GetAllActive(){
+        public function GetAllActive(){
             $this->consumeFromApi();
             return array_filter(
                 $this->careerList,
@@ -107,8 +116,7 @@
             } catch (\PDOException $exeption) {
                 throw $exeption;
             }
-           //var_dump($this->careerList);
-            //die;
+           
             if (!empty($this->careerList)) {
                 return $this->retrieveOneCareerData();
             } else {
@@ -129,47 +137,40 @@
         }
 
 
-    public function getCareerStudent(Student $student){
-        $this->consumeFromApi();
+        public function getCareerStudent(Student $student){
+            $this->consumeFromApi();
             foreach($this->careerList as $career){
                 if($student->getCareerId() == $career->getCareerId())
                 return $career;
             }
-        
-    }
+        }
 
     
 
-    private function retrieveData()
-    {
-        $listToReturn = array();
+        private function retrieveData()
+        {
+            $listToReturn = array();
 
-        foreach ($this->careerList as $values) {
-            $career = new Career();
-            $career->setCareerId($values['careerId']);
-            $career->setDescription($values['description']);
-            $career->setActive($values['active']);
-                     
-            array_push($listToReturn, $career);
+            foreach ($this->careerList as $values) {
+                $career = new Career();
+                $career->setCareerId($values['careerId']);
+                $career->setDescription($values['description']);
+                $career->setActive($values['active']);
+                        
+                array_push($listToReturn, $career);
+            }
+            return  $listToReturn;
         }
-        return  $listToReturn;
-    }
 
-    
-    private function retrieveOneCareerData()
-    {
-        foreach ($this->careerList as $values) {
-            $career = new Career();
-            $career->setCareerId($values['careerId']);
-            $career->setDescription($values['description']);
-            $career->setActive($values['active']);
+        private function retrieveOneCareerData()
+        {
+            foreach ($this->careerList as $values) {
+                $career = new Career();
+                $career->setCareerId($values['careerId']);
+                $career->setDescription($values['description']);
+                $career->setActive($values['active']);
+            }
+            return  $career;
         }
-        return  $career;
-    }
-
-
-
 }
-
-
 ?> 

@@ -40,8 +40,8 @@ class StudentController
     {
         Utils::checkSession();
         $this->studentList = $this->studentDAO->GetAll();
-        $this->careerList = $this->careerDAO->GetAllWhitInactives();
-        //var_dump($studentList);
+        $this->careerList = $this->careerDAO->GetAll();
+        
         require_once(VIEWS_PATH . "student-list.php");
     }
 

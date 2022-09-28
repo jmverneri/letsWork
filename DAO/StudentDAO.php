@@ -28,7 +28,6 @@ class StudentDAO implements IStudentDAO
         {   
            $this->consumeFromApi();
            return $this->studentList;
-            
         }
 
         private function consumeFromApi(){
@@ -45,7 +44,7 @@ class StudentDAO implements IStudentDAO
 
             $response = file_get_contents(API_URL .'Student', false, $context);
 
-           $arrayToDecode = json_decode($response, true);
+            $arrayToDecode = json_decode($response, true);
 
             foreach($arrayToDecode as $value){
                 
@@ -68,6 +67,22 @@ class StudentDAO implements IStudentDAO
 
         }
 
+        public function getStudentsDB(){
+            $sql = "SELECT * FROM students";
+
+            try{
+                $this->connection = Connection::getInstance();
+                $this->studentList =  $this->connection->execute($sql);
+            }catch(\PDOException $ex){
+                throw $ex;
+            }
+            if (!empty($this->studentBD)) {
+                return $this->retrieveOneStudent();
+            } else {
+                return $this->studentBD;
+            }
+        }
+
         public function getStudentByMail($email)
         {
             $this->consumeFromApi();
@@ -78,7 +93,6 @@ class StudentDAO implements IStudentDAO
                 }
             }
                 return null;
-
         }
 
         public function getStudentByMailNoApi($email)
@@ -107,8 +121,6 @@ class StudentDAO implements IStudentDAO
             try{
                 $this->connection = Connection::getInstance();
                 $this->studentBD =  $this->connection->execute($sql, $parameters);
-                //var_dump($this->studentList);
-                //die;
                
             }catch(\PDOException $ex){
                 throw $ex;
@@ -178,7 +190,7 @@ class StudentDAO implements IStudentDAO
                      
         }
 */
-       public function getLoginStudent($email){
+        public function getLoginStudent($email){
             $sql = "SELECT * FROM students WHERE email=:email";
             $parameters['email']=$email;
             try{
@@ -190,34 +202,31 @@ class StudentDAO implements IStudentDAO
             }
 
             if($this->studentBD != null){
+                
                 return $this->retrieveOneStudent();
-                //var_dump($student);
-                //die;
-                //return $this->student;
             }else{
                 return false;
             }
-
         }
 
         private function retrieveOneStudent()
-    {
-        foreach ($this->studentBD as $stud) {
-            $loginStudent = new Student();
-            $loginStudent->setStudentId($stud['studentId']);
-            $loginStudent->setCareerId($stud['careerId']);
-            $loginStudent->setFirstName($stud['firstName']);
-            $loginStudent->setLastName(($stud['lastName']));
-            $loginStudent->setDni($stud['dni']);
-            $loginStudent->setFileNumber($stud['fileNumber']);
-            $loginStudent->setGender($stud['gender']);
-            $loginStudent->setBirthDate($stud['birthDate']);
-            $loginStudent->setEmail($stud['email']);
-            $loginStudent->setPhoneNumber($stud['phoneNumber']);
-            $loginStudent->setPassword($stud['password']);
+        {
+            foreach ($this->studentBD as $stud) {
+                $loginStudent = new Student();
+                $loginStudent->setStudentId($stud['student_id']);
+                $loginStudent->setCareerId($stud['career_id']);
+                $loginStudent->setFirstName($stud['first_name']);
+                $loginStudent->setLastName(($stud['last_name']));
+                $loginStudent->setDni($stud['dni']);
+                $loginStudent->setFileNumber($stud['file_number']);
+                $loginStudent->setGender($stud['gender']);
+                //$loginStudent->setBirthDate($stud['birthDate']);
+                $loginStudent->setEmail($stud['email']);
+                $loginStudent->setPhoneNumber($stud['phone_number']);
+                $loginStudent->setPassword($stud['password']);
+            }
+            return $loginStudent;
         }
-        return $loginStudent;
-    }
 
     
 

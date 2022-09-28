@@ -20,7 +20,7 @@ Utils::checkNav();
                               <th class="header" scope="col" position="sticky">SurName</th>
                               <th class="header" scope="col" position="sticky">Gender</th>
                               <th class="header" scope="col" position="sticky">Email</th>
-                              <th class="header" scope="col" position="sticky">Carrer</th>
+                              <th class="header" scope="col" position="sticky">Career</th>
                               <!--  <th class="header" scope="col" position="sticky">Ver</th> -->
 
                          </thead>
