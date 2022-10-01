@@ -45,15 +45,15 @@ class CompanyDAO implements ICompanyDAO
 
     public function AddCompany(Company $company)
     {
-        $sql = "INSERT INTO companies(name, yearFoundation, city, description, email, phoneNumber, cuit) 
-                VALUES(:name, :yearFoundation, :city, :description, :email, :phoneNumber, :cuit);";
+        $sql = "INSERT INTO companies(name, year_foundation, city, description, email, phone_number, cuit) 
+                VALUES(:name, :year_foundation, :city, :description, :email, :phone_number, :cuit);";
 
         $parameters['name'] = $company->getName();
-        $parameters['yearFoundation'] = $company->getYearFoundation();
+        $parameters['year_foundation'] = $company->getYearFoundation();
         $parameters['city'] = $company->getCity();
         $parameters['description'] = $company->getDescription();       
         $parameters['email'] = $company->getEmail();
-        $parameters['phoneNumber'] = $company->getPhoneNumber();
+        $parameters['phone_number'] = $company->getPhoneNumber();
         $parameters['cuit'] = $company->getCuit();
 
         try {
@@ -67,8 +67,8 @@ class CompanyDAO implements ICompanyDAO
 
     public function Delete($companyId)
     {
-        $sql = "DELETE FROM companies WHERE companyId=:companyId";
-        $parameters['companyId'] = $companyId;
+        $sql = "DELETE FROM companies WHERE company_id=:company_id";
+        $parameters['company_id'] = $companyId;
 
         try {
             $this->connection = Connection::getInstance();
@@ -80,19 +80,18 @@ class CompanyDAO implements ICompanyDAO
 
     public function Update(Company $company)
     {
-        $sql = "UPDATE companies SET name = :name, yearFoundation = :yearFoundation, city = :city, description = :description, email = :email, phoneNumber = :phoneNumber, cuit= :cuit WHERE companyId= :companyId";
+        $sql = "UPDATE companies SET name = :name, year_foundation = :year_foundation, city = :city, description = :description, email = :email, phone_number = :phone_number, cuit= :cuit WHERE company_id= :company_id";
         
-        $parameters['companyId'] = $company->getCompanyId();
+        $parameters['company_id'] = $company->getCompanyId();
         $parameters['name'] = $company->getName();
-        $parameters['yearFoundation'] = $company->getYearFoundation();
+        $parameters['year_foundation'] = $company->getYearFoundation();
         $parameters['city'] = $company->getCity();
         $parameters['description'] = $company->getDescription();
        // $parameters['logo'] = $company->getLogo();
         $parameters['email'] = $company->getEmail();
-        $parameters['phoneNumber'] = $company->getPhoneNumber();
+        $parameters['phone_number'] = $company->getPhoneNumber();
         $parameters['cuit']= $company->getCuit();
-       // var_dump($sql);
-        //die;
+       
         try {
             $this->connection = Connection::getInstance();
             return $this->connection->executeNonQuery($sql, $parameters);
@@ -101,13 +100,14 @@ class CompanyDAO implements ICompanyDAO
         }
     }
 
-
     public function Search($companyId)
     {
-        $sql = "SELECT * FROM companies WHERE companyId=:companyId";
-        $parameters['companyId'] = $companyId;
+        $sql = "SELECT * FROM companies WHERE company_id=:company_id";
+        $parameters['company_id'] = $companyId;
+
         try {
             $this->connection = Connection::getInstance();
+            
             $this->companyBD = $this->connection->execute($sql, $parameters);
         } catch (\PDOException $exception) {
             throw $exception;
@@ -128,14 +128,14 @@ class CompanyDAO implements ICompanyDAO
 
         foreach ($this->companiesList as $values) {
             $company = new Company();
-            $company->setCompanyId($values['companyId']);
+            $company->setCompanyId($values['company_id']);
             $company->setName($values['name']);
-            $company->setYearFoundation($values['yearFoundation']);
+            $company->setYearFoundation($values['year_foundation']);
             $company->setDescription(($values['description']));
             $company->setCity($values['city']);
             $company->setLogo($values['logo']);
             $company->setEmail($values['email']);
-            $company->setPhoneNumber($values['phoneNumber']);
+            $company->setPhoneNumber($values['phone_number']);
             $company->setCuit($values['cuit']);
             array_push($listToReturn, $company);
         }
@@ -145,14 +145,14 @@ class CompanyDAO implements ICompanyDAO
     private function retrieveOneCompanyData()
     {
         foreach ($this->companyBD as $com) {
-            $this->company->setCompanyId($com['companyId']);
+            $this->company->setCompanyId($com['company_id']);
             $this->company->setName($com['name']);
-            $this->company->setYearFoundation($com['yearFoundation']);
+            $this->company->setYearFoundation($com['year_foundation']);
             $this->company->setDescription(($com['description']));
             $this->company->setCity($com['city']);
             $this->company->setLogo($com['logo']);
             $this->company->setEmail($com['email']);
-            $this->company->setPhoneNumber($com['phoneNumber']);
+            $this->company->setPhoneNumber($com['phone_number']);
             $this->company->setCuit($com['cuit']);
         }
     }

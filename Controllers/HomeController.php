@@ -14,25 +14,22 @@ namespace Controllers;
 class HomeController
 
 {
+    private $studentDAO;
+    private $student;
+    private $careerDAO;
+    private $career;
+    private $userCompany;
+    private $userCompanyDAO;
 
-        private $studentDAO;
-        private $student;
-        private $careerDAO;
-        private $career;
-        private $userCompany;
-        private $userCompanyDAO;
-
-        public function __construct()
-        {
-            $this->studentDAO =new StudentDAO;    
-            $this->student = new Student();
-             $this->careerDAO = new CareerDAO();
-             $this->career = new Career();
-             $this->userCompany = new UserCompany();
-             $this->userCompanyDAO = new UserCompanyDAO();
-        }
-
-
+    public function __construct()
+    {
+        $this->studentDAO =new StudentDAO;    
+        $this->student = new Student();
+        $this->careerDAO = new CareerDAO();
+        $this->career = new Career();
+        $this->userCompany = new UserCompany();
+        $this->userCompanyDAO = new UserCompanyDAO();
+    }
 
     public function Index($message = "")
     {
@@ -41,46 +38,50 @@ class HomeController
 
     public function menuAdmin()
     {
-
         require_once(ADMIN_VIEWS . "menu-admin.php");
     }
 
     public function menuStudent()
-     {
-
+    {
         require_once(STUDENT_VIEWS . "menu-student.php");
-        }
+    }
    
-        public function login($email, $password){
-            $this->student = $this->studentDAO->getLoginStudent($email);
-            $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
+    public function login($email, $password)
+    {
+        $this->student = $this->studentDAO->getLoginStudent($email);
+        $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
             
-            if(($email == 'user@hot.com') && ($password == '123')){
-
-                $user = new User($email);
-                $user= new User($password);
-                $_SESSION['admin'] = $user;
-                require_once(ADMIN_VIEWS."menu-admin.php");
-            } else if($this->student !=null){
-                if(($this->student->getEmail() == $email) && ($password == $this->student->getPassword())){
-                    $this->career = $this->careerDAO->GetCareerById($this->student->getCareerId());
-                    $_SESSION['student'] = $this->student;
-                    require_once(STUDENT_VIEWS."student-profile.php");
-                } 
-            }else if($this->userCompany != null){
-                    if(($this->userCompany->getEmail() == $email) && ($password == $this->userCompany->getPassword())){
+        if(($email == 'user@hot.com') && ($password == '123'))
+        {
+            $user = new User($email);
+            $user= new User($password);
+            $_SESSION['admin'] = $user;
+            require_once(ADMIN_VIEWS."menu-admin.php");
+        } 
+        else if($this->student !=null)
+        {
+            if(($this->student->getEmail() == $email) && ($password == $this->student->getPassword())){
+                $this->career = $this->careerDAO->GetCareerById($this->student->getCareerId());
+                $_SESSION['student'] = $this->student;
+                require_once(STUDENT_VIEWS."student-profile.php");
+            } 
+        }
+        else if($this->userCompany != null)
+        {
+            if(($this->userCompany->getEmail() == $email) && ($password == $this->userCompany->getPassword()))
+            {
                     
-                    $_SESSION['userCompany'] = $this->userCompany;
-                    require_once(USERCOMPANY_VIEWS."usercompany-profile.php");
-                } 
-
-            }else{
+            $_SESSION['userCompany'] = $this->userCompany;
+            require_once(USERCOMPANY_VIEWS."usercompany-profile.php");
+            } 
+        }
+        else    
+        {
                 $invalidEmail = true;
                 require_once(VIEWS_PATH ."login.php");
-            }
         }
-    
-
+    }
+ 
     public function RedirectAdm()
     {
         require_once(VIEWS_PATH . "admin-view.php");

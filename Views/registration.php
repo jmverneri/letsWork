@@ -10,8 +10,7 @@
           <br><br>
 
                <h2> STUDENT REGISTRATION </h2>
-              
-              
+     
           </section>
           
           <form action='<?php echo FRONT_ROOT ?>student/studentValidation' method="post" class="login-form align-items-center justify-content-center  p-4 bg-none">

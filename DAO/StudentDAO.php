@@ -135,18 +135,19 @@ class StudentDAO implements IStudentDAO
        public function Add(Student $student)
         {
             
-          $sql = "INSERT INTO students (firstName, lastName, dni, fileNumber, gender, birthDate, phoneNumber, active, password, careerId, email)
-                     VALUES (:firstName, :lastName, :dni, :fileNumber, :gender, :birthDate, :phoneNumber, :active, :password, :careerId, :email);";
-            $parameters["firstName"]=$student->getFirstName();
-            $parameters['lastName']=$student->getLastName();
+          $sql = "INSERT INTO students (student_id, career_id, first_name, last_name, dni, file_number, gender, email, birth_date, phone_number, active, password)
+                     VALUES (:student_id, :career_id, :first_name, :last_name, :dni, :file_number, :gender, :email, :birth_date, :phone_number, :active, :password);";
+            $parameters["student_id"]=$student->getstudentId();
+            $parameters["first_name"]=$student->getFirstName();
+            $parameters['last_name']=$student->getLastName();
             $parameters['dni']=$student->getDni();
             $parameters['gender']=$student->getGender();
-            $parameters['fileNumber']=$student->getFileNumber();
-            $parameters['birthDate']=$student->getBirthDate();
-            $parameters['phoneNumber']=$student->getPhoneNumber();
+            $parameters['file_number']=$student->getFileNumber();
+            $parameters['birth_date']=$student->getBirthDate();
+            $parameters['phone_number']=$student->getPhoneNumber();
             $parameters['active']=true;
             $parameters['password']=$student->getPassword();
-            $parameters['careerId']=$student->getCareerId();
+            $parameters['career_id']=$student->getCareerId();
             $parameters['email']=$student->getEmail();
             try {
                 $this->connection= Connection::getInstance();

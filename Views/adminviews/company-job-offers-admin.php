@@ -4,7 +4,6 @@ use Utils\Utils;
 
 Utils::checkNav();
 
-
 ?>
 
 <main class="py-5">
@@ -41,7 +40,6 @@ Utils::checkNav();
                     </thead>
                     <tbody>
                         <?php
-
 
                         if ($this->jobOfferList != null) {
                             foreach ($this->jobOfferList as $jobOffer) {

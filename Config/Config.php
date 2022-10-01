@@ -15,12 +15,12 @@ define("STUDENT_VIEWS", VIEWS_PATH. "studentviews/" );
 define("USERCOMPANY_VIEWS", VIEWS_PATH. "usercompanyviews/" );
 define("JS_PATH", FRONT_ROOT . VIEWS_PATH . "js/");
 define('API_KEY', '4f3bceed-50ba-4461-a910-518598664c08');
-//define("API_URL", 'https://utn-students-api.herokuapp.com/api/');
 define("API_URL", 'https://utn-students-api.herokuapp.com/api/');
+
 
 // constants to work with database
 define("DB_HOST", "localhost");
-define("DB_NAME", "letswork");
+define("DB_NAME", "lets");
 define("DB_USER", "root");
 define("DB_PASS", "admin");
 

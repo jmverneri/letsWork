@@ -11,8 +11,7 @@
         private $logo;
         private $email;
         private $phoneNumber;
-        private $cuit;
-        
+        private $cuit;        
 
         public function __construct()
         {

@@ -90,7 +90,6 @@
             $career->setActive($valuesArray['active']);
 
             array_push($this->careerList, $career);
-
           }
 
         }
@@ -105,10 +104,9 @@
         }
 
         public function GetCareerById($careerId){
-            //var_dump($careerId);
-            //die;
-              $sql = "SELECT * FROM careers WHERE careerId=".$careerId;
-            //$parameters['careerId']=$careerId;
+            
+            $sql = "SELECT * FROM careers WHERE career_id=". $careerId;
+            //$parameters['career_id']= $careerId;
 
             try {
                 $this->connection = Connection::getInstance();
@@ -124,7 +122,6 @@
             }
         }
 
-
         public function GetJobOffersByIdB($careerId){
             $this->consumeFromApi();
 
@@ -136,7 +133,6 @@
             return null;
         }
 
-
         public function getCareerStudent(Student $student){
             $this->consumeFromApi();
             foreach($this->careerList as $career){
@@ -144,8 +140,6 @@
                 return $career;
             }
         }
-
-    
 
         private function retrieveData()
         {
@@ -166,7 +160,7 @@
         {
             foreach ($this->careerList as $values) {
                 $career = new Career();
-                $career->setCareerId($values['careerId']);
+                $career->setCareerId($values['career_id']);
                 $career->setDescription($values['description']);
                 $career->setActive($values['active']);
             }

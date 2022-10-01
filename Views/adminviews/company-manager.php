@@ -68,10 +68,8 @@ if (isset($controlScript)) {
                                                       
                         if ($this->companiesList !=NULL) {
                             foreach ($this->companiesList as $company) {
-                                //var_dump($company->getCompanyId());
                                 
-                                echo "<tr>";
-           
+                                echo "<tr>";           
                                 echo  "<td>" . $company->getName() . "</td>";
                                 echo  "<td>" . $company->getCity() . "</td>";
                                 echo  "<td>" . $company->getEmail() . "</td>";

@@ -24,9 +24,7 @@ Utils::checkNav();
             <!-- <a class="btn btn-success btn-x2" href="<?php echo FRONT_ROOT ?>Company/RedirectDeleteForm">Delete Company</a>  -->
             <a class="btn btn-success btn-x2" href="<?php echo FRONT_ROOT ?>Company/ShowCompaniesViews">Companies List</a>
             <!--<a class="btn btn-primary btn-xl" href="#">Lista de Propuestas</a>-->
-           
-            <a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>JobOffer/RedirectAddJobForm">Add Job Offer</a>
-                     
+            <!--a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>JobOffer/RedirectAddJobForm">Add Job Offer</a-->
             <a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>JobOffer/finishedJobOffers">Expired Job Offers</a>
             <a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>Student/ShowListView">Students List</a>
             <a class="btn btn-primary btn-xl" href="<?php echo FRONT_ROOT ?>JobOffer/ShowJobsViews">Job Offers List</a>

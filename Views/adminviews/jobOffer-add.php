@@ -67,8 +67,10 @@ Utils::checkNav();
                                    foreach ($this->jobPositionList as $jobPosition) {
                                         echo "<option value=" . $jobPosition->getJobPositionId() . ">" . $jobPosition->getDescription() . "</option>";
                                    }
-
                                    echo "</select>";
+                              }
+                              else{
+                                   echo "There are not job positions available";
                               } ?>
                          </div>
                     </div>

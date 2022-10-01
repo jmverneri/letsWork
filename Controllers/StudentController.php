@@ -62,7 +62,6 @@ class StudentController
         }
     }
 
-
     public function studentValidation($email)
     {
         $student = $this->studentDAO->getStudentByMail($email);
@@ -89,8 +88,6 @@ class StudentController
             require_once(VIEWS_PATH . "student-profile.php");
         }
     }
-
-
 
     public function checkIfActive()
     {

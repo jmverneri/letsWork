@@ -11,13 +11,14 @@ class JobPositionDAO implements IJobPositionDAO
 
     private $jobPositionList;
     private $conection;
-    private $tableName = "jobpositions";
+    private $tableName = "job_positions";
     private $jobPositionfilteredList;
 
     public function __construct()
     {
         $this->jobPositionList= array();
     }
+
     public function getAllJobpositions()
     {
 
@@ -26,11 +27,10 @@ class JobPositionDAO implements IJobPositionDAO
         try {
             $this->connection = Connection::getInstance();
             $this->jobPositionList = $this->connection->execute($sql);
-            //var_dump($this->jobPositionList);
-            //die;
         } catch (\PDOException $exeption) {
             throw $exeption;
         }
+
         if (!empty($this->jobPositionList)) {
             return $this->retrieveDataJobPosition();
         } else {
@@ -92,8 +92,6 @@ class JobPositionDAO implements IJobPositionDAO
         } catch (\PDOException $exception) {
             throw $exception;
         }
-        //var_dump($companiesList);
-      //  die;
         if (!empty($jobPositionList)) {
             return $this->retrieveDataJobPosition();
         } else {
@@ -111,8 +109,6 @@ class JobPositionDAO implements IJobPositionDAO
         } catch (\PDOException $exception) {
             throw $exception;
         }
-        //var_dump($companiesList);
-      //  die;
         if (!empty($jobPositionList)) {
             return $this->retrieveDataJobPosition();
         } else {
@@ -126,13 +122,15 @@ class JobPositionDAO implements IJobPositionDAO
         $listToReturn = array();
 
         foreach ($this->jobPositionList as $values) {
+            
             $jobPosition = new JobPosition();
-            $jobPosition->setJobPositionId($values['jobPositionId']);
+            $jobPosition->setJobPositionId($values['job_positions_id']);
             $jobPosition->setDescription($values['description']);
-            $jobPosition->setCareerId($values['careerId']);
+            $jobPosition->setCareerId($values['career_id']);
 
             array_push($listToReturn, $jobPosition);
         }
+
         return  $listToReturn;
     }
 

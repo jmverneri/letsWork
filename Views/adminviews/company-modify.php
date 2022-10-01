@@ -51,6 +51,16 @@ if (isset($this->message)) {
                               <input type="number" name="phoneNumber" class="form-control" required value="<?php echo $this->company->getPhoneNumber(); ?>" />
 
                          </div>
+
+                         <div class="col-lg-4">
+
+                              <label for=""><b>CUIT</b></label>
+                              <br>
+                              <input type="number" placeholder="00" min="20" max="27" name="pre" value="" class="form-control-sm" required value="">
+                              <input type="number" placeholder="00000000" min="11111111" max="99999999" name="dni" value="" class="form-control-sm" required value="">
+                              <input type="number" placeholder="0" min="1" max="9" name="ultimo" value="" class="form-control-sm" required value="">
+
+                         </div>
                      
                         <!-- <div class="col-lg-4">
 

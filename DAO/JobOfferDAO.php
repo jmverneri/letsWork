@@ -39,8 +39,8 @@ class JobOfferDAO implements IJobOfferDAO
 
     public function deleteJobOffer($jobOfferId)
     {
-        $sql = "DELETE FROM job_Offer WHERE jobOfferId=:jobOfferId";
-        $parameters['jobOfferId'] = $jobOfferId;
+        $sql = "DELETE FROM job_Offer WHERE job_offer_id=:job_offer_id";
+        $parameters['job_offer_id'] = $jobOfferId;
 
         try {
             $this->connection = Connection::getInstance();
@@ -52,18 +52,18 @@ class JobOfferDAO implements IJobOfferDAO
 
     public function addJobOffer(JobOffer $jobOffer)
     {
-        $sql = "INSERT INTO job_offer(name, startDay, deadline, active, description, salary, companyId, careerId, jobPositionId) 
-                VALUES(:name, :startDay, :deadline, :active, :description, :salary, :companyId, :careerId, :jobPositionId);";
+        $sql = "INSERT INTO job_offer(name, start_day, dead_line, active, description, salary, fkcompany_id, fkcareer_id, fkjob_position_id) 
+                VALUES(:name, :start_day, :dead_line, :active, :description, :salary, :fkcompany_id, :fkcareer_id, :fkjob_position_id);";
      
         $parameters['name'] = $jobOffer->getName();
-        $parameters['startDay'] = $jobOffer->getStartDay();
-        $parameters['deadline'] = $jobOffer->getDeadline();
+        $parameters['start_day'] = $jobOffer->getStartDay();
+        $parameters['dead_line'] = $jobOffer->getDeadline();
         $parameters['active'] = $jobOffer->getActive();
         $parameters['description'] = $jobOffer->getDescription();
         $parameters['salary'] = $jobOffer->getSalary();
-        $parameters['companyId'] = $jobOffer->getCompanyId();
-        $parameters['careerId'] = $jobOffer->getCareerId();
-        $parameters['jobPositionId'] = $jobOffer->getJobPositionId();
+        $parameters['fkcompany_id'] = $jobOffer->getCompanyId();
+        $parameters['fkcareer_id'] = $jobOffer->getCareerId();
+        $parameters['fkjob_position_id'] = $jobOffer->getJobPositionId();
       
 
         try {
@@ -76,16 +76,16 @@ class JobOfferDAO implements IJobOfferDAO
 
     public function updateJobOffer(JobOffer $jobOffer)
     {
-        $sql = "UPDATE job_offer SET name =:name, startDay=:startDay, deadline=:deadline, description=:description, salary=:salary, careerId=:careerId, jobPositionId=:jobPositionId WHERE jobOfferId=:jobOfferId";
+        $sql = "UPDATE job_offer SET name =:name, start_day=:start_day, dead_line=:dead_line, description=:description, salary=:salary, career_id=:career_id, job_position_id=:job_position_id WHERE job_offer_id=:job_offer_id";
 
-        $parameters['jobOfferId'] = $jobOffer->getjobOfferId();
+        $parameters['job_offer_id'] = $jobOffer->getjobOfferId();
         $parameters['name'] = $jobOffer->getName();
         $parameters['description'] = $jobOffer->getDescription();
-        $parameters['startDay'] = $jobOffer->getstartDay();
-        $parameters['deadline'] = $jobOffer->getdeadline();
+        $parameters['start_day'] = $jobOffer->getstartDay();
+        $parameters['dead_line'] = $jobOffer->getdeadline();
         $parameters['salary'] = $jobOffer->getSalary();
-        $parameters['careerId'] = $jobOffer->getCareerId();
-        $parameters['jobPositionId'] = $jobOffer->getJobPositionId();
+        $parameters['career_id'] = $jobOffer->getCareerId();
+        $parameters['job_position_id'] = $jobOffer->getJobPositionId();
 
         try {
             $this->connection = Connection::getInstance();
@@ -97,8 +97,8 @@ class JobOfferDAO implements IJobOfferDAO
 
     public function searchJobOfferById($jobOfferId)
     {
-        $sql = "SELECT * FROM job_offer WHERE jobOfferId=:jobOfferId";
-        $parameters['jobOfferId'] = $jobOfferId;
+        $sql = "SELECT * FROM job_offer WHERE job_offer_id=:job_offer_id";
+        $parameters['job_offer_id'] = $jobOfferId;
 
         try {
             $this->connection = Connection::getInstance();
@@ -134,9 +134,9 @@ class JobOfferDAO implements IJobOfferDAO
     }
 
     public function addStudentToAJobOffer($jobOfferId, $studentId){
-        $sql = "UPDATE job_offer SET studentId=:studentId, active=:active WHERE jobOfferId=:jobOfferId;";
+        $sql = "UPDATE job_offer SET student_id=:student_id, active=:active WHERE jobOfferId=:jobOfferId;";
 
-        $parameters['studentId'] = $studentId;
+        $parameters['student_id'] = $studentId;
         $parameters['jobOfferId'] = $jobOfferId;
         $parameters['active'] = false;
         
@@ -150,7 +150,7 @@ class JobOfferDAO implements IJobOfferDAO
     }
 
     public function getJobOfferByCompany($companyId){
-        $sql = 'SELECT*FROM letswork.job_offer WHERE companyId = ' . $companyId . ' AND active = :active';
+        $sql = 'SELECT * FROM job_offer WHERE company_id = ' . $companyId . ' AND active = :active';
         $parameters['active']=true;
    
                
@@ -171,10 +171,9 @@ class JobOfferDAO implements IJobOfferDAO
     }
 
     public function getJobOfferByCareer($careerId){
-        $sql = 'SELECT*FROM letswork.job_offer WHERE careerId = ' . $careerId . ' AND active = :active';
-        $parameters['active']=true;
+        $sql = 'SELECT * FROM job_offer WHERE career_id = ' . $careerId . ' AND active = :active';
+        $parameters['active']= true;
    
-               
         try {
             $this->connection = Connection::getInstance();
             $this->jobOfferList = $this->connection->execute($sql, $parameters);
@@ -197,15 +196,15 @@ class JobOfferDAO implements IJobOfferDAO
         foreach ($this->jobOfferList as $values) {
             $jobOffer = new JobOffer();
             $jobOffer->setName($values['name']);
-            $jobOffer->setJobOfferId($values['jobOfferId']);
-            $jobOffer->setstartDay($values['startDay']);
-            $jobOffer->setdeadLine($values['deadline']);
+            $jobOffer->setJobOfferId($values['job_offer_id']);
+            $jobOffer->setstartDay($values['start_day']);
+            $jobOffer->setdeadLine($values['dead_line']);
             $jobOffer->setActive($values['active']);
             $jobOffer->setDescription($values['description']);
             $jobOffer->setSalary($values['salary']);
-            $jobOffer->setCompanyId($values['companyId']);
-            $jobOffer->setCareerId($values['careerId']);
-            $jobOffer->setjobPositionId(($values['jobPositionId']));
+            $jobOffer->setCompanyId($values['company_id']);
+            $jobOffer->setCareerId($values['career_id']);
+            $jobOffer->setjobPositionId(($values['job_position_id']));
 
             array_push($listToReturn, $jobOffer);
         }
@@ -217,18 +216,17 @@ class JobOfferDAO implements IJobOfferDAO
         foreach ($this->jobOfferList as $values) {
             $jobOffer = new JobOffer();
             $jobOffer->setName($values['name']);
-            $jobOffer->setJobOfferId($values['jobOfferId']);
-            $jobOffer->setstartDay($values['startDay']);
-            $jobOffer->setdeadLine($values['deadline']);
+            $jobOffer->setJobOfferId($values['job_offer_id']);
+            $jobOffer->setstartDay($values['start_day']);
+            $jobOffer->setdeadLine($values['dead_line']);
             $jobOffer->setActive($values['active']);
             $jobOffer->setDescription($values['description']);
             $jobOffer->setSalary($values['salary']);
-            $jobOffer->setCompanyId($values['companyId']);
-            $jobOffer->setStudentId($values['studentId']);
-            $jobOffer->setCareerId($values['careerId']);
-            $jobOffer->setjobPositionId(($values['jobPositionId']));
-
-            
+            $jobOffer->setCompanyId($values['company_id']);
+            $jobOffer->setStudentId($values['student_id']);
+            $jobOffer->setCareerId($values['career_id']);
+            $jobOffer->setjobPositionId(($values['job_position_id']));
+  
         }
         return  $jobOffer;
     }

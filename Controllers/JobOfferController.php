@@ -75,7 +75,7 @@ class JobOfferController
         $this->student = new Student();
         $this->stundentDao = new StudentDAO();
         $this->studentXJobOfferDao = new StudentByJobOfferDAO();
-        $this->pdf = new FPDF();
+        //$this->pdf = new FPDF();
     }
 
     public function RedirectAddJobForm()
@@ -87,7 +87,6 @@ class JobOfferController
         require_once(ADMIN_VIEWS . "jobOffer-add.php");
     }
 
-
     public function ShowJobOfferAddView($message = "")
     {
         require_once(ADMIN_VIEWS . "jobOffer-add.php");
@@ -96,7 +95,7 @@ class JobOfferController
     public function ShowListCompanyList($message = "")
     {
         $this->companiesList = $this->companyDao->GetAll();
-        require_once(ADMIN_VIEWS . "company-delete.php");
+        require_once(ADMIN_VIEWS . "company-manager.php");
     }
 
     public function showAddjobOfferForCompany($companyId)
@@ -124,6 +123,7 @@ class JobOfferController
 
         require_once(VIEWS_PATH . "jobOffer-view.php");
     }
+
     public function getJobOfferByName($search)
     {
         Utils::checkSession();
@@ -146,7 +146,6 @@ class JobOfferController
         }
     }
 
-
     public function showModifyJobOfferView($jobOfferId)
     {
         $this->jobOffer = $this->jobOfferDAO->searchJobOfferById($jobOfferId);
@@ -158,6 +157,7 @@ class JobOfferController
     public function addJobOffer($companyId, $name, $startDay, $deadline, $description, $salary, $careerId, $jobPositionId)
     {
         //Utils::checkAdminSession();
+
 
         $jobOffer = new JobOffer();
         $jobOffer->setCompanyId($companyId);
@@ -235,6 +235,7 @@ class JobOfferController
     public function showJobsOffersViewByCareer($careerId)
     {
         $this->jobOfferList = $this->jobOfferDAO->getJobOfferByCareer($careerId);
+        
         $this->career = $this->careerDAO->GetCareerById($careerId);
        require_once(VIEWS_PATH . "job-offers-by-career.php");
     }

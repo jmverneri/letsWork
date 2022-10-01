@@ -35,16 +35,14 @@ class CompanyController
         require_once(ADMIN_VIEWS . "company-add.php");
     }
 
-    
     public function RedirectDeleteForm()
     {
         //Utils::checkAdminSession();
         $this->companiesList = $this->companyDAO->GetAll();
-        require_once(ADMIN_VIEWS . "company-delete.php");
+        require_once(ADMIN_VIEWS . "company-manager.php");
 
     }
 
-    
     public function ShowSingleCompany($companyId)
     {
         Utils::checkSession();
@@ -60,7 +58,7 @@ class CompanyController
             Utils::checkSession();
             $this->companiesList = $this->companyDAO->GetAll();
               
-            require_once(ADMIN_VIEWS. "company-delete.php");
+            require_once(ADMIN_VIEWS. "company-manager.php");
         } else {
             $search = strtolower($search);
             $filteredCompanies = array();
@@ -72,7 +70,7 @@ class CompanyController
                 }
             }
             $this->companiesList = $filteredCompanies;
-            require_once(ADMIN_VIEWS . "company-delete.php");
+            require_once(ADMIN_VIEWS . "company-manager.php");
         }
     }
 
@@ -82,7 +80,6 @@ class CompanyController
         $this->companiesList = $this->companyDAO->GetAll();
         $this->ShowCompaniesViews();
     }
-
 
     public function AddCompany($name, $yearFoundation, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)
     {
@@ -115,17 +112,18 @@ class CompanyController
     private function checkCUIT($cuit){
         $result = false;
         $this->companiesList = $this->companyDAO->GetAll();
-        foreach($this->companiesList as $company){
-            if($company->getCuit() == $cuit){
-                $result = true;
+        
+        if($this->companiesList){
+            foreach($this->companiesList as $company){
+                if($company->getCuit() == $cuit){
+                    $result = true;
+                }
             }
         }
-
         return $result;
     }
-    
 
-    public function updateCompany($companyId, $name, $yearFoundation, $city, $description, $email, $phoneNumber)
+    public function updateCompany($companyId, $name, $yearFoundation, $city, $description, $email, $phoneNumber, $cuit)
     {
         //Utils::checkSession();
         $company = new Company();
@@ -137,14 +135,24 @@ class CompanyController
         $company->setDescription($description);
         $company->setEmail($email);
         $company->setPhoneNumber($phoneNumber);
-        //$company->setCuit($cuit);
         //$company->setLogo($logo);
+        $company->buildCuit($pre, $dni, $ultimo);
 
-        $this->companyDAO->Update($company);
+        $result = $this->checkCUIT($company->getCuit());  
 
-        $this->RedirectDeleteForm("The company had been updated successfully");
+        if($result == false)
+        {
+            
+            $this->companyDAO->Update($company);
 
-      
+            $this->RedirectDeleteForm("The company had been updated successfully"); 
+            require_once(ADMIN_VIEWS . "company-add.php");
+        }else{
+            $message = "There is already a company with that cuit. Please try again.";
+            require_once(ADMIN_VIEWS . "company-add.php");
+        }
+        
+
     }
 
     public function deleteCompany($companyId)
