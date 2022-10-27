@@ -2,7 +2,7 @@
 use Utils\Utils;
 
 Utils::checkNav();
-           
+
 ?>
 
 <body>
@@ -15,15 +15,21 @@ Utils::checkNav();
 
     <header class="d-flex align-items-center justify-content-center height-50">
 
-
       <div class="container-menu px-8 px-lg-1 text-center ">
             <!-- <div class="view-container"> -->
                    
-            <h1 p class="text-warning" class="mb-1">You are Welcome Student</h1>
+            <h1 p class="text-warning" class="mb-1">You are Welcome <?php echo $this->student->getFirstName();?></h1>
             <h5 class="mb-5"><em>Please choose one of the next action </em></h5>
+            <!--a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?> Student/ShowStudentProfile/" >Profile</a-->    
+            <?php 
+            echo "<td><a href=" . FRONT_ROOT . "Student/ShowStudentProfile/" . $this->student->getEmail() . ">
+            <button type='button' class= 'btn btn-info' >Profile</button></a></td>";
+            ?>
+            <!--no pasa referencia-->
+
             <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>Company/ListCompanies">See Companies</a>
-            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?> JobOffer/ShowJobsViews/">Job Offers List</a>      
-            <?php //echo "<a class='btn btn-warning btn-xl' href=" . FRONT_ROOT .  'Home/getStudentByMail/' . $student->getEmail();?></a>               
+            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?> JobOffer/ShowJobsViews/">Job Offers List</a>  
+            <?php //echo "<a class='btn btn-warning btn-xl' href=" . FRONT_ROOT .  'Home/getStudentByMail/' . $this->student->getEmail();?></a>               
            
     
        </div>

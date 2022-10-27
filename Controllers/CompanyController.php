@@ -54,15 +54,19 @@ class CompanyController
 
     public function ShowCompaniesViews($search = "")
     {
-        if ($search == "") {
+        if ($search == "") 
+        {
             Utils::checkSession();
             $this->companiesList = $this->companyDAO->GetAll();
               
             require_once(ADMIN_VIEWS. "company-manager.php");
-        } else {
+        } 
+        else 
+        {
             $search = strtolower($search);
             $filteredCompanies = array();
-            foreach ($this->companyDAO->getAll() as $company) {
+            foreach ($this->companyDAO->getAll() as $company) 
+            {
                 $companyName = strtolower($company->getName());
 
                 if (Utils::strStartsWith($companyName, $search)) {
@@ -151,13 +155,10 @@ class CompanyController
             $message = "There is already a company with that cuit. Please try again.";
             require_once(ADMIN_VIEWS . "company-add.php");
         }
-        
-
     }
 
     public function deleteCompany($companyId)
     {
-
         $this->companyDAO->delete($companyId);
 
         $this->RedirectDeleteForm();

@@ -63,7 +63,8 @@ class HomeController
             if(($this->student->getEmail() == $email) && ($password == $this->student->getPassword())){
                 $this->career = $this->careerDAO->GetCareerById($this->student->getCareerId());
                 $_SESSION['student'] = $this->student;
-                require_once(STUDENT_VIEWS."student-profile.php");
+
+                require_once(STUDENT_VIEWS."menu-student.php"); ///Aca modifique/////////////
             } 
         }
         else if($this->userCompany != null)

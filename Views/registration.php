@@ -17,8 +17,8 @@
          
 
                <div class="form-group" align="center">
-                    <label for="" align="center">E-mail</label>
-                    <input type="email" name="email" class="form-control form-control-lg" placeholder="Email required" required>
+                    <label for="email" align="center">E-mail</label>
+                    <input type="email" name="email" class="form-control form-control-lg" id="email" placeholder="Email required" required>
                </div>
                
                <center>

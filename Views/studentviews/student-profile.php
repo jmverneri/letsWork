@@ -2,6 +2,7 @@
 use Utils\Utils;
 
 Utils::checkNav();
+
 ?>
 <main class="py-5">
      <section id="listado" class="mb-5">
@@ -14,8 +15,6 @@ Utils::checkNav();
                          <th>Last Name</th>
                          <th>DNI</th>
                          <th>Birthday</th>
-                      
-                        
                          <th>Email</th>
                          <th>Phone Number</th>
                     </thead>
@@ -38,13 +37,10 @@ Utils::checkNav();
                <tbody>
                     <thead>
                          <h3 class="mb-4">Academic Status</h3>
-                         <th>Career Id</th>
-                         <th>description</th>
+                         <th>Career</th>
                     </thead>
                <tbody>
                     <?php if ($this->career != null) {
-                        
-                         echo  "<td>" . $this->career->getCareerId() . "</td>";
                          echo  "<td>" . $this->career->getDescription() . "</td>";
                     } ?>
                </tbody>

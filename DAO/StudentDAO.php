@@ -115,8 +115,8 @@ class StudentDAO implements IStudentDAO
 
         public function getStudentById($StudentId)
         {
-            $sql = "SELECT * FROM students WHERE studentId=:studentId";
-            $parameters['email']=$StudentId;           
+            $sql = "SELECT * FROM students WHERE student_id=:student_id";
+            $parameters['student_id']=$StudentId;           
             
             try{
                 $this->connection = Connection::getInstance();
@@ -221,7 +221,7 @@ class StudentDAO implements IStudentDAO
                 $loginStudent->setDni($stud['dni']);
                 $loginStudent->setFileNumber($stud['file_number']);
                 $loginStudent->setGender($stud['gender']);
-                //$loginStudent->setBirthDate($stud['birthDate']);
+                $loginStudent->setBirthDate($stud['birth_date']);
                 $loginStudent->setEmail($stud['email']);
                 $loginStudent->setPhoneNumber($stud['phone_number']);
                 $loginStudent->setPassword($stud['password']);

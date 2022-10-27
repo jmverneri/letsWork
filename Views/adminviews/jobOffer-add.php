@@ -15,33 +15,33 @@ Utils::checkNav();
                     <input type="hidden" name="companyId" value=" <?php echo $this->company->getCompanyId(); ?>" />
                        
                          <div class="col-lg-4">
-                              <label for=""><b>Job Offer Name</b></label>
-                              <input type="text" name="name" value="" class="form-control">
+                              <label for="joboffername"><b>Job Offer Name</b></label>
+                              <input type="text" name="name" value="" class="form-control" id="joboffername">
                          </div>
 
                          <div class="col-lg-4">
 
-                              <label for=""><b>Start Day</b></label>
-                              <input type="date" name="startDay" min = "<?php echo date("Y-m-d");?>" value="<?php echo date("Y-m-d");?>" class="form-control">
+                              <label for="startday"><b>Start Day</b></label>
+                              <input type="date" name="startDay" id="startday" min = "<?php echo date("Y-m-d");?>" value="<?php echo date("Y-m-d");?>" class="form-control">
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Deadline</b></label>
-                              <input type="date" name="deadline"min = "<?php echo date("Y-m-d");?>" value="<?php echo date("Y-m-d");?>" class="form-control">
+                              <label for="deadline"><b>Deadline</b></label>
+                              <input type="date" name="deadline" id="deadline" min = "<?php echo date("Y-m-d");?>" value="<?php echo date("Y-m-d");?>" class="form-control">
 
                          </div>
 
                          <div class="col-lg-4">
 
-                              <label for=""><b>Description</b></label>
-                              <input type="text" name="description" value="" class="form-control">
+                              <label for="description"><b>Description</b></label>
+                              <input type="text" name="description" id="description" value="" class="form-control">
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Salary</b></label>
-                              <input type="number" name="salary" min =1 value="" class="form-control">
+                              <label for="salary"><b>Salary</b></label>
+                              <input type="number" name="salary" id="salary" min =1 value="" class="form-control">
 
                          </div>
 

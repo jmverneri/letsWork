@@ -34,32 +34,32 @@ if (isset($this->message)) {
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Year Foundation</b></label>
-                              <input type="date" name="yearFoundation" value="" min="1900-01-01" max="<?php echo date("Y-m-d"); ?>" class="form-control" required value="">
+                              <label for="yearfoundation"><b>Year Foundation</b></label>
+                              <input type="date" name="yearFoundation" id="yearfoundation" value="" min="1900-01-01" max="<?php echo date("Y-m-d"); ?>" class="form-control" required value="">
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>City</b></label>
-                              <input type="text" name="city" value="" class="form-control" required value="">
+                              <label for="city"><b>City</b></label>
+                              <input type="text" name="city" value="" id="city" class="form-control" required value="">
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Description</b></label>
-                              <input type="text" name="description" value="" class="form-control" required value="">
+                              <label for="description"><b>Description</b></label>
+                              <input type="text" name="description" id="description" value="" class="form-control" required value="">
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Email</b></label>
-                              <input type="mail" name="email" value="" class="form-control" required value="">
+                              <label for="email"><b>Email</b></label>
+                              <input type="mail" name="email" value="" id="email" class="form-control" required value="">
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Phone Number</b></label>
-                              <input type="number" name="phoneNumber" value="" class="form-control" required value="">
+                              <label for="phonenumber"><b>Phone Number</b></label>
+                              <input type="number" name="phoneNumber" value="" id="phonenumber" class="form-control" required value="">
 
                          </div>
 

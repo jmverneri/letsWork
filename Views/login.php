@@ -16,20 +16,22 @@
                          } ?></p>
 
                     <div class="form-group">
-                         <label for="" align="center" class=>E-mail</label>
-                         <input type="email" name="email" class="form-control form-control-sm text-center" placeholder="User required" required>
+                         <label align="center">
+                              <em>E-mail</em>
+                              <input type="email" name="email" class="form-control form-control-sm text-center" placeholder="User required" required>
+                         </label>
                     </div>
 
                     <div class="form-group">
-                         <label for="" align="center">Password</label>
-                         <input type="password" name="password" class="form-control form-control-sm text-center" placeholder="Password required" required>
+                         <label for="password" align="center">Password</label>
+                         <input type="password" name="password" id="password" autocomplete="on" class="form-control form-control-sm text-center" placeholder="Password required" required>
                     </div>
 
                     <center>
                          <button class="btn btn-warning btn-block " type="submit">Session Start</button>
                     </center>
-
                </form>
+               <script src="js/form-validation.js"></script>
                <br>
                <div>
                     <section>

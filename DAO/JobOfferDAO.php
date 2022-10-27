@@ -20,7 +20,6 @@ class JobOfferDAO implements IJobOfferDAO
 
     public function getAllJobOffer()
     {
-
         $sql = "SELECT * FROM job_offer WHERE active=".true;
        //    $parameter['active']=true;
 
@@ -32,6 +31,23 @@ class JobOfferDAO implements IJobOfferDAO
         }
         if (!empty($this->jobOfferList)) {
             return $this->retrieveDataJobOffer();
+        } else {
+            return $this->jobOfferList;
+        }
+    }
+
+    public function getAllActiveJobOffer()
+    {
+        $sql = "SELECT * FROM job_offer WHERE active=".true;
+
+        try {
+            $this->connection = Connection::getInstance();
+            $this->jobOfferList = $this->connection->execute($sql);
+        } catch (\PDOException $exeption) {
+            throw $exeption;
+        }
+        if (!empty($this->jobOfferList)) {
+            return $this->retrieveActiveJobOffer();
         } else {
             return $this->jobOfferList;
         }
@@ -150,7 +166,7 @@ class JobOfferDAO implements IJobOfferDAO
     }
 
     public function getJobOfferByCompany($companyId){
-        $sql = 'SELECT * FROM job_offer WHERE company_id = ' . $companyId . ' AND active = :active';
+        $sql = 'SELECT * FROM job_offer WHERE fkcompany_id = ' . $companyId . ' AND active = :active';
         $parameters['active']=true;
    
                
@@ -167,11 +183,29 @@ class JobOfferDAO implements IJobOfferDAO
         } else {
             return false;
         }
+    }
 
+    public function getActiveJobOfferByCompany($companyId){
+        $sql = 'SELECT * FROM job_offer WHERE fkcompany_id = ' . $companyId . ' AND active = :active';
+        $parameters['active']=true;
+   
+        try {
+            $this->connection = Connection::getInstance();
+            $this->jobOfferList = $this->connection->execute($sql, $parameters);
+       
+        } catch (\PDOException $exception) {
+            throw $exception;
+        }
+       
+        if (!empty($this->jobOfferList)) {
+            return $this->retrieveActiveJobOffer();
+        } else {
+            return false;
+        }
     }
 
     public function getJobOfferByCareer($careerId){
-        $sql = 'SELECT * FROM job_offer WHERE career_id = ' . $careerId . ' AND active = :active';
+        $sql = 'SELECT * FROM job_offer WHERE fkcareer_id = ' . $careerId . ' AND active = :active';
         $parameters['active']= true;
    
         try {
@@ -202,11 +236,35 @@ class JobOfferDAO implements IJobOfferDAO
             $jobOffer->setActive($values['active']);
             $jobOffer->setDescription($values['description']);
             $jobOffer->setSalary($values['salary']);
-            $jobOffer->setCompanyId($values['company_id']);
-            $jobOffer->setCareerId($values['career_id']);
-            $jobOffer->setjobPositionId(($values['job_position_id']));
+            $jobOffer->setCompanyId($values['fkcompany_id']);
+            $jobOffer->setCareerId($values['fkcareer_id']);
+            $jobOffer->setjobPositionId(($values['fkjob_position_id']));
 
             array_push($listToReturn, $jobOffer);
+        }
+        return  $listToReturn;
+    }
+
+    private function retrieveActiveJobOffer()
+    {
+        $listToReturn = array();
+
+        foreach ($this->jobOfferList as $values) {
+            $jobOffer = new JobOffer();
+            $jobOffer->setName($values['name']);
+            $jobOffer->setJobOfferId($values['job_offer_id']);
+            $jobOffer->setstartDay($values['start_day']);
+            $jobOffer->setdeadLine($values['dead_line']);
+            $jobOffer->setActive($values['active']);
+            $jobOffer->setDescription($values['description']);
+            $jobOffer->setSalary($values['salary']);
+            $jobOffer->setCompanyId($values['fkcompany_id']);
+            $jobOffer->setCareerId($values['fkcareer_id']);
+            $jobOffer->setjobPositionId(($values['fkjob_position_id']));
+
+            if (strtotime($jobOffer->getDeadLine()) > strtotime(date("Y-m-d H:i:00", time()))) {
+                array_push($listToReturn, $jobOffer);    
+            }
         }
         return  $listToReturn;
     }

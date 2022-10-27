@@ -34,7 +34,6 @@ Utils::checkNav();
                             foreach ($this->careerList as $career) {
                                 echo "<tr>";
                                 echo  "<td>" . $career->getDescription() . "</td>";
-                                                          
                                
                                 echo "<div class='row'>";
                                 echo  "<div class='button-conteiner'>";

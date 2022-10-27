@@ -32,8 +32,14 @@ class StudentController
     
     public function ShowStudentRegistration()
     {
-
         require_once(VIEWS_PATH . "registration.php");
+    }
+
+    public function ShowStudentProfile($email)
+    {
+        $this->getStudentByMail($email);
+
+        require_once(STUDENT_VIEWS. "student-profile.php");
     }
 
     public function ShowListView()
@@ -45,7 +51,6 @@ class StudentController
         require_once(VIEWS_PATH . "student-list.php");
     }
 
-
     public function getStudentByMail($email)
     {
         // Utils::checkSession();
@@ -54,6 +59,9 @@ class StudentController
             $this->student = $this->studentDAO->getLoginStudent($email);
             //$this->student = $this->studentDAO->getLoginStudent($email);
             $this->career = $this->careerDAO->getCareerStudent($this->student);
+
+            $_SESSION['student'] = $this->student;
+
 
             require_once(STUDENT_VIEWS . "student-profile.php");
         } else {
@@ -91,14 +99,12 @@ class StudentController
 
     public function checkIfActive()
     {
-
         return false;
     }
 
 
     public function ShowAddView()
     {
-
         require_once(VIEWS_PATH . "student-add.php");
     }
 

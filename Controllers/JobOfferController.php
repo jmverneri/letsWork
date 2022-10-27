@@ -243,8 +243,7 @@ class JobOfferController
 
     public function showJobsOffersViewByCompany($companyId)
     {
-
-        $this->jobOfferList = $this->jobOfferDAO->getJobOfferByCompany($companyId);
+        $this->jobOfferList = $this->jobOfferDAO->getActiveJobOfferByCompany($companyId);
         $this->company = $this->companyDao->Search($companyId);
         require_once(VIEWS_PATH . "job-offers-by-company.php");
     }
@@ -252,7 +251,7 @@ class JobOfferController
     public function ShowJobsViews($search = "")
     {
         if ($search == "") {
-            $this->jobOfferList = $this->jobOfferDAO->getAllJobOffer();
+            $this->jobOfferList = $this->jobOfferDAO->getAllActiveJobOffer();
             $this->careerList = $this->careerDAO->GetAll();
             $this->companiesList = $this->companyDao->GetAll();
             if ($_SESSION['admin']) {               //PENSAR COMO SOLUCIONAR. CONTROLADORAS SEPARADAS?

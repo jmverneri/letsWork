@@ -13,45 +13,45 @@ require_once(VIEWS_PATH."nav.php");
                 <div class="row">
                     <div class="col-lg-4">
 
-                        <label for=""><b>First Name</b></label>
-                        <input type="text" name="firstName" class="form-control " required value="">
+                        <label for="firstname"><b>First Name</b></label>
+                        <input type="text" name="firstName" class="form-control " id="firstname" required value="">
 
                     </div>
                     <div class="col-lg-4">
 
-                        <label for=""><b>Last Name</b></label>
-                        <input type="text" name="lastName" class="form-control" required value="">
+                        <label for="lastname"><b>Last Name</b></label>
+                        <input type="text" name="lastName" class="form-control" id="lastname" required value="">
 
                     </div>
                     <div class="col-lg-4">
 
-                        <label for=""><b>DNI</b></label>
+                        <label for="dni"><b>DNI</b></label>
                         <br>
-                        <input type="number" name="dni" class="form-control" required value="">
+                        <input type="number" name="dni" id="dni" class="form-control" required value="">
                     </div>
 
                     <div class="col-lg-4">
 
-                        <label for=""><b>Email</b></label>
-                        <input type="mail" name="email" class="form-control" required value="">
+                        <label for="email"><b>Email</b></label>
+                        <input type="mail" name="email" class="form-control" id="email" required value="">
 
                     </div>
                     <div class="col-lg-4">
 
-                        <label for=""><b>Phone Number</b></label>
-                        <input type="number" name="phoneNumber" class="form-control" required value="">
+                        <label for="phonenumber"><b>Phone Number</b></label>
+                        <input type="number" name="phoneNumber" class="form-control" id="phonenumber" required value="">
 
                     </div>
                     <div class="col-lg-4">
 
-                        <label for=""><b>Password</b></label>
+                        <label for="password"><b>Password</b></label>
                         <input type="password" name="password" class="form-control" required value="">
 
                     </div>
                     <div class="col-lg-4">
 
                         <label for=""><b>Confirm Password</b></label>
-                        <input type="password" name="confirmPassword" value="" class="form-control" required value="">
+                        <input type="password" name="confirmPassword" value="" id="password" class="form-control" required value="">
 
                     </div>
 

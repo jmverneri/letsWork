@@ -16,39 +16,39 @@ if (isset($this->message)) {
                     <div class="row">
                          <input type="hidden" name="companyId" value="<?php echo $this->company->getCompanyId(); ?>" />
                          <div class="col-lg-4">
-                              <label for=""><b>Name</b></label>
-                              <input type="text" name="name" class="form-control" required value="<?php echo $this->company->getName(); ?>" />
+                              <label for="name"><b>Name</b></label>
+                              <input type="text" name="name" class="form-control" id="name" required value="<?php echo $this->company->getName(); ?>" />
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Year Fundation</b></label>
-                              <input type="date" name="yearFoundation" min="1900-01-01" max="<?php echo date("Y-m-d"); ?>" class="form-control" required value="<?php echo $this->company->getYearFoundation(); ?>" />
+                              <label for="yearfoundation"><b>Year Fundation</b></label>
+                              <input type="date" name="yearFoundation" id="yearfoundation" min="1900-01-01" max="<?php echo date("Y-m-d"); ?>" class="form-control" required value="<?php echo $this->company->getYearFoundation(); ?>" />
 
                          </div>
 
                          <div class="col-lg-4">
 
-                              <label for=""><b>City</b></label>
-                              <input type="text" name="city" class="form-control" required value="<?php echo $this->company->getCity(); ?>" />
+                              <label for="city"><b>City</b></label>
+                              <input type="text" name="city" id="city" class="form-control" required value="<?php echo $this->company->getCity(); ?>" />
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Description</b></label>
-                              <textarea type="text" name="description" class="form-control" required value=""><?php echo $this->company->getDescription(); ?></textarea>
+                              <label for="description"><b>Description</b></label>
+                              <textarea type="text" name="description" id="description" class="form-control" required value=""><?php echo $this->company->getDescription(); ?></textarea>
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Email</b></label>
-                              <input type="email" name="email" class="form-control" required value="<?php echo $this->company->getEmail(); ?>" />
+                              <label for="email"><b>Email</b></label>
+                              <input type="email" name="email" id="email" class="form-control" required value="<?php echo $this->company->getEmail(); ?>" />
 
                          </div>
                          <div class="col-lg-4">
 
-                              <label for=""><b>Phone Number</b></label>
-                              <input type="number" name="phoneNumber" class="form-control" required value="<?php echo $this->company->getPhoneNumber(); ?>" />
+                              <label for="phonenumber"><b>Phone Number</b></label>
+                              <input type="number" name="phoneNumber" id="phonenumber" class="form-control" required value="<?php echo $this->company->getPhoneNumber(); ?>" />
 
                          </div>
 
