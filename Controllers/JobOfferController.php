@@ -78,7 +78,7 @@ class JobOfferController
         //$this->pdf = new FPDF();
     }
 
-    public function RedirectAddJobForm()
+    public function redirectAddJobForm()
     {
         Utils::checkAdminSession();
         $this->companiesList = $this->companyDao->GetAll();
@@ -87,12 +87,12 @@ class JobOfferController
         require_once(ADMIN_VIEWS . "jobOffer-add.php");
     }
 
-    public function ShowJobOfferAddView($message = "")
+    public function showJobOfferAddView($message = "")
     {
         require_once(ADMIN_VIEWS . "jobOffer-add.php");
     }
 
-    public function ShowListCompanyList($message = "")
+    public function showListCompanyList($message = "")
     {
         $this->companiesList = $this->companyDao->GetAll();
         require_once(ADMIN_VIEWS . "company-manager.php");
@@ -248,7 +248,7 @@ class JobOfferController
         require_once(VIEWS_PATH . "job-offers-by-company.php");
     }
 
-    public function ShowJobsViews($search = "")
+    public function showJobsViews($search = "")
     {
         if ($search == "") {
             $this->jobOfferList = $this->jobOfferDAO->getAllActiveJobOffer();

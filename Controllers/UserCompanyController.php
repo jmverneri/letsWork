@@ -34,13 +34,13 @@ class UserCompanyController
     }
 
 
-    public function ShowUserCompanyRegistrationView()
+    public function showUserCompanyRegistrationView()
     {
 
         require_once(USERCOMPANY_VIEWS . "usercompany-register.php");
     }
 
-    public function ShowUserCompanyProfile($email)
+    public function showUserCompanyProfile($email)
     {
         $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
         require_once(USERCOMPANY_VIEWS . "usercompany-profile.php");

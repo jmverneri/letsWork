@@ -30,7 +30,7 @@ class StudentController
         $this->career = new Career();
     }
     
-    public function ShowStudentRegistration()
+    public function showStudentRegistration()
     {
         require_once(VIEWS_PATH . "registration.php");
     }
@@ -42,7 +42,7 @@ class StudentController
         require_once(STUDENT_VIEWS. "student-profile.php");
     }
 
-    public function ShowListView()
+    public function showListView()
     {
         Utils::checkSession();
         $this->studentList = $this->studentDAO->GetAll();
@@ -103,7 +103,7 @@ class StudentController
     }
 
 
-    public function ShowAddView()
+    public function showAddView()
     {
         require_once(VIEWS_PATH . "student-add.php");
     }

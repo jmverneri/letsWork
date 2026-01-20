@@ -15,7 +15,7 @@
             $this->jobPositionDAO = new JobPositionDAO();
         }
 
-        public function ShowJobPositionAddView($message = "")
+        public function showJobPositionAddView($message = "")
         {
             require_once(VIEWS_PATH . "jobPosition-add.php");
         }
@@ -27,7 +27,7 @@
             require_once(VIEWS_PATH."jobPosition-list.php");    ///Falta crear
         }
 
-        public function ShowJobPositionViewById($id){
+        public function showJobPositionViewById($id){
             Utils::checkSession();
             $jobPosition = $this->jobPositionDAO->SearchJobPositionById($id);
         

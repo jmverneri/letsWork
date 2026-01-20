@@ -31,59 +31,96 @@ class HomeController
         $this->userCompanyDAO = new UserCompanyDAO();
     }
 
-    public function Index($message = "")
+    public function index($message = "")
     {
+        $error = '';
+        if (isset($_SESSION['login_error'])) {
+            $error = $_SESSION['login_error'];
+            unset($_SESSION['login_error']);
+        }
+        
         require_once(VIEWS_PATH . "login.php");
     }
 
     public function menuAdmin()
     {
+        if (!isset($_SESSION['admin'])) {
+            header("Location: " . BASE_FOLDER . "Home/index");
+            exit();
+        }
+
         require_once(ADMIN_VIEWS . "menu-admin.php");
     }
 
     public function menuStudent()
     {
+        if (!isset($_SESSION['student'])) {
+            header("Location: " . BASE_FOLDER . "Home/index");
+            exit();
+        }
+        
         require_once(STUDENT_VIEWS . "menu-student.php");
     }
    
     public function login($email, $password)
     {
-        $this->student = $this->studentDAO->getLoginStudent($email);
-        $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
-            
-        if(($email == 'user@hot.com') && ($password == '123'))
-        {
+            // Validar campos vacíos
+        if (empty($email) || empty($password)) {
+            $_SESSION['login_error'] = "Por favor, complete todos los campos.";
+            header("Location: index.php?url=Home/index");
+            exit();
+        }
+        
+        // Admin hardcodeado
+        if ($email == 'user@hot.com' && $password == '123') {
             $user = new User($email);
-            $user= new User($password);
             $_SESSION['admin'] = $user;
-            require_once(ADMIN_VIEWS."menu-admin.php");
-        } 
-        else if($this->student !=null)
-        {
-            if(($this->student->getEmail() == $email) && ($password == $this->student->getPassword())){
+            header("Location: index.php?url=Home/menuAdmin");
+            exit();
+        }
+        /*
+        // Buscar estudiante
+        $this->student = $this->studentDAO->getLoginStudent($email);
+        
+        if ($this->student != null) {
+            if ($this->student->getEmail() == $email && $password == $this->student->getPassword()) {
                 $this->career = $this->careerDAO->GetCareerById($this->student->getCareerId());
                 $_SESSION['student'] = $this->student;
-
-                require_once(STUDENT_VIEWS."menu-student.php"); ///Aca modifique/////////////
-            } 
+                session_write_close();
+                ?>
+                <!DOCTYPE html>
+                <html><head>
+                <script>window.location.href='index.php?url=Home/menuStudent';</script>
+                </head></html>
+                <?php
+                exit();
+            }
         }
-        else if($this->userCompany != null)
-        {
-            if(($this->userCompany->getEmail() == $email) && ($password == $this->userCompany->getPassword()))
-            {
-                    
-            $_SESSION['userCompany'] = $this->userCompany;
-            require_once(USERCOMPANY_VIEWS."usercompany-profile.php");
-            } 
-        }
-        else    
-        {
-                $invalidEmail = true;
-                require_once(VIEWS_PATH ."login.php");
-        }
+        
+        // Buscar empresa
+        $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
+        
+        if ($this->userCompany != null) {
+            if ($this->userCompany->getEmail() == $email && $password == $this->userCompany->getPassword()) {
+                $_SESSION['userCompany'] = $this->userCompany;
+                session_write_close();
+                ?>
+                <!DOCTYPE html>
+                <html><head>
+                <script>window.location.href='index.php?url=UserCompany/profile';</script>
+                </head></html>
+                <?php
+                exit();
+            }
+        }*/
+        
+            // Login falló
+        $_SESSION['login_error'] = "Email o contraseña incorrectos.";
+        header("Location: index.php?url=Home/index");
+         exit();
     }
  
-    public function RedirectAdm()
+    public function redirectAdm()
     {
         require_once(VIEWS_PATH . "admin-view.php");
     }
@@ -92,6 +129,30 @@ class HomeController
     {
         session_destroy();
 
-        $this->Index();
+        header("Location: " . BASE_FOLDER . "Home/index");
+        exit();
+    }
+
+    /**
+ * Método helper para redireccionar de forma confiable
+ */
+    private function redirect($path)
+    {
+        $fullPath = "/" . BASE_FOLDER . $path;
+        
+        // Intentar header primero
+        if (!headers_sent()) {
+            header("Location: " . $fullPath);
+            exit();
+        }
+        
+        // Si header falló, usar JavaScript
+        echo "<script type='text/javascript'>";
+        echo "window.location.href='" . $fullPath . "';";
+        echo "</script>";
+        echo "<noscript>";
+        echo "<meta http-equiv='refresh' content='0;url=" . $fullPath . "' />";
+        echo "</noscript>";
+        exit();
     }
 }

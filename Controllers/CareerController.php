@@ -15,7 +15,7 @@
             $this->careerList = array();
         }
 
-        public function ShowSingleCareer($careerId)
+        public function showSingleCareer($careerId)
         {
             Utils::checkSession();
             $this->career = $this->careerDAO->GetCareerById($careerId);

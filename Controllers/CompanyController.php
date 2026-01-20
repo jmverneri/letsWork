@@ -18,7 +18,7 @@ class CompanyController
         $this->companyDAO = new CompanyDAO();
     }
 
-    public function ShowAddView()
+    public function showAddView()
     {
         require_once(ADMIN_VIEWS . "company-add.php");
     }
@@ -29,13 +29,13 @@ class CompanyController
         require_once(VIEWS_PATH . "show-companyAddCompany.php");
     }*/
     
-    public function RedirectAddForm()
+    public function redirectAddForm()
     {
         Utils::checkAdminSession();
         require_once(ADMIN_VIEWS . "company-add.php");
     }
 
-    public function RedirectDeleteForm()
+    public function redirectDeleteForm()
     {
         //Utils::checkAdminSession();
         $this->companiesList = $this->companyDAO->GetAll();
@@ -52,7 +52,7 @@ class CompanyController
         
     }
 
-    public function ShowCompaniesViews($search = "")
+    public function showCompaniesViews($search = "")
     {
         if ($search == "") 
         {
@@ -78,14 +78,14 @@ class CompanyController
         }
     }
 
-    public function ListCompanies()
+    public function listCompanies()
     {
         Utils::checkSession();
         $this->companiesList = $this->companyDAO->GetAll();
         $this->ShowCompaniesViews();
     }
 
-    public function AddCompany($name, $yearFoundation, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)
+    public function addCompany($name, $yearFoundation, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)
     {
         Utils::checkSession();
         $company = new Company();
@@ -176,7 +176,7 @@ class CompanyController
         }
     }
 
-    public function ShowModifyCompanyView($companyId)
+    public function showModifyCompanyView($companyId)
     {   
         $this->company = $this->companyDAO->Search($companyId);
 
