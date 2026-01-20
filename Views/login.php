@@ -4,7 +4,7 @@
         <div class="content">
             <section class="text-center">
                 <br></br>
-                <img src="/<?php echo IMG_PATH ?>Lets.png" width="400" height="141" alt="" />
+                <img src="<?php echo IMG_PATH ?>Lets.png" width="400" height="141" alt="" />
                 <h2 class="text-center">Login</h2>
             </section>
             

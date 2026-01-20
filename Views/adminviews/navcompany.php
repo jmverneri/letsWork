@@ -7,16 +7,16 @@
 
 
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo FRONT_ROOT ?>Company/ListCompanies">List Companies</a>
+               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Company/ListCompanies">List Companies</a>
           </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo FRONT_ROOT ?>Student/ShowListView">List Students</a>
+               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Student/ShowListView">List Students</a>
           </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo FRONT_ROOT ?>Home/menuAdmin">Admin Menu</a>
+               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Home/menuAdmin">Admin Menu</a>
           </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo FRONT_ROOT ?>Home/Logout">Logout</a>
+               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Home/Logout">Logout</a>
           </li>
      </ul>
 </nav>

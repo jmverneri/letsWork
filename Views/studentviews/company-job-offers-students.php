@@ -22,7 +22,7 @@ if (isset($_SESSION["admin"])) {
                 <div class="container" position="fixed">
 
 
-                    <form action="<?php echo FRONT_ROOT ?>JobOffer/ShowJobsViews" method="POST" enctype="multipart/form-data">
+                    <form action="<?php echo BASE_FOLDER ?>/JobOffer/ShowJobsViews" method="POST" enctype="multipart/form-data">
 
                         <input type="text" name="search" class="form-control form-control-ml" required value="">
 

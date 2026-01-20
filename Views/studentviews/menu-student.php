@@ -20,15 +20,15 @@ Utils::checkNav();
                    
             <h1 p class="text-warning" class="mb-1">You are Welcome <?php echo $this->student->getFirstName();?></h1>
             <h5 class="mb-5"><em>Please choose one of the next action </em></h5>
-            <!--a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?> Student/ShowStudentProfile/" >Profile</a-->    
+            <!--a class="btn btn-warning btn-xl" href="<?php echo BASE_FOLDER ?>/Student/ShowStudentProfile/" >Profile</a-->    
             <?php 
-            echo "<td><a href=" . FRONT_ROOT . "Student/ShowStudentProfile/" . $this->student->getEmail() . ">
+            echo "<td><a href=" . BASE_FOLDER . "Student/ShowStudentProfile/" . $this->student->getEmail() . ">
             <button type='button' class= 'btn btn-info' >Profile</button></a></td>";
             ?>
             <!--no pasa referencia-->
 
-            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>Company/ListCompanies">See Companies</a>
-            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?> JobOffer/ShowJobsViews/">Job Offers List</a>  
+            <a class="btn btn-warning btn-xl" href="<?php echo BASE_FOLDER ?>/Company/ListCompanies">See Companies</a>
+            <a class="btn btn-warning btn-xl" href="<?php echo BASE_FOLDER ?>/JobOffer/ShowJobsViews/">Job Offers List</a>  
             <?php //echo "<a class='btn btn-warning btn-xl' href=" . FRONT_ROOT .  'Home/getStudentByMail/' . $this->student->getEmail();?></a>               
            
     

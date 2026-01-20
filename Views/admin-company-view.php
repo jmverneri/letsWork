@@ -5,7 +5,7 @@ Utils::checkNav();
 ?>
 <main class="py-5">
      <section id="listado" class="mb-5">
-          <form action="<?php echo FRONT_ROOT . "Company/ModifyCompany/" ?>" method="POST" enctype="multipart/form-data">
+          <form action="<?php echo BASE_FOLDER . "/Company/ModifyCompany/" ?>" method="POST" enctype="multipart/form-data">
                <div class="container">
                     <h3 class="mb-3">Ver Empresa</h3>
 

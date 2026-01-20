@@ -73,7 +73,7 @@ class HomeController
         
         // Admin hardcodeado
         if ($email == 'user@hot.com' && $password == '123') {
-            $user = new User($email);
+            $user = new User($email, $password); // ← Ahora SÍ guarda los valores
             $_SESSION['admin'] = $user;
             header("Location: index.php?url=Home/menuAdmin");
             exit();

@@ -1,35 +1,48 @@
 <?php 
-
 namespace Models;
 
-class User{
-
+class User
+{
     private $email;
     private $password;
-
-    public function __construct()
+    
+    /**
+     * Constructor - Acepta parámetros opcionales
+     */
+    public function __construct($email = null, $password = null)
     {
-        
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-    public function setPassword($password)
-    {
+        $this->email = $email;
         $this->password = $password;
-
     }
+    
+    // ══════════════════════════════════════════════════════════
+    // GETTERS
+    // ══════════════════════════════════════════════════════════
+    
     public function getEmail()
     {
         return $this->email;
     }
     
-
+    public function getPassword()
+    {
+        return $this->password;
+    }
+    
+    // ══════════════════════════════════════════════════════════
+    // SETTERS
+    // ══════════════════════════════════════════════════════════
+    
     public function setEmail($email)
     {
         $this->email = $email;
-
+        return $this; // Para permitir chaining: $user->setEmail()->setPassword()
     }
-}?>
+    
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this; // Para permitir chaining
+    }
+}
+?>

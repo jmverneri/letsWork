@@ -8,7 +8,7 @@ require_once(VIEWS_PATH."nav.php");
         <div class="container">
 
             <h2 class="mb-4">Company Registration</h2>
-            <form action='<?php echo FRONT_ROOT ?>UserCompany/userCompanyRegistration' method="POST" class="bg-light-alpha p-5">
+            <form action='<?php echo BASE_FOLDER ?>/UserCompany/userCompanyRegistration' method="POST" class="bg-light-alpha p-5">
 
                 <div class="row">
                     <div class="col-lg-4">
