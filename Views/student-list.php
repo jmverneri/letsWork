@@ -29,8 +29,8 @@ Utils::checkNav();
                          <tbody>
 
                               <?php
-                              if (isset($this->studentList)) {
-                                   foreach ($this->studentList as $student) {
+                              if (isset($students) && !empty($students)) {
+                                   foreach ($students as $student) {
                                         echo "<tr>";
                                         echo  "<td>" . $student->getFileNumber() . "</td>";
                                         echo  "<td>" . $student->getFirstName() . "</td>";

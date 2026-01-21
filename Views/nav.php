@@ -8,7 +8,7 @@
 
                </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo FRONT_ROOT ?>Home/Logout">Back to Login Menu</a>
+               <a class="nav-link" href="<?php echo BASE_FOLDER ?>Home/Logout">Back to Login Menu</a>
           </li>
      </ul>
 </nav>

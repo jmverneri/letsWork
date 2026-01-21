@@ -2,20 +2,20 @@
 
 namespace Controllers;
 
-use DAO\CompanyDAO as CompanyDAO;
-use Models\Company as Company;
-use Utils\Utils as Utils;
+use DAO\ICompanyDAO;
+use Models\Company;
+use Utils\Utils;
+use Config\DAOFactory;
 
 class CompanyController
 {
-    private $company;
-    private $companyDAO;
-    private $companiesList = array();
-
+    private ICompanyDAO $companyDAO;
+    private Company $company;
+    private array $companiesList = [];
 
     public function __construct()
     {
-        $this->companyDAO = new CompanyDAO();
+        $this->companyDAO = DAOFactory::getCompanyDAO();
     }
 
     public function showAddView()

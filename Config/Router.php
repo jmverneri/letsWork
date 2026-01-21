@@ -9,14 +9,17 @@ class Router
     private static $allowedControllers = [
         'Home',
         'UserCompany',
-        'Administrator',
+        'Admin',
         'Career',
         'Company',
         'JobOffer',
         'JobPosition',
         'Student',
-        'Error'
-        // Agrega aquí todos tus controladores válidos
+        'Error',
+        'Admin',
+        'CompanyJobOffer',
+        'StudentJobOffer',
+        'AdminJobOffer'
     ];
 
     public static function Route(Request $request)
@@ -39,7 +42,7 @@ class Router
             self::handleError404("Controlador no encontrado: " . $controllerName);
             return;
         }
-        
+
         // Instanciar el controlador
         $controller = new $controllerClassName;
         

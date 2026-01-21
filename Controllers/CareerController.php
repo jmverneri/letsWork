@@ -1,36 +1,43 @@
 <?php
     namespace Controllers;
 
-    use DAO\CareerDAO as CareerDAO;
-    use Models\Career as Career;
-    use Utils\Utils as Utils;
+    use DAO\ICareerDAO;
+    use Config\DAOFactory;
+    use Models\Career;
+    use Utils\Utils;
 
-    class CareerController{
-        private $careerDAO;
-        private $careerList;
+    class CareerController
+    {
+        private ICareerDAO $careerDAO;
+        private array $careerList = [];
+        private ?Career $career = null;
 
         public function __construct()
         {
-            $this->careerDAO = new CareerDAO();
-            $this->careerList = array();
+            $this->careerDAO = DAOFactory::getCareerDAO();
         }
 
-        public function showSingleCareer($careerId)
+        public function showSingleCareer(int $careerId)
         {
             Utils::checkSession();
-            $this->career = $this->careerDAO->GetCareerById($careerId);
-        
-            require_once(VIEWS_PATH . "student-company-view.php");  ///Modificar
-        
+
+            $this->career = $this->careerDAO->getById($careerId);
+
+            if ($this->career === null) {
+                $message = "Career not found";
+                require_once(VIEWS_PATH . "error.php");
+                return;
+            }
+
+            require_once(VIEWS_PATH . "career-detail.php");
         }
 
         public function showCareerListView()
         {
             Utils::checkSession();
-            $this->careerList = $this->careerDAO->GetAll();
-            
+
+            $this->careerList = $this->careerDAO->getAll();
+
             require_once(VIEWS_PATH . "career-list.php");
         }
-
     }
-?>

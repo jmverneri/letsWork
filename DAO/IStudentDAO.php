@@ -1,12 +1,32 @@
 <?php
     namespace DAO;
 
-    use Models\Student as Student;
+    use Models\Student;
 
     interface IStudentDAO
     {
-        function getAll();
-        function getStudentByMail($email);
-        
+        /**
+         * @return Student[]
+         */
+        public function getAll();
+
+        /**
+         * @param int $id
+         * @return Student|null
+         */
+        public function getById($id);
+
+        /**
+         * @param string $email
+         * @return Student|null
+         */
+        public function getByEmail($email);
+
+        /**
+         * @param Student $student
+         * @return int filas afectadas
+         */
+        public function add(Student $student);
     }
+
 ?>

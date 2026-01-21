@@ -1,13 +1,17 @@
 <?php
     namespace DAO;
 
-    use Models\Company as Company;
+    use Models\Company;
 
     interface ICompanyDAO
     {
-        function AddCompany(Company $company);
-        function update(Company $company);
-        public function GetAll();
+        public function add(Company $company): void;
 
+        public function getAll(): array;
+
+        public function getById(int $id): ?Company;
+
+        public function update(Company $company): void;
+
+        public function delete(int $id): void;
     }
-?>

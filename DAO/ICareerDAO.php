@@ -2,14 +2,13 @@
 
     namespace DAO;
 
-    use Models\Career as Career;
+    use Models\Career;
 
-    interface ICareerDAO 
+    interface ICareerDAO
     {
-        function GetAll();  
-        function GetAllActive(); 
-        function Delete(Career $career);
-        public function GetAllWhitInactives();
+        public function getAll(): array;
+        public function getById(int $careerId): ? Career;
+        public function add(Career $career): bool;
     }
 
 ?> 
