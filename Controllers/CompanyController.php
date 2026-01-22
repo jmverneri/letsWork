@@ -56,7 +56,7 @@ class CompanyController
     {
         Utils::checkSession();
 
-        $search = $_POST['search'] ?? "";
+        $search = $_GET['search'] ?? "";
 
         if ($search === "") {
             $this->companiesList = $this->companyDAO->getAll();
@@ -74,15 +74,6 @@ class CompanyController
         }
 
         require_once(ADMIN_VIEWS . "company-manager.php");
-    }
-
-
-
-    public function listCompanies()
-    {
-        Utils::checkSession();
-        $this->companiesList = $this->companyDAO->GetAll();
-        $this->ShowCompaniesViews();
     }
 
     public function addCompany($name, $yearFoundation, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)

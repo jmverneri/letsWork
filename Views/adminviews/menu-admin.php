@@ -25,7 +25,7 @@ Utils::checkNav();
 <a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>AdminJobOffer/listExpired">Expired Job Offers</a>
 <a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>Admin/showStudentList">Students List</a>
 <a class="btn btn-primary btn-xl" href="<?php echo FRONT_ROOT ?>AdminJobOffer/listJobOffers">Job Offers List</a>
-<a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>Career/showCareerListView">Careers List</a>
+<a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>Career/showCareersView">Careers List</a>
 
 </div>
 </section>

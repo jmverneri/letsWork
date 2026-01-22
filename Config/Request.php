@@ -39,12 +39,20 @@ class Request
         $this->urlParams = $parts;
     }
 
-    private function toPascalCase(string $string): string
+    private function toPascalCase($string)
     {
+        // Si ya viene en CamelCase, NO tocarlo
+        if (preg_match('/[A-Z]/', $string)) {
+            return $string;
+        }
+
         $string = str_replace(['-', '_'], ' ', $string);
         $string = ucwords(strtolower($string));
-        return str_replace(' ', '', $string);
+        $string = str_replace(' ', '', $string);
+
+        return $string;
     }
+
 
     /* =======================
      * QUERY PARAMS (?a=b)

@@ -7,7 +7,7 @@
 
 
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Company/ListCompanies">List Companies</a>
+               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Company/showCompaniesViews">List Companies</a>
           </li>
           <li class="nav-item">
                <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Admin/showStudentList">List Students</a>

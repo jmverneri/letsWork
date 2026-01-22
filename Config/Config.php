@@ -4,7 +4,7 @@ namespace Config;
 define("ROOT", dirname(__DIR__) . "/");
 //Path to your project's root folder
 define('BASE_FOLDER', 'TPLab4');
-define("FRONT_ROOT", "index.php?url=");
+define("FRONT_ROOT", "/index.php?url=");
 define('DEBUG', true); // Cambiar a false en producción
 
 // RUTAS RELATIVAS (para includes PHP)

@@ -62,15 +62,18 @@
             require_once(STUDENT_VIEWS . "menu-student.php");
         }
     
-        public function login($email, $password)
+        public function login($data)
         {
-                // Validar campos vacíos
+            $email = $data['email'] ?? '';
+            $password = $data['password'] ?? '';
+
+            // Validar campos vacíos
             if (empty($email) || empty($password)) {
                 $_SESSION['login_error'] = "Por favor, complete todos los campos.";
                 header("Location: index.php?url=Home/index");
                 exit();
             }
-            
+
             // Admin hardcodeado
             if ($email == 'user@hot.com' && $password == '123') {
                 $user = new User($email, $password, User::ROLE_ADMIN);
@@ -79,8 +82,9 @@
                 header("Location: index.php?url=Home/menuAdmin");
                 exit(); 
             }
+
+            // Estudiante
             /*
-            // Buscar estudiante
             $this->student = $this->studentDAO->getLoginStudent($email);
             
             if ($this->student != null) {
@@ -88,37 +92,23 @@
                     $this->career = $this->careerDAO->GetCareerById($this->student->getCareerId());
                     $_SESSION['student'] = $this->student;
                     session_write_close();
-                    ?>
-                    <!DOCTYPE html>
-                    <html><head>
-                    <script>window.location.href='index.php?url=Home/menuStudent';</script>
-                    </head></html>
-                    <?php
+                    echo "<script>window.location.href='index.php?url=Home/menuStudent';</script>";
                     exit();
                 }
             }
-            
-            // Buscar empresa
+
+            // Empresa
             $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
             
             if ($this->userCompany != null) {
                 if ($this->userCompany->getEmail() == $email && $password == $this->userCompany->getPassword()) {
                     $_SESSION['userCompany'] = $this->userCompany;
                     session_write_close();
-                    ?>
-                    <!DOCTYPE html>
-                    <html><head>
-                    <script>window.location.href='index.php?url=UserCompany/profile';</script>
-                    </head></html>
-                    <?php
+                    echo "<script>window.location.href='index.php?url=UserCompany/profile';</script>";
                     exit();
                 }
-            }*/
-            
-                // Login falló
-            $_SESSION['login_error'] = "Email o contraseña incorrectos.";
-            header("Location: index.php?url=Home/index");
-            exit();
+            }
+            */
         }
     
         public function redirectAdm()

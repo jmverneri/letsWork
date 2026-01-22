@@ -10,7 +10,7 @@
     {
         private ICareerDAO $careerDAO;
         private array $careerList = [];
-        private ?Career $career = null;
+        private Career $career;
 
         public function __construct()
         {
@@ -32,11 +32,26 @@
             require_once(VIEWS_PATH . "career-detail.php");
         }
 
-        public function showCareerListView()
+        public function showCareersView()
         {
             Utils::checkSession();
 
-            $this->careerList = $this->careerDAO->getAll();
+            $search = $_GET['search'] ?? "";
+
+            if ($search === "") {
+                $this->careerList = $this->careerDAO->getAll();
+            } else {
+                $search = strtolower($search);
+                $filteredCarriers = [];
+
+                foreach ($this->careerDAO->getAll() as $career) {
+                    if (str_starts_with(strtolower($career->getDescription()), $search)) {
+                        $filteredCarriers[] = $career;
+                    }
+                }
+
+                $this->careerList = $filteredCarriers;
+            }
 
             require_once(VIEWS_PATH . "career-list.php");
         }

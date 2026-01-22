@@ -36,8 +36,9 @@ if (isset($controlScript)) {
             <h2 class="mb-4">Companies List</h2>
             <div class="container" style="width: 5500; height: 400px; overflow-y: scroll;">
                 <div class="container" position="fixed">
-                    <form action="<?= FRONT_ROOT ?>Company/ShowCompaniesViews" method="POST">
-                        <input type="text" name="search" class="form-control" required>
+                    <form action="index.php" method="GET">
+                        <input type="hidden" name="url" value="Company/showCompaniesViews">
+                        <input type="text" name="search" class="form-control">
                         <button type="submit">Search</button>
                     </form>
                 </div>
