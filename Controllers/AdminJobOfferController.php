@@ -4,6 +4,7 @@
     use Services\JobOfferService;
     use Models\JobOffer;
     use Utils\Utils;
+    use Config\DAOFactory;
 
     class AdminJobOfferController
     {
@@ -15,9 +16,20 @@
             $this->jobOfferService = new JobOfferService();
         }
 
-        public function list()
+        public function listJobOffers()
         {
-            $jobOffers = $this->jobOfferService->getAll();
+            $jobOfferList = $this->jobOfferService->getAll();
+
+            $careerDAO = DAOFactory::getCareerDAO();
+            $companyDAO = DAOFactory::getCompanyDAO();
+
+            $careerList = $careerDAO->getAll();
+            $companiesList = $companyDAO->getAll();
+
+            // Defensa
+            $careerList = $careerList ?? [];
+            $companiesList = $companiesList ?? [];
+
             require_once(ADMIN_VIEWS . "joboffer-list.php");
         }
 
@@ -56,5 +68,18 @@
         {
             $this->jobOfferService->delete($id);
             $this->list();
+        }
+
+        public function listExpired()
+        {
+            $jobOfferList = $this->jobOfferService->getExpired();
+
+            $careerDAO = DAOFactory::getCareerDAO();
+            $companyDAO = DAOFactory::getCompanyDAO();
+
+            $careerList = $careerDAO->getAll() ?? [];
+            $companiesList = $companyDAO->getAll() ?? [];
+
+            require_once(ADMIN_VIEWS . "expired-job-offers.php");
         }
     }

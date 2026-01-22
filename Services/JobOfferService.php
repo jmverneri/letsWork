@@ -57,4 +57,10 @@
         {
             $this->jobOfferDAO->delete($jobOfferId);
         }
+
+        public function getExpired(): array
+        {
+            return $this->jobOfferDAO->getByStatus('expired');
+        }
+
     }

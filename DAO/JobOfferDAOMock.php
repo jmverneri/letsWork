@@ -25,13 +25,13 @@
             $this->jobOfferList[] = $job1;
         }
 
-        public function add(JobOffer $jobOffer)
+        public function add(JobOffer $jobOffer): void
         {
             $jobOffer->setJobOfferId(count($this->jobOfferList) + 1);
             $this->jobOfferList[] = $jobOffer;
         }
 
-        public function update(JobOffer $jobOffer)
+        public function update(JobOffer $jobOffer): void
         {
             foreach ($this->jobOfferList as $key => $value) {
                 if ($value->getJobOfferId() == $jobOffer->getJobOfferId()) {
@@ -41,7 +41,7 @@
             }
         }
 
-        public function delete(int $jobOfferId)
+        public function delete(int $jobOfferId): void
         {
             $this->jobOfferList = array_filter(
                 $this->jobOfferList,
@@ -49,7 +49,7 @@
             );
         }
 
-        public function getById(int $jobOfferId)
+        public function getById(int $jobOfferId): ?JobOffer
         {
             foreach ($this->jobOfferList as $job) {
                 if ($job->getJobOfferId() == $jobOfferId) {
@@ -59,12 +59,12 @@
             return null;
         }
 
-        public function getAll()
+        public function getAll(): array
         {
             return $this->jobOfferList;
         }
 
-        public function getByCompany(int $companyId)
+        public function getByCompanyId(int $companyId): array
         {
             return array_filter(
                 $this->jobOfferList,
@@ -72,7 +72,7 @@
             );
         }
 
-        public function getByCareer(int $careerId)
+        public function getByCareerId(int $careerId): array
         {
             return array_filter(
                 $this->jobOfferList,
@@ -80,15 +80,20 @@
             );
         }
 
-        public function getPublished()
+        public function getByStatus(string $status): array
         {
-            return array_filter(
-                $this->jobOfferList,
-                fn($job) => $job->getStatus() === 'published'
-            );
+            $result = [];
+
+            foreach ($this->jobOfferList as $jobOffer) {
+                if ($jobOffer->getStatus() === $status) {
+                    $result[] = $jobOffer;
+                }
+            }
+
+            return $result;
         }
 
-        public function getActivePublished()
+        public function getActivePublished(): array
         {
             $today = date('Y-m-d');
 

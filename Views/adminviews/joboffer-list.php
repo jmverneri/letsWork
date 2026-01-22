@@ -41,22 +41,22 @@ Utils::checkNav();
                     <tbody>
                         <?php
 
-                        if ($this->jobOfferList != null) {
-                            foreach ($this->jobOfferList as $jobOffer) {
+                        if (!empty($jobOfferList)) {
+                            foreach ($jobOfferList as $jobOffer) {
 
                                 echo "<tr>";
-                                echo  "<td>" . $jobOffer->getName() . "</td>";
-                                echo  "<td>" . $jobOffer->getStartDay() . "</td>";
+                                echo  "<td>" . $jobOffer->getTitle() . "</td>";
+                                echo  "<td>" . $jobOffer->getStartDate() . "</td>";
                                 echo  "<td>" . $jobOffer->getDeadline() . "</td>";
                                 echo  "<td>" . $jobOffer->getSalary() . "</td>";
                                 echo  "<td>" . $jobOffer->getDescription() . "</td>";
 
-                                foreach ($this->careerList as $career) {
+                                   foreach ($careerList as $career) {
                                     if ($career->getCareerId() == $jobOffer->getCareerId()) {
                                         echo  "<td>" . $career->getDescription() . "</td>";
                                     }
                                 }
-                                foreach ($this->companiesList as $company) {
+                                foreach ($companiesList as $company) {
                                     if ($company->getCompanyId() == $jobOffer->getCompanyId()) {
                                         echo  "<td>" . $company->getName() . "</td>";
                                     }

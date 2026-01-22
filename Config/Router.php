@@ -1,141 +1,107 @@
-<?php 
+<?php
 namespace Config;
-
-use Config\Request as Request;
 
 class Router
 {
-    // Controladores permitidos (whitelist de seguridad)
-    private static $allowedControllers = [
+    private static array $allowedControllers = [
         'Home',
-        'UserCompany',
         'Admin',
-        'Career',
         'Company',
+        'Career',
         'JobOffer',
-        'JobPosition',
-        'Student',
-        'Error',
-        'Admin',
+        'AdminJobOffer',
         'CompanyJobOffer',
         'StudentJobOffer',
-        'AdminJobOffer'
+        'Student',
+        'Error'
     ];
 
-    public static function Route(Request $request)
+    public static function Route(Request $request): void
     {
-        $controllerName = $request->getController() . 'Controller';
-        $methodName = $request->getMethod();
-        $methodParameters = $request->getParameters();
-        
-        // Validar que el controlador esté en la whitelist
-        if (!in_array($request->getController(), self::$allowedControllers)) {
-            self::handleError404("Controlador no permitido: " . $request->getController());
-            return;
-        }
-        
-        // Construir nombre completo de la clase
-        $controllerClassName = "Controllers\\" . $controllerName;
-        
-        // Verificar que la clase del controlador exista
-        if (!class_exists($controllerClassName)) {
-            self::handleError404("Controlador no encontrado: " . $controllerName);
+        $controllerName = $request->getController();
+        $methodName     = $request->getMethod();
+
+        /* =======================
+         * Security: whitelist
+         * ======================= */
+        if (!in_array($controllerName, self::$allowedControllers)) {
+            self::error404("Controller no permitido");
             return;
         }
 
-        // Instanciar el controlador
-        $controller = new $controllerClassName;
-        
-        // Verificar que el método exista
-        if (!method_exists($controller, $methodName)) {
-            self::handleError404("Método no encontrado: " . $methodName . " en " . $controllerName);
+        $controllerClass = "Controllers\\{$controllerName}Controller";
+
+        if (!class_exists($controllerClass)) {
+            self::error404("Controller no encontrado");
             return;
         }
-        
-        // Verificar que el método sea público (seguridad)
+
+        $controller = new $controllerClass;
+
+        if (!method_exists($controller, $methodName)) {
+            self::error404("Método no encontrado");
+            return;
+        }
+
         $reflection = new \ReflectionMethod($controller, $methodName);
         if (!$reflection->isPublic()) {
-            self::handleError404("Método no accesible: " . $methodName);
+            self::error404("Método no accesible");
             return;
         }
-        
-        // Ejecutar el método con los parámetros
+
+        /* =======================
+         * Parameters resolution
+         * ======================= */
+        $params = [];
+
+        // 1️⃣ URL params (ordenados)
+        if (!empty($request->getUrlParams())) {
+            $params = array_values($request->getUrlParams());
+        }
+
+        // 2️⃣ GET params (como array)
+        if (!empty($request->getQueryParams())) {
+            $params[] = $request->getQueryParams();
+        }
+
+        // 3️⃣ POST / BODY params
+        if (!empty($request->getBodyParams())) {
+            $params[] = $request->getBodyParams();
+        }
+
+        /* =======================
+         * Execute
+         * ======================= */
         try {
-            call_user_func_array([$controller, $methodName], array_values($methodParameters));
-        } catch (\Exception $e) {
-            self::handleError500($e->getMessage());
+            call_user_func_array([$controller, $methodName], $params);
+        } catch (\Throwable $e) {
+            self::error500($e);
         }
     }
-    
-    /**
-     * Maneja errores 404
-     */
-    private static function handleError404($message = "Página no encontrada")
+
+    /* =======================
+     * Errors
+     * ======================= */
+    private static function error404(string $message): void
     {
         http_response_code(404);
-        
-        // Si tienes un ErrorController, úsalo
+
         if (class_exists("Controllers\\ErrorController")) {
-            $errorController = new \Controllers\ErrorController();
-            if (method_exists($errorController, 'notFound')) {
-                $errorController->notFound($message);
-                return;
-            }
+            (new \Controllers\ErrorController())->notFound($message);
+            return;
         }
-        
-        // Fallback: mostrar error simple
-        echo "<h1>404 - Página no encontrada</h1>";
-        echo "<p>" . htmlspecialchars($message) . "</p>";
-        
-        // En desarrollo, mostrar más info
-        if (defined('DEBUG') && DEBUG === true) {
-            echo "<pre>Detalles: " . htmlspecialchars($message) . "</pre>";
-        }
+
+        echo "<h1>404</h1><p>$message</p>";
     }
-    
-    /**
-     * Maneja errores 500
-     */
-    private static function handleError500($message = "Error interno del servidor")
+
+    private static function error500(\Throwable $e): void
     {
         http_response_code(500);
-        
-        // Si tienes un ErrorController, úsalo
-        if (class_exists("Controllers\\ErrorController")) {
-            $errorController = new \Controllers\ErrorController();
-            if (method_exists($errorController, 'serverError')) {
-                $errorController->serverError($message);
-                return;
-            }
-        }
-        
-        // Fallback: mostrar error simple
-        echo "<h1>500 - Error del servidor</h1>";
-        
-        // Solo mostrar detalles en desarrollo
+
         if (defined('DEBUG') && DEBUG === true) {
-            echo "<pre>Error: " . htmlspecialchars($message) . "</pre>";
+            echo "<pre>{$e}</pre>";
         } else {
-            echo "<p>Ocurrió un error. Por favor, inténtalo más tarde.</p>";
+            echo "<h1>500</h1><p>Error interno</p>";
         }
-    }
-    
-    /**
-     * Agrega un controlador a la whitelist
-     */
-    public static function addAllowedController($controllerName)
-    {
-        if (!in_array($controllerName, self::$allowedControllers)) {
-            self::$allowedControllers[] = $controllerName;
-        }
-    }
-    
-    /**
-     * Obtiene la lista de controladores permitidos
-     */
-    public static function getAllowedControllers()
-    {
-        return self::$allowedControllers;
     }
 }
-?>

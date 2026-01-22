@@ -52,31 +52,31 @@ class CompanyController
         
     }
 
-    public function showCompaniesViews($search = "")
+    public function showCompaniesViews()
     {
-        if ($search == "") 
-        {
-            Utils::checkSession();
-            $this->companiesList = $this->companyDAO->GetAll();
-              
-            require_once(ADMIN_VIEWS. "company-manager.php");
-        } 
-        else 
-        {
-            $search = strtolower($search);
-            $filteredCompanies = array();
-            foreach ($this->companyDAO->getAll() as $company) 
-            {
-                $companyName = strtolower($company->getName());
+        Utils::checkSession();
 
-                if (Utils::strStartsWith($companyName, $search)) {
-                    array_push($filteredCompanies, $company);
+        $search = $_POST['search'] ?? "";
+
+        if ($search === "") {
+            $this->companiesList = $this->companyDAO->getAll();
+        } else {
+            $search = strtolower($search);
+            $filteredCompanies = [];
+
+            foreach ($this->companyDAO->getAll() as $company) {
+                if (str_starts_with(strtolower($company->getName()), $search)) {
+                    $filteredCompanies[] = $company;
                 }
             }
+
             $this->companiesList = $filteredCompanies;
-            require_once(ADMIN_VIEWS . "company-manager.php");
         }
+
+        require_once(ADMIN_VIEWS . "company-manager.php");
     }
+
+
 
     public function listCompanies()
     {

@@ -44,4 +44,5 @@
          * Caso típico para estudiantes
          */
         public function getActivePublished(): array;
+
     }

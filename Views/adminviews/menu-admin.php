@@ -22,9 +22,9 @@ Utils::checkNav();
 <a class="btn btn-success btn-x2" href="<?php echo FRONT_ROOT ?>Company/ShowCompaniesViews">Companies List</a>
 <!--<a class="btn btn-primary btn-xl" href="#">Lista de Propuestas</a>-->
 <!--<a class="btn btn-info btn-xl" href="index.php?url=JobOffer/RedirectAddJobForm">Add Job Offer</a>-->
-<a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>JobOffer/finishedJobOffers">Expired Job Offers</a>
+<a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>AdminJobOffer/listExpired">Expired Job Offers</a>
 <a class="btn btn-info btn-xl" href="<?php echo FRONT_ROOT ?>Admin/showStudentList">Students List</a>
-<a class="btn btn-primary btn-xl" href="<?php echo FRONT_ROOT ?>AdminJobOffer/list">Job Offers List</a>
+<a class="btn btn-primary btn-xl" href="<?php echo FRONT_ROOT ?>AdminJobOffer/listJobOffers">Job Offers List</a>
 <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>Career/showCareerListView">Careers List</a>
 
 </div>

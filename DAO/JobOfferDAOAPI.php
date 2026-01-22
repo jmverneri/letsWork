@@ -7,17 +7,17 @@
     {
         private string $apiUrl = "https://api.example.com/joboffers";
 
-        public function add(JobOffer $jobOffer)
+        public function add(JobOffer $jobOffer): void
         {
             // POST
         }
 
-        public function update(JobOffer $jobOffer)
+        public function update(JobOffer $jobOffer): void
         {
             // PUT
         }
 
-        public function delete(int $jobOfferId)
+        public function delete(int $jobOfferId): void
         {
             // DELETE
         }

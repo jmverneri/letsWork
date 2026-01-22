@@ -13,7 +13,7 @@ class JobOfferDAOMySQL implements IJobOfferDAO
         $this->connection = Connection::getInstance();
     }
 
-    public function add(JobOffer $jobOffer)
+    public function add(JobOffer $jobOffer): void
     {
         $query = "
             INSERT INTO job_offers 
@@ -34,7 +34,7 @@ class JobOfferDAOMySQL implements IJobOfferDAO
         ]);
     }
 
-    public function update(JobOffer $jobOffer)
+    public function update(JobOffer $jobOffer): void
     {
         $query = "
             UPDATE job_offers SET
@@ -56,7 +56,7 @@ class JobOfferDAOMySQL implements IJobOfferDAO
         ]);
     }
 
-    public function delete(int $jobOfferId)
+    public function delete(int $jobOfferId): void
     {
         $query = "DELETE FROM job_offers WHERE job_offer_id = :id";
         $this->connection->executeNonQuery($query, ["id" => $jobOfferId]);
