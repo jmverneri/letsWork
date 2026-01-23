@@ -1,13 +1,11 @@
 <?php
+$user = $_SESSION['loggedUser'] ?? null;
 
-if (isset($_SESSION["admin"])) {
+if ($user && $user->isAdmin()) {
     require_once(ADMIN_VIEWS . 'navcompany.php');
-} else {
-
+} elseif ($user && $user->isStudent()) {
     require_once(STUDENT_VIEWS . 'nav.php');
 }
-
-
 ?>
 
 <main class="py-5">
@@ -44,24 +42,21 @@ if (isset($_SESSION["admin"])) {
                     </thead>
                     <tbody>
                         <?php
-
-
-                        if ($this->jobOfferList != null) {
-                            foreach ($this->jobOfferList as $jobOffer) {
-                                if (strtotime($jobOffer->getDeadLine()) > strtotime(date("Y-m-d H:i:00", time()))) {
+                        if ($jobOffers != null) {
+                            foreach ($jobOffers as $jobOffer) {
                                     echo "<tr>";
-                                    echo  "<td>" . $jobOffer->getName() . "</td>";
-                                    echo  "<td>" . $jobOffer->getStartDay() . "</td>";
+                                    //echo  "<td>" . $jobOffer->getName() . "</td>";
+                                    echo  "<td>" . $jobOffer->getStartDate() . "</td>";
                                     echo  "<td>" . $jobOffer->getDeadline() . "</td>";
                                     echo  "<td>" . $jobOffer->getSalary() . "</td>";
                                     echo  "<td>" . $jobOffer->getDescription() . "</td>";
 
-                                    foreach ($this->careerList as $career) {
+                                    foreach ($careerList as $career) {
                                         if ($career->getCareerId() == $jobOffer->getCareerId()) {
                                             echo  "<td>" . $career->getDescription() . "</td>";
                                         }
                                     }
-                                    foreach ($this->companiesList as $company) {
+                                    foreach ($companiesList as $company) {
                                         if ($company->getCompanyId() == $jobOffer->getCompanyId()) {
                                             echo  "<td>" . $company->getName() . "</td>";
                                         }
@@ -77,7 +72,7 @@ if (isset($_SESSION["admin"])) {
                                     }
                                 }
                             }
-                        } else {
+                        else {
                             echo "The job Offers list is empty";
                         }
                         ?>

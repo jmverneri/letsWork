@@ -16,7 +16,7 @@
                 ->setDescription("PHP Backend Developer")
                 ->setSalary(300000)
                 ->setStartDate("2025-03-01")
-                ->setDeadline("2025-04-30")
+                ->setDeadline("2026-04-30")
                 ->setStatus("published")
                 ->setCompanyId(1)
                 ->setCareerId(2)
@@ -93,7 +93,7 @@
             return $result;
         }
 
-        public function getActivePublished(): array
+        public function getActive(): array
         {
             $today = date('Y-m-d');
 

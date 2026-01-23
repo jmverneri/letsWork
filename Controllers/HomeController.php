@@ -2,33 +2,28 @@
 
     namespace Controllers;
 
-        use Models\User as User;
-        use Controllers\StudentController as StudentController;
-        use Models\Student as Student;
-        use DAO\StudentDAOMock as StudentDAOMock;
-        use DAO\careerDAOMock as careerDAOMock;
-        use Models\Career as Career;
-        use Models\UserCompany as UserCompany;
-        use DAO\UserCompanyDAO as UserCompanyDAO;
+        use Models\User;
+        use Models\Student;
+        use Models\UserCompany;
+        use Models\Career;
+
+        use DAO\IStudentDAO;
+        use DAO\ICareerDAO;
+
+        use Config\DAOFactory;
+        
+        //use DAO\UserCompanyDAO as UserCompanyDAO;
 
     class HomeController
 
     {
-        private $studentDAOMock;
-        private $student;
-        private $careerDAOMock;
-        private $career;
-        private $userCompany;
-        private $userCompanyDAO;
+        private IStudentDAO $studentDAO;
+        private ICareerDAO $careerDAO;
 
         public function __construct()
         {
-            $this->studentDAOMock = new StudentDAOMock;    
-            $this->student = new Student();
-            $this->careerDAOMock = new careerDAOMock;
-            $this->career = new Career();
-            $this->userCompany = new UserCompany();
-            $this->userCompanyDAO = new UserCompanyDAO();
+            $this->studentDAO = DAOFactory::getStudentDAO();    
+            $this->careerDAO = DAOFactory::getCareerDAO();
         }
 
         public function index($message = "")
@@ -54,7 +49,7 @@
 
         public function menuStudent()
         {
-            if (!isset($_SESSION['student'])) {
+            if (!isset($_SESSION['loggedUser']) || !$_SESSION['loggedUser']->isStudent()) {
                 header("Location: " . FRONT_ROOT . "Home/index");
                 exit();
             }
@@ -67,48 +62,53 @@
             $email = $data['email'] ?? '';
             $password = $data['password'] ?? '';
 
-            // Validar campos vacíos
             if (empty($email) || empty($password)) {
                 $_SESSION['login_error'] = "Por favor, complete todos los campos.";
-                header("Location: index.php?url=Home/index");
+                header("Location: " . FRONT_ROOT . "Home/index");
                 exit();
             }
 
-            // Admin hardcodeado
-            if ($email == 'user@hot.com' && $password == '123') {
-                $user = new User($email, $password, User::ROLE_ADMIN);
-                $_SESSION['loggedUser'] = $user; // Un solo key para todos
-                
-                header("Location: index.php?url=Home/menuAdmin");
-                exit(); 
+            // Admin
+            if ($email === 'user@hot.com' && $password === '123') {
+                $_SESSION['loggedUser'] = new User($email, null, User::ROLE_ADMIN);
+                header("Location: " . FRONT_ROOT . "Home/menuAdmin");
+                exit();
             }
 
-            // Estudiante
+           // Student login
+            $student = $this->studentDAO->getByEmail($email);
+
+            if ($student && $student->getPassword() === $password) {
+
+                $_SESSION['loggedUser'] = new User(
+                    $student->getEmail(),
+                    null,
+                    User::ROLE_STUDENT
+                );
+
+                $_SESSION['student'] = $student;
+
+                header("Location: " . FRONT_ROOT . "Home/menuStudent");
+                exit();
+            }
             /*
-            $this->student = $this->studentDAO->getLoginStudent($email);
-            
-            if ($this->student != null) {
-                if ($this->student->getEmail() == $email && $password == $this->student->getPassword()) {
-                    $this->career = $this->careerDAO->GetCareerById($this->student->getCareerId());
-                    $_SESSION['student'] = $this->student;
-                    session_write_close();
-                    echo "<script>window.location.href='index.php?url=Home/menuStudent';</script>";
-                    exit();
-                }
-            }
-
             // Empresa
-            $this->userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
-            
-            if ($this->userCompany != null) {
-                if ($this->userCompany->getEmail() == $email && $password == $this->userCompany->getPassword()) {
-                    $_SESSION['userCompany'] = $this->userCompany;
-                    session_write_close();
-                    echo "<script>window.location.href='index.php?url=UserCompany/profile';</script>";
-                    exit();
-                }
+            $userCompany = $this->userCompanyDAO->getUserCompanyByEmail($email);
+
+            if ($userCompany !== null && $userCompany->getPassword() === $password) {
+                
+                $user = new User($email, User::ROLE_COMPANY);
+                $user->setReferenceId($userCompany->getId()); // ID real de la empresa
+
+                $_SESSION['loggedUser'] = $user;
+
+                header("Location: " . FRONT_ROOT . "UserCompany/profile");
+                exit();
             }
             */
+            $_SESSION['login_error'] = "Credenciales inválidas";
+            header("Location: " . FRONT_ROOT . "Home/index");
+            exit();
         }
     
         public function redirectAdm()

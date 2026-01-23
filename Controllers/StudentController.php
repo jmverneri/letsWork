@@ -19,18 +19,12 @@
         private array $studentList = [];
         private array $careerList = [];
 
-        private Student $student;
-        private Career $career;
-
         public function __construct()
         {
             
             $this->studentDAO = DAOFactory::getStudentDAO();
             //$this->companyDAO = DAOFactory::getCompanyDAO();
-            //$this->careerDAO  = DAOFactory::getCareerDAO();
-
-            $this->student = new Student();
-            $this->career  = new Career();
+            $this->careerDAO  = DAOFactory::getCareerDAO();
         }
 
         public function showStudentRegistration()
@@ -38,7 +32,7 @@
             require_once(VIEWS_PATH . "registration.php");
         }
 
-        public function showStudentProfile($email)
+        public function showStudentProfileByMail($email)
         {
             $this->getStudentByMail($email);
         }
@@ -48,25 +42,26 @@
             Utils::checkSession();
 
             $this->studentList = $this->studentDAO->getAll();
-            //$this->careerList  = $this->careerDAO->getAll();
+            $this->careerList  = $this->careerDAO->getAll();
 
             require_once(VIEWS_PATH . "student-list.php");
         }
 
-        public function getStudentByMail($email)
+        public function showStudentProfile()
         {
-            if ($email !== null) {
+            Utils::checkStudentSession();
 
-                $this->student = $this->studentDAO->getLoginStudent($email);
-                $this->career  = $this->careerDAO->getCareerStudent($this->student);
+            $user = $_SESSION['loggedUser'];
+            $student = $this->studentDAO->getByEmail($user->getEmail());
 
-                $_SESSION['student'] = $this->student;
-
-                require_once(STUDENT_VIEWS . "student-profile.php");
-            } else {
-                $message = "This mail doesn't exist";
-                require_once(VIEWS_PATH . "registration.php");
+            if (!$student) {
+                header("Location: " . FRONT_ROOT . "Home/index");
+                exit();
             }
+
+            $career = $this->careerDAO->getById($student->getCareerId());
+
+            require_once(STUDENT_VIEWS . "student-profile.php");
         }
 
         public function studentValidation($email)

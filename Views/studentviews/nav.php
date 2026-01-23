@@ -5,13 +5,13 @@
      </span>
      <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/company/ListCompanies">List Companies</a>
+               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Company/showCompaniesViews">List Companies</a>
           </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Home/menuStudent">Student Menu</a>
+               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Home/menuStudent">Student Menu</a>
           </li>  
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Home/logout">Logout</a>
+               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Home/logout">Logout</a>
           </li>  
      </ul>
 </nav>

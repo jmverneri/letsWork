@@ -21,14 +21,14 @@ Utils::checkNav();
                     <tbody>
 
                          <?php
-                         if (isset($this->student)) {
-                              echo  "<td>" . $this->student->getFileNumber() . "</td>";
-                              echo  "<td>" . $this->student->getFirstName() . "</td>";
-                              echo  "<td>" . $this->student->getLastName() . "</td>";
-                              echo  "<td>" . $this->student->getDni() . "</td>";
-                              echo  "<td>" . $this->student->getBirthDate() . "</td>";
-                              echo  "<td>" . $this->student->getEmail() . "</td>";
-                              echo  "<td>" . $this->student->getPhoneNumber() . "</tdv>";
+                         if (isset($student)) {
+                              echo  "<td>" . $student->getFileNumber() . "</td>";
+                              echo  "<td>" . $student->getFirstName() . "</td>";
+                              echo  "<td>" . $student->getLastName() . "</td>";
+                              echo  "<td>" . $student->getDni() . "</td>";
+                              echo  "<td>" . $student->getBirthDate() . "</td>";
+                              echo  "<td>" . $student->getEmail() . "</td>";
+                              echo  "<td>" . $student->getPhoneNumber() . "</tdv>";
                          }
                          ?>
                     </tbody>
@@ -40,8 +40,8 @@ Utils::checkNav();
                          <th>Career</th>
                     </thead>
                <tbody>
-                    <?php if ($this->career != null) {
-                         echo  "<td>" . $this->career->getDescription() . "</td>";
+                    <?php if ($career != null) {
+                         echo  "<td>" . $career->getDescription() . "</td>";
                     } ?>
                </tbody>
                </tbody>

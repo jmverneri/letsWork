@@ -43,6 +43,6 @@
          * Ofertas publicadas y vigentes (deadline >= hoy)
          * Caso típico para estudiantes
          */
-        public function getActivePublished(): array;
+        public function getActive(): array;
 
     }

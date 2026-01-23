@@ -1,9 +1,6 @@
 <?php
-
 use Utils\Utils;
-
 Utils::checkNav();
-
 ?>
 
 <main class="py-5">
@@ -30,8 +27,6 @@ Utils::checkNav();
                         <th class="header" scope="col" position="sticky">Career</th>
                         <th class="header" scope="col" position="sticky">Company</th>
                         <th class="header" scope="col" position="sticky"></th>
-
-
                     </thead>
                     <tbody>
                         <?php

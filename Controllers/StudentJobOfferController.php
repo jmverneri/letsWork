@@ -4,25 +4,48 @@
     use Services\JobOfferService;
     use Utils\Utils;
 
+    use DAO\ICompanyDAO;
+    use DAO\ICareerDAO;
+
+    use Config\DAOFactory;
+
     class StudentJobOfferController
     {
         private JobOfferService $jobOfferService;
+        private ICompanyDAO $companyDAO;
+        private ICareerDAO $careerDAO;
 
         public function __construct()
         {
             Utils::checkStudentSession();
             $this->jobOfferService = new JobOfferService();
+            $this->companyDAO = DAOFactory::getCompanyDAO();
+            $this->careerDAO  = DAOFactory::getCareerDAO();
         }
 
-        public function list()
+        public function listJobOffers()
         {
             $jobOffers = $this->jobOfferService->getActive();
-            require_once(STUDENT_VIEWS . "joboffer-list.php");
+            $careerList   = $this->careerDAO->getAll();
+            $companiesList = $this->companyDAO->getAll();
+            require_once(STUDENT_VIEWS . "job-offers-list.php");
         }
 
         public function view($id)
         {
             $jobOffer = $this->jobOfferService->getById($id);
             require_once(STUDENT_VIEWS . "joboffer-view.php");
+        }
+
+        public function addStudentToAJobOffer($jobOfferId)
+        {
+            Utils::checkStudentSession();
+
+            $studentId = $_SESSION['loggedUser']->getUserId();
+
+            $this->jobOfferService->addStudentToJobOffer($jobOfferId, $studentId);
+
+            header("Location: " . FRONT_ROOT . "StudentJobOffer/listJobOffers");
+            exit();
         }
     }

@@ -14,8 +14,10 @@ class Utils
 
     public static function checkAdminSession()
     {
-        if (!isset($_SESSION['loggedUser']) || !$_SESSION['loggedUser']->isAdmin()) {
-            header("Location: index.php?url=Home/index");
+        self::checkSession();
+
+        if (!$_SESSION['loggedUser']->isAdmin()) {
+            header("Location: " . FRONT_ROOT . "Home/index");
             exit();
         }
         return true;
@@ -23,8 +25,10 @@ class Utils
 
     public static function checkStudentSession()
     {
-        if (!isset($_SESSION['loggedUser']) || !$_SESSION['loggedUser']->isStudent()) {
-            header("Location: index.php?url=Home/index");
+        self::checkSession();
+
+        if (!$_SESSION['loggedUser']->isStudent()) {
+            header("Location: " . FRONT_ROOT . "Home/index");
             exit();
         }
         return true;
