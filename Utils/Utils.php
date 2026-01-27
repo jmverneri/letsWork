@@ -47,11 +47,11 @@ class Utils
     {
         if (isset($_SESSION['loggedUser'])) {
             if ($_SESSION['loggedUser']->isAdmin()) {
-                require_once(ADMIN_VIEWS . "navadmin.php");
+                require_once(ADMIN_VIEWS . "admin-nav.php");
             } elseif ($_SESSION['loggedUser']->isStudent()) {
-                require_once(STUDENT_VIEWS . "nav.php");
+                require_once(STUDENT_VIEWS . "student-nav.php");
             } elseif ($_SESSION['loggedUser']->isCompany()) {
-                require_once(USERCOMPANY_VIEWS . "nav-userCompany.php");
+                require_once(USERCOMPANY_VIEWS . "company-nav.php");
             }
         }
     }

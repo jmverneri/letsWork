@@ -32,7 +32,7 @@
         /**
          * Devuelve todas las ofertas asociadas a una carrera
          */
-        public function getByCareerId(int $careerId): array;
+        public function getByCareer(int $careerId): array;
 
         /**
          * Devuelve ofertas por estado (draft | published | closed)

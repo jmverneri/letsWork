@@ -1,6 +1,8 @@
 <?php
 use Utils\Utils;
+
 Utils::checkNav();
+
 ?>
 
 <main class="py-5">
@@ -11,7 +13,7 @@ Utils::checkNav();
             <div class="container" style="width: 100%; height: 400px; overflow-y: scroll;">
                 <div class="container" position="fixed">
                         <form action="index.php" method="GET">
-                            <input type="hidden" name="url" value="Company/showCompaniesViews">
+                            <input type="hidden" name="url" value="StudentCompany/showListView">
                             <input type="text" name="search" class="form-control">
                             <button type="submit">Search</button>
                         </form>
@@ -31,23 +33,7 @@ Utils::checkNav();
                                     <td><?= $company->getCity(); ?></td>
                                     <td><?= $company->getEmail(); ?></td>
                                     <td>
-                                        <a href="<?= FRONT_ROOT ?>Company/deleteCompany/<?= $company->getCompanyId(); ?>"
-                                           class="btn btn-danger"
-                                           onclick="return confirm('Are you sure?')">
-                                            Delete
-                                        </a>
-
-                                        <a href="<?= FRONT_ROOT ?>Company/showModifyCompanyView/<?= $company->getCompanyId(); ?>"
-                                           class="btn btn-success">
-                                            Modify
-                                        </a>
-
-                                        <a href="<?= FRONT_ROOT ?>JobOffer/showAddJobOfferForCompany/<?= $company->getCompanyId(); ?>"
-                                           class="btn btn-info">
-                                            Add Job Offer
-                                        </a>
-
-                                        <a href="<?= FRONT_ROOT ?>JobOffer/showJobsOffersViewByCompany/<?= $company->getCompanyId(); ?>"
+                                        <a href="<?= FRONT_ROOT ?>JobOffer/showOffersByCareer/<?= $company->getCompanyId(); ?>"
                                            class="btn btn-secondary">
                                             Job Offers
                                         </a>

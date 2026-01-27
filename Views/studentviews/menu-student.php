@@ -33,8 +33,8 @@ Utils::checkNav();
             echo "<td><a href=" . FRONT_ROOT . "Student/ShowStudentProfile/" . $student->getEmail() . ">
             <button type='button' class= 'btn btn-info' >Profile</button></a></td>";
             ?>
-            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>/Company/showCompaniesViews">See Companies</a>
-            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>/StudentJobOffer/listJobOffers/">Job Offers List</a>  
+            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>StudentCompany/showListView">See Companies</a>
+            <a class="btn btn-warning btn-xl" href="<?php echo FRONT_ROOT ?>StudentJobOffer/listJobOffers/">Job Offers List</a>  
             <?php //echo "<a class='btn btn-warning btn-xl' href=" . FRONT_ROOT .  'Home/getStudentByMail/' . $this->student->getEmail();?></a>               
            
     

@@ -56,7 +56,7 @@ Utils::checkNav();
                                     echo "<div class='row'>";
                                     echo "<div class='button-conteiner'>";
                                     echo "<td><a href=" . FRONT_ROOT . "JobOffer/addStudentToAJobOffer/" . $jobOffer->getJobOfferId() ."/".$student->getStudentId() . ">
-                                <button type='button' class= 'btn btn-success' > Add me</button></a></td>";
+                                <button type='button' class= 'btn btn-success' > Apply</button></a></td>";
                                     echo "</div>";
                                     echo "</div>";
                                 }

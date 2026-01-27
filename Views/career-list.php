@@ -34,7 +34,7 @@ Utils::checkNav();
                                
                                 echo "<div class='row'>";
                                 echo  "<div class='button-conteiner'>";
-                                echo "<td><a href=" . FRONT_ROOT . "JobOffer/showJobsOffersViewByCareer/" . $career->getCareerId() . ">
+                                echo "<td><a href=" . FRONT_ROOT . "JobOffer/showOffersByCareer/" . $career->getCareerId() . ">
                                   <button type='button' class= 'btn btn-info'> Job Offers</button></a></td>";
                                 echo "</div>";
                                 echo "</div>";

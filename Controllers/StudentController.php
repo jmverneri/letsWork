@@ -59,7 +59,7 @@
                 exit();
             }
 
-            $career = $this->careerDAO->getById($student->getCareerId());
+            $career = $student->getCareer();
 
             require_once(STUDENT_VIEWS . "student-profile.php");
         }

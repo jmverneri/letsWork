@@ -72,7 +72,7 @@
             );
         }
 
-        public function getByCareerId(int $careerId): array
+        public function getByCareer(int $careerId): array
         {
             return array_filter(
                 $this->jobOfferList,

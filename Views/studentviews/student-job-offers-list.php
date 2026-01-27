@@ -1,12 +1,8 @@
 <?php
-$user = $_SESSION['loggedUser'] ?? null;
+use Utils\Utils;
 
-if (!$user || !$user->isStudent()) {
-    header("Location: " . FRONT_ROOT . "Home/index");
-    exit();
-}
+Utils::checkNav();
 
-require_once(STUDENT_VIEWS . 'nav.php');
 ?>
 
 <main class="py-5">
@@ -37,31 +33,10 @@ require_once(STUDENT_VIEWS . 'nav.php');
                                 <td><?= $jobOffer->getDeadline(); ?></td>
                                 <td><?= $jobOffer->getSalary(); ?></td>
                                 <td><?= $jobOffer->getDescription(); ?></td>
-
+                                <td><?= $jobOffer->getCareerName() ?></td>
+                                <td><?= $jobOffer->getCompanyName() ?></td>
                                 <td>
-                                    <?php
-                                    foreach ($careerList as $career) {
-                                        if ($career->getCareerId() == $jobOffer->getCareerId()) {
-                                            echo $career->getDescription();
-                                            break;
-                                        }
-                                    }
-                                    ?>
-                                </td>
-
-                                <td>
-                                    <?php
-                                    foreach ($companiesList as $company) {
-                                        if ($company->getCompanyId() == $jobOffer->getCompanyId()) {
-                                            echo $company->getName();
-                                            break;
-                                        }
-                                    }
-                                    ?>
-                                </td>
-
-                                <td>
-                                    <a href="<?= FRONT_ROOT ?>StudentJobOffer/addStudentToAJobOffer/<?= $jobOffer->getJobOfferId(); ?>/<?= $user->getUserId(); ?>">
+                                    <a href="<?= FRONT_ROOT ?>StudentJobOffer/addStudentToAJobOffer/<?= $jobOffer->getJobOfferId(); ?>">
                                         <button class="btn btn-success btn-sm">
                                             Apply
                                         </button>
@@ -77,7 +52,6 @@ require_once(STUDENT_VIEWS . 'nav.php');
 
                     </tbody>
                 </table>
-
             </div>
         </div>
     </section>

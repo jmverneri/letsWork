@@ -19,7 +19,7 @@
         {
             $this->studentDAO = DAOFactory::getStudentDAO();
             //$this->companyDAO = DAOFactory::getCompanyDAO();
-            //$this->careerDAO  = DAOFactory::getCareerDAO();
+            $this->careerDAO  = DAOFactory::getCareerDAO();
         }
 
         public function showStudentList()
@@ -27,7 +27,7 @@
             Utils::checkAdminSession();
 
             $students = $this->studentDAO->GetAll();
-            //$careers = $this->careerDAO->GetAll();
+            $careers = $this->careerDAO->GetAll();
             require_once(VIEWS_PATH . "student-list.php");
         }
     }

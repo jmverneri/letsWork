@@ -63,4 +63,37 @@
             return $this->jobOfferDAO->getByStatus('expired');
         }
 
+        /* =======================
+       LÓGICA DE POSTULACIÓN (ESTUDIANTES)
+         ======================= */
+
+        /**
+         * Registra la postulación de un estudiante a una oferta.
+         * Este es el método que te faltaba.
+         */
+        public function addStudentToJobOffer(int $jobOfferId, int $studentId): void
+        {
+            // 1. Validar si la oferta sigue vigente
+            $offer = $this->getById($jobOfferId);
+            if (!$offer) {
+                throw new Exception("The job offer does not exist.");
+            }
+
+            $today = date("Y-m-d");
+            if ($offer->getDeadline() < $today) {
+                throw new Exception("This job offer has expired.");
+            }
+
+            // 2. Llamar al DAO para persistir la relación
+            // Asegúrate de que tu DAO tenga este método para insertar en la tabla intermedia
+            $this->jobOfferDAO->addPostulation($jobOfferId, $studentId);
+        }
+
+        /**
+         * Verifica si un estudiante ya se postuló a una oferta específica
+         */
+        public function isStudentEnrolled(int $jobOfferId, int $studentId): bool
+        {
+            return $this->jobOfferDAO->checkPostulation($jobOfferId, $studentId);
+        }
     }

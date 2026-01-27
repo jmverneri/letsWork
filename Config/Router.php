@@ -13,6 +13,8 @@ class Router
         'CompanyJobOffer',
         'StudentJobOffer',
         'Student',
+        'StudentCompany',
+        'AdminCompany',
         'Error'
     ];
 

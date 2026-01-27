@@ -46,7 +46,7 @@ class CompanyController
     public function ShowSingleCompany($companyId)
     {
         Utils::checkSession();
-        $this->company = $this->companyDAO->Search($companyId);
+        $company = $this->companyDAO->getById($companyId);
         
         require_once(VIEWS_PATH . "student-company-view.php");
         
@@ -59,7 +59,7 @@ class CompanyController
         $search = $_GET['search'] ?? "";
 
         if ($search === "") {
-            $this->companiesList = $this->companyDAO->getAll();
+            $companiesList = $this->companyDAO->getAll();
         } else {
             $search = strtolower($search);
             $filteredCompanies = [];
@@ -70,9 +70,9 @@ class CompanyController
                 }
             }
 
-            $this->companiesList = $filteredCompanies;
+            $companiesList = $filteredCompanies;
         }
-
+        
         require_once(ADMIN_VIEWS . "company-manager.php");
     }
 

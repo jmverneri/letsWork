@@ -15,6 +15,9 @@
                 private $careerId;
                 private $jobPositionId;
 
+                private ?string $careerName = null;
+                private ?string $companyName = null;
+
                 public function getJobOfferId()
                 {
                         return $this->jobOfferId;
@@ -123,6 +126,26 @@
                 {
                         $this->jobPositionId = $jobPositionId;
                         return $this;
+                }
+
+                public function setCareerName(?string $name): void
+                {
+                        $this->careerName = $name;
+                }
+
+                public function getCareerName(): string
+                {
+                        return $this->careerName ?? 'N/A';
+                }
+
+                public function setCompanyName(?string $name): void
+                {
+                        $this->companyName = $name;
+                }
+
+                public function getCompanyName(): string
+                {
+                        return $this->companyName ?? 'N/A';
                 }
         }
 ?>

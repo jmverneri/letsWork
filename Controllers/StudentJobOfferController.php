@@ -26,9 +26,28 @@
         public function listJobOffers()
         {
             $jobOffers = $this->jobOfferService->getActive();
-            $careerList   = $this->careerDAO->getAll();
-            $companiesList = $this->companyDAO->getAll();
-            require_once(STUDENT_VIEWS . "job-offers-list.php");
+
+            $careerMap = [];
+            foreach ($this->careerDAO->getAll() as $career) {
+                $careerMap[$career->getCareerId()] = $career->getDescription();
+            }
+
+            $companyMap = [];
+            foreach ($this->companyDAO->getAll() as $company) {
+                $companyMap[$company->getCompanyId()] = $company->getName();
+            }
+
+            foreach ($jobOffers as $jobOffer) {
+                $jobOffer->setCareerName(
+                    $careerMap[$jobOffer->getCareerId()] ?? 'N/A'
+                );
+
+                $jobOffer->setCompanyName(
+                    $companyMap[$jobOffer->getCompanyId()] ?? 'N/A'
+                );
+
+            }
+            require_once(STUDENT_VIEWS . "student-job-offers-list.php");
         }
 
         public function view($id)
