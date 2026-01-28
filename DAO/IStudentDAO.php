@@ -27,6 +27,8 @@
          * @return int filas afectadas
          */
         public function add(Student $student);
+
+        public function getByUserId(int $userId): ?Student;
     }
 
 ?>

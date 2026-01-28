@@ -25,19 +25,15 @@ Utils::checkNav();
                     </thead>
 
                     <tbody>
-                        <?php if (!empty($students)) : ?>
-                            <?php foreach ($students as $student) : ?>
+                        <?php if (!empty($studentsView)) : ?>
+                            <?php foreach ($studentsView as $student) : ?>
                                 <tr>
-                                    <td><?= $student->getFileNumber() ?? '—'; ?></td>
-                                    <td><?= $student->getFirstName(); ?></td>
-                                    <td><?= $student->getLastName(); ?></td>
-                                    <td><?= ucfirst($student->getGender() ?? 'Not specified') ?></td>
-                                    <td><?= $student->getEmail(); ?></td>
-                                    <td>
-                                        <?= $student->getCareer()
-                                            ? $student->getCareer()->getDescription()
-                                            : 'No career assigned'; ?>
-                                    </td>
+                                   <td><?= $student['fileNumber'] ?? '—'; ?></td>
+                                    <td><?= $student['firstName']; ?></td>
+                                    <td><?= $student['lastName']; ?></td>
+                                    <td><?= ucfirst($student['gender'] ?? 'Not specified'); ?></td>
+                                    <td><?= $student['email'] ?? '—'; ?></td>
+                                    <td><?= $student['career'] ?? 'No career assigned'; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else : ?>

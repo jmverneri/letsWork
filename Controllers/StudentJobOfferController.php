@@ -61,6 +61,9 @@
             Utils::checkStudentSession();
 
             $studentId = $_SESSION['loggedUser']->getUserId();
+            var_dump($_SESSION['loggedUser']);
+die;
+
 
             $this->jobOfferService->addStudentToJobOffer($jobOfferId, $studentId);
 

@@ -1,30 +1,35 @@
 <?php
 namespace Models;
 
-class Student extends User
+class Student
 {
+    /* =====================
+       IDS
+    ===================== */
     private int $studentId;
-    private Career $career;
+    private int $userId;
+    private int $careerId;
 
+    /* =====================
+       PERSONAL DATA
+    ===================== */
     private string $firstName;
     private string $lastName;
     private string $dni;
     private ?string $fileNumber = null;
     private ?string $gender = null;
-    private ?string $birthDate= null;
-    private ?string $phoneNumber= null;
+    private ?string $birthDate = null;
+    private ?string $phoneNumber = null;
     private bool $active;
 
     public function __construct()
     {
-        parent::__construct();
-        $this->setRole(self::ROLE_STUDENT);
+        $this->active = true;
     }
 
     /* =====================
        STUDENT ID
     ===================== */
-
     public function getStudentId(): int
     {
         return $this->studentId;
@@ -37,24 +42,36 @@ class Student extends User
     }
 
     /* =====================
-       CAREER (OBJETO)
+       USER ID
     ===================== */
-
-    public function getCareer(): Career
+    public function getUserId(): int
     {
-        return $this->career;
+        return $this->userId;
     }
 
-    public function setCareer(Career $career): self
+    public function setUserId(int $userId): self
     {
-        $this->career = $career;
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /* =====================
+       CAREER ID
+    ===================== */
+    public function getCareerId(): int
+    {
+        return $this->careerId;
+    }
+
+    public function setCareerId(int $careerId): self
+    {
+        $this->careerId = $careerId;
         return $this;
     }
 
     /* =====================
        DATA
     ===================== */
-
     public function getFirstName(): string
     {
         return $this->firstName;
@@ -93,7 +110,7 @@ class Student extends User
         return $this->fileNumber;
     }
 
-    public function setFileNumber(string $fileNumber): self
+    public function setFileNumber(?string $fileNumber): self
     {
         $this->fileNumber = $fileNumber;
         return $this;
@@ -132,6 +149,9 @@ class Student extends User
         return $this;
     }
 
+    /* =====================
+       STATUS
+    ===================== */
     public function isActive(): bool
     {
         return $this->active;

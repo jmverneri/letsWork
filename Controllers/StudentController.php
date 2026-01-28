@@ -41,28 +41,60 @@
         {
             Utils::checkSession();
 
-            $this->studentList = $this->studentDAO->getAll();
-            $this->careerList  = $this->careerDAO->getAll();
+            $students = $this->studentDAO->getAll();
+            $careers  = $this->careerDAO->getAll();
 
-            require_once(VIEWS_PATH . "student-list.php");
+            /**
+             * Armamos un mapa careerId => description
+             * para evitar loops innecesarios
+             */
+            $careerMap = [];
+            foreach ($careers as $career) {
+                $careerMap[$career->getCareerId()] = $career->getDescription();
+            }
+
+            /**
+             * ViewModel / DTO
+             */
+            $studentsView = [];
+
+            foreach ($students as $student) {
+                $user = $this->userDAO->getById($student->getUserId());
+
+                $studentsView[] = [
+                    'fileNumber' => $student->getFileNumber(),
+                    'firstName'  => $student->getFirstName(),
+                    'lastName'   => $student->getLastName(),
+                    'gender'     => $student->getGender(),
+                    'email'      => $user ? $user->getEmail() : null,
+                    'career'     => $careerMap[$student->getCareerId()] ?? null,
+                ];
+            }
+
+            require_once(ADMIN_VIEWS . "student-list.php");
         }
 
-        public function showStudentProfile()
+       public function showStudentProfile()
         {
             Utils::checkStudentSession();
 
             $user = $_SESSION['loggedUser'];
-            $student = $this->studentDAO->getByEmail($user->getEmail());
+
+            $student = $this->studentDAO->getByUserId($user->getUserId());
 
             if (!$student) {
                 header("Location: " . FRONT_ROOT . "Home/index");
                 exit();
             }
 
-            $career = $student->getCareer();
+            $career = null;
+            if ($student->getCareerId()) {
+                $career = $this->careerDAO->getById($student->getCareerId());
+            }
 
             require_once(STUDENT_VIEWS . "student-profile.php");
-        }
+}
+
 
         public function studentValidation($email)
         {

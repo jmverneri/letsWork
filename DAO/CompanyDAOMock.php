@@ -10,16 +10,28 @@
         public function __construct()
         {
             $company1 = new Company();
-            $company1->setCompanyId(1);
-            $company1->setName("Google");
-            $company1->setEmail("contact@google.com");
-            $company1->setActive(true);
+            $company1->setCompanyId(1)
+                    ->setUserId(3)
+                    ->setName("Google")
+                    ->setYearFoundation()
+                    ->setCity()
+                    ->setDescription()
+                    ->setLogo()
+                    ->setPhoneNumber()
+                    ->setCuit()
+                    ->setActive(true);
 
             $company2 = new Company();
-            $company2->setCompanyId(2);
-            $company2->setName("Amazon");
-            $company2->setEmail("contact@amazon.com");
-            $company2->setActive(true);
+            $company2->setCompanyId(2)
+                    ->setUserId(4)
+                    ->setName("Amazon")
+                    ->setYearFoundation()
+                    ->setCity()
+                    ->setDescription()
+                    ->setLogo()
+                    ->setPhoneNumber()
+                    ->setCuit()
+                    ->setActive(true);
 
             $this->companyList[] = $company1;
             $this->companyList[] = $company2;

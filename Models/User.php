@@ -25,6 +25,7 @@ class User
     private $email;
     private $password;
     private $role; // 'admin' | 'student' | 'company'
+    private bool $mustChangePassword = false;
     
     
     // ══════════════════════════════════════════════════════════
@@ -61,7 +62,11 @@ class User
     {
         return $this->role;
     }
-    
+
+    public function mustChangePassword(): bool
+    {
+        return $this->mustChangePassword;
+    }
     
     // ══════════════════════════════════════════════════════════
     // SETTERS CON VALIDACIÓN
@@ -104,6 +109,11 @@ class User
         return $this;
     }
     
+     public function setMustChangePassword(bool $value): self
+    {
+        $this->mustChangePassword = $value;
+        return $this;
+    }
     
     // ══════════════════════════════════════════════════════════
     // MÉTODOS DE VERIFICACIÓN DE ROL (muy útiles!)

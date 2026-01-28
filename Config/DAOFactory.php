@@ -17,9 +17,21 @@
     use DAO\JobOfferDAOMock;
     use DAO\JobOfferDAOApi;
     use DAO\JobOfferDAOMySQL;
+    use DAO\IUserDAO;   
+    use DAO\UserDAOMock;
+    use DAO\IUserCompanyDAO;   
+    use DAO\UserCompanyDAOMock;
 
     class DAOFactory
     {
+        public static function getUserDAO(): IUserDAO
+        {
+            // Cambiás SOLO esta línea
+            return new UserDAOMock();
+            // return new UserDAOApi();
+            // return new UserDAOMySQL();
+        }
+
         public static function getStudentDAO(): IStudentDAO
         {
             // Cambiás SOLO esta línea
@@ -35,11 +47,11 @@
             // return new CareerDAOMySQL();
         }
 
-        public static function getCompanyDAO()
+        public static function getUserCompanyDAO(): IUserCompanyDAO
         {
-            return new CompanyDAOMock();
-            //return new CompanyDAOApi();
-            //return new CompanyDAOMySQL();
+            return new UserCompanyDAOMock();
+            //return new UserCompanyDAOApi();
+            //return new UserCompanyDAOMySQL();
         }
 
         public static function getJobOfferDAO()

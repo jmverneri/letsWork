@@ -12,29 +12,16 @@ class StudentDAOMock implements IStudentDAO
     public function __construct()
     {
         /* =====================
-           CAREERS MOCK
-        ===================== */
-
-        $career1 = new Career();
-        $career1->setCareerId(1);
-        $career1->setDescription("Computer Science");
-
-        $career2 = new Career();
-        $career2->setCareerId(2);
-        $career2->setDescription("Business Administration");
-
-        /* =====================
            STUDENT 1
         ===================== */
 
         $student1 = new Student();
         $student1->setStudentId(1)
+                ->setUserId(2)
                  ->setFirstName("Juan")
                  ->setLastName("Pérez")
                  ->setDni("32444999")
-                 ->setEmail("student@test.com")
-                 ->setPassword("123")
-                 ->setCareer($career1)
+                 ->setCareerId(1)
                  ->setActive(true);
 
         /* =====================
@@ -43,12 +30,11 @@ class StudentDAOMock implements IStudentDAO
 
         $student2 = new Student();
         $student2->setStudentId(2)
+                ->setUserId(3)
                  ->setFirstName("Ana")
                  ->setLastName("Gonzalez")
                  ->setDni("45000333")
-                 ->setEmail("ana@test.com")
-                 ->setPassword("1234")
-                 ->setCareer($career2)
+                 ->setCareerId(2)
                  ->setActive(true);
 
         $this->studentList[] = $student1;
@@ -89,4 +75,15 @@ class StudentDAOMock implements IStudentDAO
         // mock success
         return 1;
     }
+
+    public function getByUserId(int $userId): ?Student
+    {
+        foreach ($this->studentList as $student) {
+            if ($student->getUserId() === $userId) {
+                return $student;
+            }
+        }
+        return null;
+    }
+
 }
