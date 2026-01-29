@@ -3,180 +3,86 @@
 namespace Controllers;
 
 use DAO\ICompanyDAO;
-use Models\Company;
-use Utils\Utils;
+use DAO\IJobOfferDAO;
+use DAO\ICareerDAO;
 use Config\DAOFactory;
+use Utils\Utils;
 
 class CompanyController
 {
     private ICompanyDAO $companyDAO;
-    private Company $company;
-    private array $companiesList = [];
+    private IJobOfferDAO $jobOfferDAO;
+    private ICareerDAO $careerDAO;
 
     public function __construct()
     {
-        $this->companyDAO = DAOFactory::getCompanyDAO();
+        $this->companyDAO  = DAOFactory::getCompanyDAO();
+        $this->jobOfferDAO = DAOFactory::getJobOfferDAO();
+        $this->careerDAO = DAOFactory::getCareerDAO();
     }
 
-    public function showAddView()
+    /**
+     * Dashboard principal de Company
+     */
+    public function dashboard()
     {
-        require_once(ADMIN_VIEWS . "company-add.php");
-    }
+        Utils::checkCompanySession();
 
+        $user = $_SESSION['loggedUser'];
+        $company = $this->companyDAO->getByUserId($user->getUserId());
 
-  /*  public function ShowSingleView()
-    {
-        require_once(VIEWS_PATH . "show-companyAddCompany.php");
-    }*/
-    
-    public function redirectAddForm()
-    {
-        Utils::checkAdminSession();
-        require_once(ADMIN_VIEWS . "company-add.php");
-    }
-
-    public function redirectDeleteForm()
-    {
-        //Utils::checkAdminSession();
-        $this->companiesList = $this->companyDAO->GetAll();
-        require_once(ADMIN_VIEWS . "company-manager.php");
-
-    }
-
-    public function ShowSingleCompany($companyId)
-    {
-        Utils::checkSession();
-        $company = $this->companyDAO->getById($companyId);
-        
-        require_once(VIEWS_PATH . "student-company-view.php");
-        
-    }
-
-    public function showCompaniesViews()
-    {
-        Utils::checkSession();
-
-        $search = $_GET['search'] ?? "";
-
-        if ($search === "") {
-            $companiesList = $this->companyDAO->getAll();
-        } else {
-            $search = strtolower($search);
-            $filteredCompanies = [];
-
-            foreach ($this->companyDAO->getAll() as $company) {
-                if (str_starts_with(strtolower($company->getName()), $search)) {
-                    $filteredCompanies[] = $company;
-                }
-            }
-
-            $companiesList = $filteredCompanies;
+        if (!$company || !$company->isActive()) {
+            header("Location: " . FRONT_ROOT . "Home/logout");
+            exit();
         }
-        
-        require_once(ADMIN_VIEWS . "company-manager.php");
+
+        require_once(COMPANY_VIEWS . "company-dashboard.php");
     }
 
-    public function addCompany($name, $yearFoundation, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)
+    /**
+     * Ver perfil de la empresa
+     */
+    public function profile()
     {
-        Utils::checkSession();
-        $company = new Company();
-        $company->setName($name);
-        $company->setYearFoundation($yearFoundation);
-        $company->setCity($city);
-        $company->setDescription($description);      
-        $company->setEmail($email);
-        $company->setPhoneNumber($phoneNumber);
-        $company->buildCuit($pre, $dni, $ultimo);
+        Utils::checkCompanySession();
 
-        $result = $this->checkCUIT($company->getCuit());  
+        $user = $_SESSION['loggedUser'];
+        $company = $this->companyDAO->getByUserId($user->getUserId());
 
-        if($result == false)
-        {
-            $message = "The company has been saved correctly. Flawless Victory.";
-            $this->companyDAO->AddCompany($company);
-            require_once(ADMIN_VIEWS . "company-add.php");
-        }else{
-            $message = "There is already a company with that cuit. Please try again.";
-            require_once(ADMIN_VIEWS . "company-add.php");
-        }
-        
-        $this->ShowAddView();
+        require_once(COMPANY_VIEWS . "company-profile.php");
     }
 
-    //Validacion CUIT
-    private function checkCUIT($cuit){
-        $result = false;
-        $this->companiesList = $this->companyDAO->GetAll();
-        
-        if($this->companiesList){
-            foreach($this->companiesList as $company){
-                if($company->getCuit() == $cuit){
-                    $result = true;
-                }
-            }
-        }
-        return $result;
-    }
-
-    public function updateCompany($companyId, $name, $yearFoundation, $city, $description, $email, $phoneNumber, $cuit)
+    /**
+     * Formulario edición empresa
+     */
+    public function edit()
     {
-        //Utils::checkSession();
-        $company = new Company();
+        Utils::checkCompanySession();
 
-        $company->setCompanyId($companyId);
-        $company->setName($name);
-        $company->setYearFoundation($yearFoundation);
-        $company->setCity($city);
-        $company->setDescription($description);
-        $company->setEmail($email);
-        $company->setPhoneNumber($phoneNumber);
-        //$company->setLogo($logo);
-        $company->buildCuit($pre, $dni, $ultimo);
+        $user = $_SESSION['loggedUser'];
+        $company = $this->companyDAO->getByUserId($user->getUserId());
 
-        $result = $this->checkCUIT($company->getCuit());  
-
-        if($result == false)
-        {
-            
-            $this->companyDAO->Update($company);
-
-            $this->RedirectDeleteForm("The company had been updated successfully"); 
-            require_once(ADMIN_VIEWS . "company-add.php");
-        }else{
-            $message = "There is already a company with that cuit. Please try again.";
-            require_once(ADMIN_VIEWS . "company-add.php");
-        }
+        require_once(COMPANY_VIEWS . "company-edit.php");
     }
 
-    public function deleteCompany($companyId)
+    /**
+     * Guardar cambios empresa
+     */
+    public function update($data)
     {
-        $this->companyDAO->delete($companyId);
+        Utils::checkCompanySession();
 
-        $this->RedirectDeleteForm();
+        $user = $_SESSION['loggedUser'];
+        $company = $this->companyDAO->getByUserId($user->getUserId());
+
+        $company->setName($data['name'])
+                ->setCity($data['city'])
+                ->setDescription($data['description'])
+                ->setPhoneNumber($data['phoneNumber']);
+
+        $this->companyDAO->update($company);
+
+        header("Location: " . FRONT_ROOT . "Company/profile");
+        exit();
     }
-
-    public function jobOffersForCompanies($companyName)
-    {
-        $companiesList = $this->companyDAO->GetAll();
-        $jobs = null;
-
-        foreach ($companiesList as $company) {
-            if ($company->getName() == $companyName) {
-                $jobs = $company;
-            }
-        }
-    }
-
-    public function showModifyCompanyView($companyId)
-    {   
-        $this->company = $this->companyDAO->Search($companyId);
-
-        require_once(ADMIN_VIEWS . "company-modify.php");
-    }
-
-    /*public function searchCompanyByName($name){
-            $company = $this->companyDAO->search($name);
-
-            $this->ShowSingleView();
-        }*/
 }

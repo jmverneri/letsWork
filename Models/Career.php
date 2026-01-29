@@ -6,7 +6,6 @@
         private $careerId;
         private $description;
         private $active;
-        
 
         public function __construct()
         {

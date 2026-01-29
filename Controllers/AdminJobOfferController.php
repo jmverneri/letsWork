@@ -35,6 +35,8 @@
 
         public function addView()
         {
+             $isAdmin = true;
+             
             require_once(ADMIN_VIEWS . "joboffer-add.php");
         }
 

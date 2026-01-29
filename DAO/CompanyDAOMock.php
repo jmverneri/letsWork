@@ -11,26 +11,22 @@
         {
             $company1 = new Company();
             $company1->setCompanyId(1)
-                    ->setUserId(3)
+                    ->setUserId(4)
                     ->setName("Google")
-                    ->setYearFoundation()
-                    ->setCity()
-                    ->setDescription()
-                    ->setLogo()
-                    ->setPhoneNumber()
-                    ->setCuit()
+                    ->setYearFoundation(1980)
+                    ->setCity("Mar del Plata")
+                    ->setDescription("IT")
+                    ->setPhoneNumber("2235888333")
                     ->setActive(true);
 
             $company2 = new Company();
             $company2->setCompanyId(2)
-                    ->setUserId(4)
+                    ->setUserId(5)
                     ->setName("Amazon")
-                    ->setYearFoundation()
-                    ->setCity()
-                    ->setDescription()
-                    ->setLogo()
-                    ->setPhoneNumber()
-                    ->setCuit()
+                    ->setYearFoundation(1975)
+                    ->setCity("CABA")
+                    ->setDescription("IT")
+                    ->setPhoneNumber("11555333")
                     ->setActive(true);
 
             $this->companyList[] = $company1;
@@ -74,5 +70,15 @@
                     unset($this->companyList[$key]);
                 }
             }
+        }
+
+        public function getByUserId(int $userId): ?Company
+        {
+            foreach ($this->companyList as $company) {
+                if ($company->getUserId() === $userId) {
+                    return $company;
+                }
+            }
+            return null;
         }
     }

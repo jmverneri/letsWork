@@ -19,8 +19,6 @@
     use DAO\JobOfferDAOMySQL;
     use DAO\IUserDAO;   
     use DAO\UserDAOMock;
-    use DAO\IUserCompanyDAO;   
-    use DAO\UserCompanyDAOMock;
 
     class DAOFactory
     {
@@ -47,11 +45,11 @@
             // return new CareerDAOMySQL();
         }
 
-        public static function getUserCompanyDAO(): IUserCompanyDAO
+        public static function getCompanyDAO(): ICompanyDAO
         {
-            return new UserCompanyDAOMock();
-            //return new UserCompanyDAOApi();
-            //return new UserCompanyDAOMySQL();
+            return new CompanyDAOMock();
+            //return new CompanyDAOApi();
+            //return new CompanyDAOMySQL();
         }
 
         public static function getJobOfferDAO()

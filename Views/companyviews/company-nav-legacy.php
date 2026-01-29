@@ -1,7 +1,7 @@
 
 <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
 <span class="navbar-text">
-          <strong>LETS WORK / Recruiter</strong>
+          <strong>LETS WORK / Company</strong>
      </span>
      <ul class="navbar-nav ml-auto">
 
@@ -13,10 +13,10 @@
                <a class="nav-link" href="<?php echo BASE_FOLDER ?>/UserCompany/userCompanyProfile">Check Data</a>
           </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/UserCompany/userCompanyMenu">Recruiter Menu</a>
+               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Company/dashboard">Company Menu</a>
           </li>
           <li class="nav-item">
-               <a class="nav-link" href="<?php echo BASE_FOLDER ?>/Home/Logout">Logout</a>
+               <a class="nav-link" href="<?php echo FRONT_ROOT ?>/Home/Logout">Logout</a>
           </li>
      </ul>
 </nav>

@@ -1,24 +1,23 @@
 <?php
         namespace Models;
 
-        class Company extends User
+        class Company
         {
-        private $companyId;
-        private $userId; // FK al User que representa a la empresa
+        private int $companyId;
+        private int $userId;
 
-        private $name;
-        private $yearFoundation;
-        private $city;
-        private $description;
-        private $logo;
-        private $phoneNumber;
-        private $cuit;
-        private $active;
+        private string $name;
+        private ?int $yearFoundation = null;
+        private ?string $city = null;
+        private ?string $description = null;
+        private ?string $logo = null;
+        private ?string $phoneNumber = null;
+        private ?string $cuit= null;
+        private bool $active;
 
         public function __construct()
         {
-            parent::__construct();
-            $this->setRole(self::ROLE_COMPANY);
+           
         }
 
         public function getCompanyId()

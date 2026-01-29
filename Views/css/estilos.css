@@ -5,12 +5,13 @@ html, body {
      height: 90%;
 }
 body {
-     font-family: 'Montserrat', sans-serif;
-     background: url(../img/bg2.jpg) no-repeat center center fixed;
-     -webkit-background-size: cover;
-        -moz-background-size: cover;
-          -o-background-size: cover;
-             background-size: cover;
+    min-height: 100vh;
+    background-color: #ffffff; /* Blanco puro */
+    /* O puedes usar el de Notion: background-color: #fbfbfa; */
+    background-image: none; 
+    color: #37352f;
+    display: flex;
+    flex-direction: column;
 }
 
 height-90 {

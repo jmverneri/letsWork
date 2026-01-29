@@ -4,15 +4,26 @@ namespace Controllers;
 use Services\CompanyService;
 use Utils\Utils;
 
+use DAO\ICompanyDAO;
+use DAO\IJobOfferDAO;
+use DAO\ICareerDAO;
+use Config\DAOFactory;
+
 class StudentCompanyController
 {
     private CompanyService $companyService;
+    private ICompanyDAO $companyDAO;
+    private IJobOfferDAO $jobOfferDAO;
+    private ICareerDAO $careerDAO;
 
     public function __construct()
     {
         // Solo verificamos que haya una sesión activa (Alumno o cualquier rol logueado)
         Utils::checkSession();
         $this->companyService = new CompanyService();
+        $this->companyDAO  = DAOFactory::getCompanyDAO();
+        $this->jobOfferDAO = DAOFactory::getJobOfferDAO();
+        $this->careerDAO = DAOFactory::getCareerDAO();
     }
 
     /**
@@ -20,11 +31,32 @@ class StudentCompanyController
      */
     public function showListView()
     {
-        // Obtenemos el término de búsqueda si existe
+        Utils::checkSession();
         $search = $_GET['search'] ?? "";
 
-        // Usamos el mismo método que el Admin, pero los datos irán a otra vista
-        $companiesList = $this->companyService->getList($search);
+        $companyList = $this->companyDAO->getAll();
+        $userDAO = DAOFactory::getUserDAO();
+
+        $companiesWithUser = [];
+
+        foreach ($companyList as $company) {
+
+            // Filtro por nombre si hay search
+            if ($search !== "" && !str_starts_with(
+                    strtolower($company->getName()),
+                    strtolower($search)
+                )) {
+                continue;
+            }
+
+            // Obtener el usuario dueño de la company
+            $user = $userDAO->getById($company->getUserId());
+
+            $companiesWithUser[] = [
+                'company' => $company,
+                'email'   => $user ? $user->getEmail() : '—'
+            ];
+        }
         
         // Esta vista NO tiene botones de borrar ni editar
         require_once(STUDENT_VIEWS . "student-company-list.php");

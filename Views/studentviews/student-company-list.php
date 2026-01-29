@@ -26,12 +26,15 @@ Utils::checkNav();
                         <th>Actions</th>
                     </thead>
                     <tbody>
-                        <?php if (!empty($companiesList)): ?>
-                            <?php foreach ($companiesList as $company): ?>
+                        <?php if (!empty($companiesWithUser)): ?>
+                            <?php foreach ($companiesWithUser as $item):
+                                $company = $item['company'];
+                                $email   = $item['email'];
+                            ?>
                                 <tr>
-                                    <td><?= $company->getName(); ?></td>
-                                    <td><?= $company->getCity(); ?></td>
-                                    <td><?= $company->getEmail(); ?></td>
+                                    <td><?= htmlspecialchars($company->getName()) ?></td>
+                                    <td><?= htmlspecialchars($company->getCity() ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($email) ?></td>
                                     <td>
                                         <a href="<?= FRONT_ROOT ?>JobOffer/showOffersByCareer/<?= $company->getCompanyId(); ?>"
                                            class="btn btn-secondary">

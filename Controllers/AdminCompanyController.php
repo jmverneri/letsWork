@@ -6,9 +6,17 @@ use Models\Company;
 use Utils\Utils;
 use Exception;
 
+use DAO\ICompanyDAO;
+use DAO\IJobOfferDAO;
+use DAO\ICareerDAO;
+use Config\DAOFactory;
+
 class AdminCompanyController
 {
     private CompanyService $companyService;
+    private ICompanyDAO $companyDAO;
+    private IJobOfferDAO $jobOfferDAO;
+    private ICareerDAO $careerDAO;
 
     public function __construct()
     {
@@ -16,16 +24,44 @@ class AdminCompanyController
         // para proteger TODOS sus métodos de un solo golpe.
         Utils::checkAdminSession();
         $this->companyService = new CompanyService();
+        $this->companyDAO  = DAOFactory::getCompanyDAO();
+        $this->jobOfferDAO = DAOFactory::getJobOfferDAO();
+        $this->careerDAO = DAOFactory::getCareerDAO();
     }
 
     /**
      * Muestra el panel principal de gestión de empresas
      */
-    public function showManagerView()
+    public function showCompaniesViews()
     {
+        Utils::checkSession();
+
         $search = $_GET['search'] ?? "";
-        $companiesList = $this->companyService->getList($search);
-        
+
+        $companyList = $this->companyDAO->getAll();
+        $userDAO = DAOFactory::getUserDAO();
+
+        $companiesWithUser = [];
+
+        foreach ($companyList as $company) {
+
+            // Filtro por nombre si hay search
+            if ($search !== "" && !str_starts_with(
+                    strtolower($company->getName()),
+                    strtolower($search)
+                )) {
+                continue;
+            }
+
+            // Obtener el usuario dueño de la company
+            $user = $userDAO->getById($company->getUserId());
+
+            $companiesWithUser[] = [
+                'company' => $company,
+                'email'   => $user ? $user->getEmail() : '—'
+            ];
+        }
+
         require_once(ADMIN_VIEWS . "company-manager.php");
     }
 

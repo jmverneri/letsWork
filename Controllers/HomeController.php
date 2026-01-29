@@ -10,7 +10,7 @@
         use DAO\IStudentDAO;
         use DAO\ICareerDAO;
         use DAO\IUserDAO;
-        use DAO\IUserCompanyDAO;
+        use DAO\ICompanyDAO;
 
         use Config\DAOFactory;
         use Utils\Utils;
@@ -21,14 +21,14 @@
         private IStudentDAO $studentDAO;
         private ICareerDAO $careerDAO;
         private IUserDAO $userDAO;
-        private IUserCompanyDAO $userCompanyDAO;
+        private ICompanyDAO $companyDAO;
 
         public function __construct()
         {
             $this->studentDAO = DAOFactory::getStudentDAO();    
             $this->careerDAO = DAOFactory::getCareerDAO();
             $this->userDAO = DAOFactory::getUserDAO();
-            $this->userCompanyDAO = DAOFactory::getUserCompanyDAO();
+            $this->companyDAO = DAOFactory::getCompanyDAO();
         }
 
         public function index($message = "")
@@ -49,7 +49,7 @@
                 exit();
             }
 
-            require_once(ADMIN_VIEWS . "menu-admin.php");
+            require_once(ADMIN_VIEWS . "admin-dashboard.php");
         }
 
         public function menuStudent()
@@ -68,7 +68,7 @@
             // opcional: guardarlo en sesión
             $_SESSION['student'] = $student;
 
-            require_once(STUDENT_VIEWS . "menu-student.php");
+            require_once(STUDENT_VIEWS . "student-dashboard.php");
         }
     
         public function menuCompany()
@@ -78,16 +78,16 @@
             $user = $_SESSION['loggedUser'];
 
             // 🔑 cargar Company por userId
-            $company = $this->userCompanyDAO->getByUserId($user->getUserId());
+            $company = $this->companyDAO->getByUserId($user->getUserId());
 
-            if (!$userCompany) {
+            if (!$company) {
                 die("Company not found for userId " . $user->getUserId());
             }
 
             // opcional: guardarlo en sesión
-            $_SESSION['userCompany'] = $userCompany;
+            $_SESSION['company'] = $company;
 
-            require_once(STUDENT_VIEWS . "menu-usercompany.php");
+            require_once(COMPANY_VIEWS . "company-dashboard.php");
         }
 
         public function login($data)

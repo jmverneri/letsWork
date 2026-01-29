@@ -11,7 +11,7 @@ define('DEBUG', true); // Cambiar a false en producción
 define("VIEWS_PATH", "Views/");
 define("ADMIN_VIEWS", VIEWS_PATH . "adminviews/");
 define("STUDENT_VIEWS", VIEWS_PATH . "studentviews/");
-define("USERCOMPANY_VIEWS", VIEWS_PATH . "usercompanyviews/");
+define("COMPANY_VIEWS", VIEWS_PATH . "companyviews/");
 
 // RUTAS ABSOLUTAS (para browser: CSS, JS, IMG)
 define("CSS_PATH", "Views/css/");

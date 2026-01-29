@@ -37,7 +37,7 @@ class Utils
     public static function checkCompanySession()
     {
         if (!isset($_SESSION['loggedUser']) || !$_SESSION['loggedUser']->isCompany()) {
-            header("Location: index.php?url=Home/index");
+            header("Location: " . FRONT_ROOT . "Home/index");
             exit();
         }
         return true;
@@ -51,8 +51,26 @@ class Utils
             } elseif ($_SESSION['loggedUser']->isStudent()) {
                 require_once(STUDENT_VIEWS . "student-nav.php");
             } elseif ($_SESSION['loggedUser']->isCompany()) {
-                require_once(USERCOMPANY_VIEWS . "company-nav.php");
+                require_once(COMPANY_VIEWS . "company-nav.php");
             }
+        }
+    }
+
+    public static function loadNav()
+    {
+        if (!isset($_SESSION['loggedUser'])) {
+            require_once(VIEWS_PATH . "nav-guest.php");
+            return;
+        }
+
+        $user = $_SESSION['loggedUser'];
+
+        if ($user->isAdmin()) {
+            require_once(ADMIN_VIEWS . "admin-nav.php");
+        } elseif ($user->isCompany()) {
+            require_once(COMPANY_VIEWS . "company-nav.php");
+        } else {
+            require_once(STUDENT_VIEWS . "student-nav.php");
         }
     }
 
