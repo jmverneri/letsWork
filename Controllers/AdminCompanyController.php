@@ -144,9 +144,13 @@ class AdminCompanyController
     /**
      * Procesa la baja de una empresa
      */
-    public function delete($companyId)
+    public function deleteCompany($companyId)
     {
-        $this->companyService->deleteCompany($companyId);
-        $this->showManagerView("Company deleted.");
+        if ($this->companyService->deleteCompany((int)$companyId)) {
+            header("Location: " . FRONT_ROOT . "Company/showCompaniesViews?msg=deleted");
+        } else {
+            header("Location: " . FRONT_ROOT . "Company/showCompaniesViews?error=activeOffers");
+        }
+        exit();
     }
 }

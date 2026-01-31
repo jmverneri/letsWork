@@ -10,7 +10,7 @@ Utils::checkNav();
 
         <div class="container">
             <h2 class="mb-3">Job Offers By Company</h2>
-            <h4 class="mb-4">Company: <?php echo $this->company->getName();?></h4>
+            <h4 class="mb-4">Company: <?php echo $company->getName();?></h4>
             <div class="container" style="width: 2000px; height: 400px; overflow-y: scroll;">
                 <div class="container" position="fixed">
                     <form action="<?php echo FRONT_ROOT ?>JobOffer/getJobOfferByName" method="POST" enctype="multipart/form-data">
@@ -39,29 +39,17 @@ Utils::checkNav();
                    
                         <?php
                                                       
-                        if ($this->jobOfferList !=NULL) {
-                            foreach ($this->jobOfferList as $jobOffer) {
+                        if ($jobOfferList !=NULL) {
+                            foreach ($jobOfferList as $jobOffer) {
                                                                 
                                 echo "<tr>";
                            
-                                echo  "<td>" . $jobOffer->getName() . "</td>";
-                                echo  "<td>" . $jobOffer->getStartDay() . "</td>";
+                                echo  "<td>" . $jobOffer->getTitle() . "</td>";
+                                echo  "<td>" . $jobOffer->getStartDate() . "</td>";
                                 echo  "<td>" . $jobOffer->getDeadLine() . "</td>";
                                 echo  "<td>" . $jobOffer->getDescription() . "</td>";
                                 echo  "<td>" . $jobOffer->getSalary() . "</td>";
-                            
-                        
-                                if (isset($_SESSION["student"])) {
-                                    $student = $_SESSION["student"];
-                                    echo "<div class='row'>";
-                                    echo "<div class='button-conteiner'>";
-                                    echo "<td><a href=" . FRONT_ROOT . "JobOffer/addStudentToAJobOffer/" . $jobOffer->getJobOfferId() ."/".$student->getStudentId() . ">
-                                <button type='button' class= 'btn btn-success' > Add me</button></a></td>";
-                                    echo "</div>";
-                                    echo "</div>";
                                 }
-                                 
-                            }
                         }else{
                              echo "There aren't Job Offers for this company";
                         }

@@ -66,10 +66,19 @@ class CompanyService
         return $this->companyDAO->Update($company);
     }
 
-    public function deleteCompany(int $id): bool
+    public function deleteCompany(int $id): void
     {
-        // Aquí podrías agregar lógica extra, ej: no borrar si tiene ofertas activas
-        return $this->companyDAO->delete($id);
+        $jobOfferDAO = DAOFactory::getJobOfferDAO();
+        $jobOffers = $jobOfferDAO->getByCompanyId($id);
+
+        foreach ($jobOffers as $jobOffer) {
+            // Verifica si el estado es 'published' o 'active' según tu modelo
+            if ($jobOffer->getStatus() === 'published') {
+                throw new \Exception("activeOffers"); // Enviamos el código de error
+            }
+        }
+
+        $this->companyDAO->delete($id);
     }
 
     /**

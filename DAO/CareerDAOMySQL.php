@@ -1,74 +1,62 @@
 <?php
 namespace DAO;
 
-use Models\Career;
-use DAO\Connection;
-use PDOException;
+use \Exception as Exception;
+use Models\Career as Career;
+use DAO\Connection as Connection;
 
-class CareerDAOMySQL implements ICareerDAO
-{
+class CareerDAOMySQL {
     private $connection;
+    private $tableName = "careers";
 
-    public function getAll(): array
-    {
-        $sql = "SELECT * FROM careers";
-        $careerList = [];
-
+    // Busca una carrera específica en la BD Local (para el perfil del alumno)
+    public function getById($careerId) {
         try {
-            $this->connection = Connection::getInstance();
-            $result = $this->connection->execute($sql);
+            $query = "SELECT * FROM " . $this->tableName . " WHERE careerId = :careerId";
+            $parameters["careerId"] = $careerId;
 
-            foreach ($result as $row) {
-                $career = (new Career())
-                    ->setCareerId($row['career_id'])
-                    ->setDescription($row['description'])
-                    ->setActive($row['active']);
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query, $parameters);
 
-                $careerList[] = $career;
+            if($resultSet) {
+                $row = $resultSet[0];
+                $career = new Career();
+                $career->setCareerId($row["careerId"]);
+                $career->setDescription($row["description"]);
+                $career->setActive($row["active"]);
+                return $career;
             }
-        } catch (PDOException $ex) {
-            throw $ex;
-        }
-
-        return $careerList;
+            return null;
+        } catch (Exception $ex) { throw $ex; }
     }
 
-    public function getById(int $careerId): ?Career
-    {
-        $sql = "SELECT * FROM careers WHERE career_id = :id";
+    // El "Sincronizador": Trae de API y guarda en BD Local
+    public function refreshCareersFromApi() {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/careers'); // Ajustá a tu endpoint de la API
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('x-api-key: 4f3b75d0-055a-49a6-8480-281b32f4a434')); // Tu API KEY
 
-        try {
-            $this->connection = Connection::getInstance();
-            $result = $this->connection->execute($sql, ['id' => $careerId]);
+        $response = curl_exec($ch);
+        $decodedData = json_decode($response, true);
 
-            if (!empty($result)) {
-                $row = $result[0];
-
-                return (new Career())
-                    ->setCareerId($row['career_id'])
-                    ->setDescription($row['description'])
-                    ->setActive($row['active']);
-            }
-        } catch (PDOException $ex) {
-            throw $ex;
+        foreach($decodedData as $careerData) {
+            $this->addFromApi($careerData);
         }
-
-        return null;
     }
 
-    public function add(Career $career): bool
-    {
-        $sql = "INSERT INTO careers (description, active) VALUES (:description, :active)";
-
+    public function addFromApi($data) {
         try {
-            $this->connection = Connection::getInstance();
-            $this->connection->executeNonQuery($sql, [
-                'description' => $career->getDescription(),
-                'active'      => $career->getActive()
-            ]);
-            return true;
-        } catch (PDOException $ex) {
-            throw $ex;
-        }
+            // Usamos REPLACE para que si la carrera ya existe, la actualice
+            $query = "REPLACE INTO " . $this->tableName . " (careerId, description, active) 
+                      VALUES (:careerId, :description, :active);";
+
+            $parameters["careerId"] = $data->getCareerId();
+            $parameters["description"] = $data->getDescription();
+            $parameters["active"] = $data->getActive() ? 1 : 0;
+
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) { throw $ex; }
     }
 }

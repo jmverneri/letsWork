@@ -11,5 +11,5 @@ interface IUserDAO
 
     public function getByEmail(string $email): ?User;
 
-    public function add(User $user): void;
+    public function add(User $user);
 }

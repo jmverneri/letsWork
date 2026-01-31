@@ -5,15 +5,18 @@
     use Models\JobOffer;
     use Utils\Utils;
     use Config\DAOFactory;
+    use DAO\ICompanyDAO;
 
     class AdminJobOfferController
     {
         private JobOfferService $jobOfferService;
+        private ICompanyDAO $companyDAO;
 
         public function __construct()
         {
             Utils::checkAdminSession();
             $this->jobOfferService = new JobOfferService();
+            $this->companyDAO = DAOFactory::getCompanyDAO();
         }
 
         public function listJobOffers()
@@ -66,10 +69,18 @@
             $this->list();
         }
 
-        public function delete($id)
+        public function deleteCompany($id)
         {
-            $this->jobOfferService->delete($id);
-            $this->list();
+            try {
+                $this->companyService->deleteCompany((int)$id);
+                // Redirección de éxito
+                header("Location: " . FRONT_ROOT . "Company/showCompaniesViews?success=deleted");
+            } catch (\Exception $ex) {
+                // Redirección de error (usando & si ya hay un ?, o dejando que el Router lo maneje)
+                // Lo más seguro es pasar el error por la URL así:
+                header("Location: " . FRONT_ROOT . "Company/showCompaniesViews&error=" . $ex->getMessage());
+            }
+            exit();
         }
 
         public function listExpired()
@@ -83,5 +94,22 @@
             $companiesList = $companyDAO->getAll() ?? [];
 
             require_once(ADMIN_VIEWS . "expired-job-offers.php");
+        }
+
+        public function showOffersByCompany(int $companyId)
+        {
+            Utils::checkSession();
+
+            $company = $this->companyDAO->getById($companyId);
+            
+            if (!$company) {
+                $message = "Empresa no encontrada";
+                require_once(VIEWS_PATH . "error_404.php");
+                return;
+            }
+
+            $jobOfferList = $this->jobOfferService->getByCompany($companyId);
+
+            require_once(VIEWS_PATH . "job-offers-by-company.php");
         }
     }

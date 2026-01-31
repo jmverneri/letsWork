@@ -3,7 +3,7 @@
     Utils::checkNav();
 ?>
 
-<main class="py-5" style="background-color: #fbfbfa; min-height: 85vh;">
+<main class="py-5" style="background-color: #fbfbfa; min-height: 100vh; position: relative;">
     <div class="container">
         
         <div class="row mb-5 text-center text-md-left align-items-center">
@@ -53,8 +53,8 @@
             </div>
 
             <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px;">
-                    <div class="card-body p-4 border-left border-secondary" style="background-color: #fdfdfd; border-radius: 0 12px 12px 0;">
+                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; background-color: #fdfdfd; border-left: 4px solid #6c757d;">
+                    <div class="card-body p-4">
                         <div class="h1 mb-3">🔐</div>
                         <h5 class="fw-bold">Security</h5>
                         <p class="small text-muted mb-4">Create and manage internal system accounts.</p>
@@ -64,5 +64,22 @@
             </div>
         </div>
 
-    </div>
+        <div class="row mt-4"> 
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; border-top: 4px solid #ffc107;">
+                    <div class="card-body p-4">
+                        <div class="h1 mb-3">⚙️</div>
+                        <h5 class="fw-bold">System Sync</h5>
+                        <p class="small text-muted mb-4">Import and update Career data from external API.</p>
+                        <a href="<?= FRONT_ROOT ?>Admin/updateCareers" class="btn btn-warning btn-sm btn-block text-white fw-bold shadow-sm">
+                           Update Careers
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 150px; display: block; clear: both;"></div>
+
+    </div> 
 </main>

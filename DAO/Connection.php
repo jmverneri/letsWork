@@ -31,6 +31,15 @@ class Connection
         return self::$instance;
     }
 
+    public function lastInsertId()
+    {
+        try {
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $ex) {
+            throw $ex;
+        }
+    }
+
  /*   public function execute($query, $parameters = array())
     {
          try

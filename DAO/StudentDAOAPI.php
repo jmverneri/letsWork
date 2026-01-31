@@ -2,56 +2,27 @@
 namespace DAO;
 
 use Models\Student;
+use DAO\IStudentDAO;
 
-class StudentDAOApi implements IStudentDAO
-{
-    private $apiUrl = API_URL . 'Student';
+class StudentDAOApi implements IStudentDAO {
 
-    public function getAll()
-    {
-        $response = file_get_contents($this->apiUrl);
-        $data = json_decode($response, true);
+    public function getByEmail($email) {
+        $url = API_URL . 'students/email/' . $email;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('x-api-key: ' . API_KEY));
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        $students = [];
-
-        foreach ($data as $value) {
-            $student = new Student();
-            $student->setStudentId($value['studentId']);
-            $student->setCareerId($value['careerId']);
-            $student->setFirstName($value['firstName']);
-            $student->setLastName($value['lastName']);
-            $student->setEmail($value['email']);
-            $student->setActive($value['active']);
-
-            $students[] = $student;
-        }
-
-        return $students;
-    }
-
-    public function getById($id)
-    {
-        foreach ($this->getAll() as $student) {
-            if ($student->getStudentId() == $id) {
-                return $student;
-            }
+        if ($httpCode === 200) {
+            return json_decode($response, true); // Retorna array con datos de Python
         }
         return null;
     }
 
-    public function getByEmail($email)
-    {
-        foreach ($this->getAll() as $student) {
-            if ($student->getEmail() === $email) {
-                return $student;
-            }
-        }
-        return null;
-    }
-
-    public function add(Student $student)
-    {
-        // POST a la API
-        return true;
-    }
+    public function getAll() { return array(); }
+    public function getById($id) { return null; }
+    public function add(Student $student) { return 0; }
+    public function getByUserId(int $userId): ?Student { return null; }
 }

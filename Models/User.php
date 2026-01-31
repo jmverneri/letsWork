@@ -26,7 +26,7 @@ class User
     private $password;
     private $role; // 'admin' | 'student' | 'company'
     private bool $mustChangePassword = false;
-    
+    private $active;
     
     // ══════════════════════════════════════════════════════════
     // CONSTRUCTOR
@@ -236,6 +236,14 @@ class User
         return !empty($this->email) && 
                !empty($this->password) && 
                in_array($this->role, self::VALID_ROLES);
+    }
+
+    public function getActive() { 
+        return $this->active; 
+    }
+
+    public function setActive($active) { 
+        $this->active = $active; 
     }
 }
 ?>

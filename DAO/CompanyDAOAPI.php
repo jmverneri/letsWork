@@ -1,58 +1,28 @@
 <?php
-    namespace DAO;
+namespace DAO;
 
-    use Models\Company;
-
-    class CompanyDAOApi implements ICompanyDAO
+class CareerDAOApi 
+{
+    public function getAll() 
     {
-        private string $apiUrl = "https://api.example.com/companies";
+        $ch = curl_init();
 
-        public function add(Company $company): void
-        {
-            // Simulación POST a API
-            // En un caso real usarías cURL o Guzzle
-        }
+        curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/careers/");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Importante para FastAPI
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'x-api-key: ' . API_KEY, 
+            'Accept: application/json'
+        ]);
 
-        public function getAll(): array
-        {
-            // Simulación de respuesta API
-            $companyList = [];
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-            $company1 = new Company();
-            $company1->setCompanyId(1);
-            $company1->setName("Globant");
-            $company1->setEmail("rrhh@globant.com");
-            $company1->setActive(true);
-
-            $company2 = new Company();
-            $company2->setCompanyId(2);
-            $company2->setName("Mercado Libre");
-            $company2->setEmail("rrhh@mercadolibre.com");
-            $company2->setActive(true);
-
-            $companyList[] = $company1;
-            $companyList[] = $company2;
-
-            return $companyList;
-        }
-
-        public function getById(int $id): ?Company
-        {
-            foreach ($this->getAll() as $company) {
-                if ($company->getCompanyId() === $id) {
-                    return $company;
-                }
-            }
+        if ($httpCode !== 200) {
+            // Podrías loguear el error aquí si quisieras
             return null;
         }
 
-        public function update(Company $company): void
-        {
-            // Simulación PUT/PATCH a API
-        }
-
-        public function delete(int $id): void
-        {
-            // Simulación DELETE a API
-        }
+        return json_decode($response, true);
     }
+}
