@@ -1,115 +1,80 @@
 <?php
-    namespace Controllers;
+namespace Controllers;
 
-    use Services\JobOfferService;
-    use Models\JobOffer;
-    use Utils\Utils;
-    use Config\DAOFactory;
-    use DAO\ICompanyDAO;
+use Repositories\JobOfferRepository as JobOfferRepository;
+use Repositories\CompanyRepository as CompanyRepository;
+use DAO\JobPositionDAOMySQL as JobPositionDAO;
+use Models\JobOffer as JobOffer;
+use \Exception as Exception;
 
-    class AdminJobOfferController
+class AdminJobOfferController
+{
+    private $jobOfferRepo;
+    private $companyRepo;
+    private $jobPositionDAO;
+
+    public function __construct()
     {
-        private JobOfferService $jobOfferService;
-        private ICompanyDAO $companyDAO;
+        $this->jobOfferRepo = new JobOfferRepository();
+        $this->companyRepo = new CompanyRepository();
+        $this->jobPositionDAO = new JobPositionDAO();
+    }
 
-        public function __construct()
-        {
-            Utils::checkAdminSession();
-            $this->jobOfferService = new JobOfferService();
-            $this->companyDAO = DAOFactory::getCompanyDAO();
-        }
-
-        public function listJobOffers()
-        {
-            $jobOfferList = $this->jobOfferService->getAll();
-
-            $careerDAO = DAOFactory::getCareerDAO();
-            $companyDAO = DAOFactory::getCompanyDAO();
-
-            $careerList = $careerDAO->getAll();
-            $companiesList = $companyDAO->getAll();
-
-            // Defensa
-            $careerList = $careerList ?? [];
-            $companiesList = $companiesList ?? [];
-
-            require_once(ADMIN_VIEWS . "joboffer-list.php");
-        }
-
-        public function addView()
-        {
-             $isAdmin = true;
-             
-            require_once(ADMIN_VIEWS . "joboffer-add.php");
-        }
-
-        public function add(
-            $title,
-            $description,
-            $salary,
-            $startDate,
-            $deadline,
-            $companyId,
-            $careerId,
-            $jobPositionId
-        ) {
-            $jobOffer = new JobOffer();
-            $jobOffer->setTitle($title)
-                    ->setDescription($description)
-                    ->setSalary($salary)
-                    ->setStartDate($startDate)
-                    ->setDeadline($deadline)
-                    ->setCompanyId($companyId)
-                    ->setCareerId($careerId)
-                    ->setJobPositionId($jobPositionId)
-                    ->setStatus("published");
-
-            $this->jobOfferService->add($jobOffer);
-
-            $this->list();
-        }
-
-        public function deleteCompany($id)
-        {
-            try {
-                $this->companyService->deleteCompany((int)$id);
-                // Redirección de éxito
-                header("Location: " . FRONT_ROOT . "Company/showCompaniesViews?success=deleted");
-            } catch (\Exception $ex) {
-                // Redirección de error (usando & si ya hay un ?, o dejando que el Router lo maneje)
-                // Lo más seguro es pasar el error por la URL así:
-                header("Location: " . FRONT_ROOT . "Company/showCompaniesViews&error=" . $ex->getMessage());
-            }
-            exit();
-        }
-
-        public function listExpired()
-        {
-            $jobOfferList = $this->jobOfferService->getExpired();
-
-            $careerDAO = DAOFactory::getCareerDAO();
-            $companyDAO = DAOFactory::getCompanyDAO();
-
-            $careerList = $careerDAO->getAll() ?? [];
-            $companiesList = $companyDAO->getAll() ?? [];
-
-            require_once(ADMIN_VIEWS . "expired-job-offers.php");
-        }
-
-        public function showOffersByCompany(int $companyId)
-        {
-            Utils::checkSession();
-
-            $company = $this->companyDAO->getById($companyId);
+    public function showAddView($companyId, $message = "")
+    {
+        try {
+            $company = $this->companyRepo->getById($companyId);
+            $jobPositions = $this->jobPositionDAO->getAll();
             
-            if (!$company) {
-                $message = "Empresa no encontrada";
-                require_once(VIEWS_PATH . "error_404.php");
-                return;
-            }
-
-            $jobOfferList = $this->jobOfferService->getByCompany($companyId);
-
-            require_once(VIEWS_PATH . "job-offers-by-company.php");
+            require_once(ADMIN_VIEWS . "job-offer-add.php");
+        } catch (Exception $ex) {
+            echo "Error: " . $ex->getMessage();
         }
     }
+
+    public function add()
+    {
+        if($_POST) {
+            try {
+                $jobOffer = new JobOffer();
+                
+                // Extraemos los datos del POST manualmente
+                $jobOffer->setTitle($_POST["title"]);
+                $jobOffer->setDescription($_POST["description"]);
+                $jobOffer->setSalary($_POST["salary"]);
+                $jobOffer->setStartDate($_POST["startDate"]);
+                $jobOffer->setDeadline($_POST["deadline"]);
+                $jobOffer->setCompanyId($_POST["companyId"]);
+                $jobOffer->setJobPositionId($_POST["jobPositionId"]);
+                $jobOffer->setActive(true);
+
+                $this->jobOfferRepo->add($jobOffer);
+
+                // Si todo sale bien, volvemos a la lista
+                header("location: " . FRONT_ROOT . "AdminCompany/showCompaniesViews");
+                
+            } catch (Exception $ex) {
+                // Si hay error, volvemos a la vista de alta con el ID de la empresa
+                $this->showAddView($_POST["companyId"], "Error: " . $ex->getMessage());
+            }
+        }
+    }
+
+   public function showListView($companyId)
+    {
+        try {
+            $company = $this->companyRepo->getById($companyId);
+            $jobOfferList = $this->jobOfferRepo->getByCompanyId($companyId);
+            
+            // ESTA ES LA LÍNEA QUE TE FALTA:
+            $companiesList = $this->companyRepo->getAll(); 
+            
+            // También asegurate de tener esta para las posiciones:
+            $careerList = $this->jobPositionDAO->getAll(); 
+
+            require_once(ADMIN_VIEWS . "job-offer-list.php");
+        } catch (Exception $ex) {
+            echo "Error: " . $ex->getMessage();
+        }
+    }
+}

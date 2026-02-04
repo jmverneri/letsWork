@@ -1,127 +1,87 @@
 <?php
 namespace DAO;
 
-use Models\JobOffer;
-use DAO\Connection;
+use \Exception as Exception;
+use DAO\Connection as Connection;
+use Models\JobOffer as JobOffer;
 
-class JobOfferDAOMySQL implements IJobOfferDAO
+class JobOfferDAOMySQL
 {
-    private Connection $connection;
+    private $connection;
+    private $tableName = "job_offers";
 
-    public function __construct()
+    public function Add(JobOffer $jobOffer)
     {
-        $this->connection = Connection::getInstance();
+        try {
+            $query = "INSERT INTO " . $this->tableName . " (title, description, salary, startDate, deadline, active, companyId, jobPositionId) 
+                      VALUES (:title, :description, :salary, :startDate, :deadline, :active, :companyId, :jobPositionId);";
+
+            $parameters["title"] = $jobOffer->getTitle();
+            $parameters["description"] = $jobOffer->getDescription();
+            $parameters["salary"] = $jobOffer->getSalary();
+            $parameters["startDate"] = $jobOffer->getStartDate();
+            $parameters["deadline"] = $jobOffer->getDeadline();
+            $parameters["active"] = $jobOffer->getActive() ? 1 : 0;
+            $parameters["companyId"] = $jobOffer->getCompanyId();
+            $parameters["jobPositionId"] = $jobOffer->getJobPositionId();
+
+            $this->connection = Connection::GetInstance();
+            return $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 
-    public function add(JobOffer $jobOffer): void
+    public function GetAll()
     {
-        $query = "
-            INSERT INTO job_offers 
-            (title, description, salary, start_date, deadline, status, company_id, career_id, job_position_id)
-            VALUES (:title, :description, :salary, :start_date, :deadline, :status, :company_id, :career_id, :job_position_id)
-        ";
+        try {
+            $jobOfferList = array();
 
-        $this->connection->executeNonQuery($query, [
-            "title" => $jobOffer->getTitle(),
-            "description" => $jobOffer->getDescription(),
-            "salary" => $jobOffer->getSalary(),
-            "start_date" => $jobOffer->getStartDate(),
-            "deadline" => $jobOffer->getDeadline(),
-            "status" => $jobOffer->getStatus(),
-            "company_id" => $jobOffer->getCompanyId(),
-            "career_id" => $jobOffer->getCareerId(),
-            "job_position_id" => $jobOffer->getJobPositionId()
-        ]);
+            // SQL con JOINs para traer los nombres de empresa y posición de una sola vez
+            $query = "SELECT jo.*, c.name as companyName, jp.description as jobPositionDescription
+                      FROM " . $this->tableName . " jo
+                      INNER JOIN companies c ON jo.companyId = c.companyId
+                      INNER JOIN job_positions jp ON jo.jobPositionId = jp.jobPositionId";
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $jobOffer = new JobOffer();
+                $jobOffer->setJobOfferId($row["jobOfferId"]);
+                $jobOffer->setTitle($row["title"]);
+                $jobOffer->setDescription($row["description"]);
+                $jobOffer->setSalary($row["salary"]);
+                $jobOffer->setStartDate($row["startDate"]);
+                $jobOffer->setDeadline($row["deadline"]);
+                $jobOffer->setActive($row["active"]);
+                $jobOffer->setCompanyId($row["companyId"]);
+                $jobOffer->setJobPositionId($row["jobPositionId"]);
+                
+                // Seteamos los nombres que vienen del JOIN
+                $jobOffer->setCompanyName($row["companyName"]);
+                $jobOffer->setJobPositionDescription($row["jobPositionDescription"]);
+
+                array_push($jobOfferList, $jobOffer);
+            }
+
+            return $jobOfferList;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 
-    public function update(JobOffer $jobOffer): void
+    public function UpdateActiveStatus($jobOfferId, $status)
     {
-        $query = "
-            UPDATE job_offers SET
-                title = :title,
-                description = :description,
-                salary = :salary,
-                deadline = :deadline,
-                status = :status
-            WHERE job_offer_id = :id
-        ";
+        try {
+            $query = "UPDATE " . $this->tableName . " SET active = :active WHERE jobOfferId = :jobOfferId";
+            $parameters["active"] = $status ? 1 : 0;
+            $parameters["jobOfferId"] = $jobOfferId;
 
-        $this->connection->executeNonQuery($query, [
-            "title" => $jobOffer->getTitle(),
-            "description" => $jobOffer->getDescription(),
-            "salary" => $jobOffer->getSalary(),
-            "deadline" => $jobOffer->getDeadline(),
-            "status" => $jobOffer->getStatus(),
-            "id" => $jobOffer->getJobOfferId()
-        ]);
-    }
-
-    public function delete(int $jobOfferId): void
-    {
-        $query = "DELETE FROM job_offers WHERE job_offer_id = :id";
-        $this->connection->executeNonQuery($query, ["id" => $jobOfferId]);
-    }
-
-    public function getById(int $jobOfferId)
-    {
-        $query = "SELECT * FROM job_offers WHERE job_offer_id = :id";
-        $result = $this->connection->execute($query, ["id" => $jobOfferId]);
-
-        return $result ? $this->mapRow($result[0]) : null;
-    }
-
-    public function getAll()
-    {
-        $query = "SELECT * FROM job_offers";
-        return $this->mapList($this->connection->execute($query));
-    }
-
-    public function getByCompany(int $companyId)
-    {
-        $query = "SELECT * FROM job_offers WHERE company_id = :id";
-        return $this->mapList($this->connection->execute($query, ["id" => $companyId]));
-    }
-
-    public function getByCareer(int $careerId)
-    {
-        $query = "SELECT * FROM job_offers WHERE career_id = :id";
-        return $this->mapList($this->connection->execute($query, ["id" => $careerId]));
-    }
-
-    public function getPublished()
-    {
-        $query = "SELECT * FROM job_offers WHERE status = 'published'";
-        return $this->mapList($this->connection->execute($query));
-    }
-
-    public function getActivePublished()
-    {
-        $query = "
-            SELECT * FROM job_offers 
-            WHERE status = 'published' AND deadline >= CURDATE()
-        ";
-        return $this->mapList($this->connection->execute($query));
-    }
-
-    private function mapList(array $rows)
-    {
-        return array_map(fn($row) => $this->mapRow($row), $rows);
-    }
-
-    private function mapRow(array $row)
-    {
-        $job = new JobOffer();
-        $job->setJobOfferId($row["job_offer_id"])
-            ->setTitle($row["title"])
-            ->setDescription($row["description"])
-            ->setSalary($row["salary"])
-            ->setStartDate($row["start_date"])
-            ->setDeadline($row["deadline"])
-            ->setStatus($row["status"])
-            ->setCompanyId($row["company_id"])
-            ->setCareerId($row["career_id"])
-            ->setJobPositionId($row["job_position_id"]);
-
-        return $job;
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 }

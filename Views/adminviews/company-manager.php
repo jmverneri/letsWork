@@ -63,10 +63,13 @@ Utils::checkNav();
 
                                 <td class="align-middle text-center">
                                     <div class="btn-group">
-                                        <a href="<?php echo FRONT_ROOT . "JobOffer/showAddView?companyId=" . $company->getCompanyId(); ?>" class="btn btn-success" style="min-width: 80px;">
-                                            <i class="fas fa-plus"></i> Add
+                                        <a href="<?php echo FRONT_ROOT . "AdminJobOffer/showAddView/" . $company->getCompanyId(); ?>" 
+                                            class="btn btn-success" 
+                                            style="min-width: 80px;">
+                                            Add
                                         </a>
-                                        <a href="<?php echo FRONT_ROOT . "JobOffer/showListView?companyId=" . $company->getCompanyId(); ?>" class="btn btn-info" style="min-width: 80px;">
+                                        <a href="<?php echo FRONT_ROOT . "AdminJobOffer/showListView/" . $company->getCompanyId(); ?>" 
+                                        class="btn btn-info" style="min-width: 80px;">
                                             <i class="fas fa-eye"></i> View
                                         </a>
                                     </div>
