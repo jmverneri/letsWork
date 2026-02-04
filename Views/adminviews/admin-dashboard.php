@@ -24,7 +24,7 @@
                         <h5 class="fw-bold">Companies</h5>
                         <p class="small text-muted mb-4">Manage corporate partners and details.</p>
                         <a href="<?= FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn btn-outline-primary btn-sm btn-block mb-2">View List</a>
-                        <a href="<?= FRONT_ROOT ?>Company/RedirectAddForm" class="btn btn-primary btn-sm btn-block">+ Add New</a>
+                        <a href="<?= FRONT_ROOT ?>Company/redirectAddForm" class="btn btn-primary btn-sm btn-block">+ Add New</a>
                     </div>
                 </div>
             </div>

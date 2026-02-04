@@ -113,6 +113,8 @@
                     $student->setActive($row["active"]);
                     $student->setUserId($row["userId"]);
 
+                    $student->setCareerId($row["careerId"] ?? null);
+
                     return $student;
                 }
                 return null;

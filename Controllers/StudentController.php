@@ -2,19 +2,16 @@
 
     namespace Controllers;
 
-    use DAO\IStudentDAO;
-    use DAO\ICompanyDAO;
-    use DAO\ICareerDAO;
-    use Config\DAOFactory;
+    use Repositories\StudentRepository;
+    use Repositories\CareerRepository;
     use Models\Student;
     use Models\Career;
     use Utils\Utils;
 
     class StudentController
     {
-        private IStudentDAO $studentDAO;
-        private ICompanyDAO $companyDAO;
-        private ICareerDAO $careerDAO;
+        private StudentRepository $studentRepo;
+        private CareerRepository $careerRepo;
 
         private array $studentList = [];
         private array $careerList = [];
@@ -22,9 +19,8 @@
         public function __construct()
         {
             
-            $this->studentDAO = DAOFactory::getStudentDAO();
-            //$this->companyDAO = DAOFactory::getCompanyDAO();
-            $this->careerDAO  = DAOFactory::getCareerDAO();
+            $this->studentRepo = new StudentRepository();
+            $this->careerRepo = new CareerRepository();
         }
 
         public function showStudentRegistration()
@@ -74,26 +70,34 @@
             require_once(ADMIN_VIEWS . "student-list.php");
         }
 
-       public function showStudentProfile()
+        public function showStudentProfile()
         {
             Utils::checkStudentSession();
-
             $user = $_SESSION['loggedUser'];
 
-            $student = $this->studentDAO->getByUserId($user->getUserId());
+            try {
+                $student = $this->studentRepo->getByUserId($user->getUserId());
 
-            if (!$student) {
-                header("Location: " . FRONT_ROOT . "Home/index");
-                exit();
+                if (!$student) {
+                    $_SESSION['login_error'] = "Perfil no encontrado.";
+                    header("Location: " . FRONT_ROOT . "Home/index");
+                    exit();
+                }
+
+                // Aquí aplicamos tu validación: el repo busca en BD o en API automáticamente
+                $career = null;
+                if ($student->getCareerId()) {
+                    $career = $this->careerRepo->getById($student->getCareerId());
+                }
+
+                require_once(STUDENT_VIEWS . "student-profile.php");
+
+            } catch (\Exception $ex) {
+                // Loguear error o mostrar mensaje
+                $message = "Hubo un problema al cargar los datos.";
+                require_once(VIEWS_PATH . "login.php");
             }
-
-            $career = null;
-            if ($student->getCareerId()) {
-                $career = $this->careerDAO->getById($student->getCareerId());
-            }
-
-            require_once(STUDENT_VIEWS . "student-profile.php");
-}
+        }
 
 
         public function studentValidation($email)

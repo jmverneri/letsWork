@@ -7,7 +7,6 @@
         private int $userId;
 
         private string $name;
-        private ?int $yearFoundation = null;
         private ?string $city = null;
         private ?string $description = null;
         private ?string $logo = null;
@@ -50,17 +49,6 @@
         public function setName($name)
         {
                 $this->name = $name;
-                return $this;
-        }
-
-        public function getYearFoundation()
-        {
-                return $this->yearFoundation;
-        }
-
-        public function setYearFoundation($yearFoundation)
-        {
-                $this->yearFoundation = $yearFoundation;
                 return $this;
         }
 

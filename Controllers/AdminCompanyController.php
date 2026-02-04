@@ -1,156 +1,276 @@
 <?php
 namespace Controllers;
 
-use Services\CompanyService;
+use Repositories\CompanyRepository;
 use Models\Company;
 use Utils\Utils;
 use Exception;
 
-use DAO\ICompanyDAO;
-use DAO\IJobOfferDAO;
-use DAO\ICareerDAO;
-use Config\DAOFactory;
-
 class AdminCompanyController
 {
-    private CompanyService $companyService;
-    private ICompanyDAO $companyDAO;
-    private IJobOfferDAO $jobOfferDAO;
-    private ICareerDAO $careerDAO;
+    private $companyRepo;
+    public $message;
+    public $company;
 
     public function __construct()
     {
-        // En un controlador de Admin, validamos la sesión en el constructor
-        // para proteger TODOS sus métodos de un solo golpe.
+        // Validamos que sea Admin antes de dejarlo tocar nada
         Utils::checkAdminSession();
-        $this->companyService = new CompanyService();
-        $this->companyDAO  = DAOFactory::getCompanyDAO();
-        $this->jobOfferDAO = DAOFactory::getJobOfferDAO();
-        $this->careerDAO = DAOFactory::getCareerDAO();
+        $this->companyRepo = new CompanyRepository();
     }
 
     /**
      * Muestra el panel principal de gestión de empresas
      */
-    public function showCompaniesViews()
+    // Modificamos para que acepte el parámetro que manda el Router
+    public function showCompaniesViews($data = "")
     {
-        Utils::checkSession();
+        // Si $data es un array, es que viene del formulario POST
+        $search = "";
+        if (is_array($data) && isset($data['search'])) {
+            $search = $data['search'];
+        } elseif (isset($_GET['search'])) { // Por si acaso queda algún link GET
+            $search = $_GET['search'];
+        }
 
-        $search = $_GET['search'] ?? "";
+        $this->message = is_string($data) ? $data : "";
 
-        $companyList = $this->companyDAO->getAll();
-        $userDAO = DAOFactory::getUserDAO();
-
-        $companiesWithUser = [];
+        $companyList = $this->companyRepo->getAll();
+        $companiesWithEmail = [];
 
         foreach ($companyList as $company) {
+        // Si hay un término de búsqueda...
+        if (!empty($search)) {
+            $companyName = strtolower($company->getName());
+            $searchTerm = strtolower($search);
 
-            // Filtro por nombre si hay search
-            if ($search !== "" && !str_starts_with(
-                    strtolower($company->getName()),
-                    strtolower($search)
-                )) {
+            // strpos devuelve la posición del término. 
+            // Si NO es 0 (cero), significa que o no está, o está en el medio.
+            // Usamos !== 0 para descartar todo lo que no empiece exacto.
+            if (strpos($companyName, $searchTerm) !== 0) {
                 continue;
             }
+        }
 
-            // Obtener el usuario dueño de la company
-            $user = $userDAO->getById($company->getUserId());
+        $user = $this->companyRepo->getUserById($company->getUserId());
 
-            $companiesWithUser[] = [
-                'company' => $company,
-                'email'   => $user ? $user->getEmail() : '—'
-            ];
+        $companiesWithEmail[] = [
+            'company' => $company,
+            'email'   => ($user) ? $user->getEmail() : 'No email'
+        ];
         }
 
         require_once(ADMIN_VIEWS . "company-manager.php");
     }
 
     /**
-     * Muestra el formulario para agregar una nueva empresa
+     * Muestra el formulario para agregar
      */
     public function showAddView($message = "")
     {
+        $this->message = $message;
         require_once(ADMIN_VIEWS . "company-add.php");
     }
 
     /**
-     * Muestra el formulario de edición con los datos cargados
+     * Muestra el formulario de edición (el que armamos antes)
      */
-    public function showModifyView($companyId)
-    {   
-        $company = $this->companyService->getById($companyId);
+    public function showModifyView($companyId) 
+    {
+        // 1. Extraer ID del array del Router
+        $id = is_array($companyId) ? ($companyId['companyId'] ?? null) : $companyId;
 
-        if (!$company) {
-            $this->showManagerView("Company not found.");
-            return;
+        if ($id) {
+            // 2. Buscar la empresa
+            $company = $this->companyRepo->getById((int)$id);
+
+            if($company) {
+                // 3. Buscar el email del usuario relacionado
+                $user = $this->companyRepo->getUserById($company->getUserId());
+                $email = ($user) ? $user->getEmail() : '';
+
+                // 4. Cargar la vista. 
+                // IMPORTANTE: Las variables $company y $email ya están disponibles aquí.
+                require_once(ADMIN_VIEWS . "company-edit.php");
+            } else {
+                $this->showCompaniesViews("Error: Company not found in database.");
+            }
+        } else {
+            $this->showCompaniesViews("Error: No ID provided for editing.");
         }
-
-        require_once(ADMIN_VIEWS . "company-modify.php");
     }
 
     /**
-     * Procesa el alta de una empresa
+     * Procesa el alta: Delegamos todo al Repo
      */
-    public function add($name, $yearFoundation, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)
+    public function add($name, $city, $description, $email, $phoneNumber, $pre, $dni, $ultimo)
     {
         try {
-            $company = new Company();
-            $company->setName($name);
-            $company->setYearFoundation($yearFoundation);
-            $company->setCity($city);
-            $company->setDescription($description);      
-            $company->setEmail($email);
-            $company->setPhoneNumber($phoneNumber);
-            $company->buildCuit($pre, $dni, $ultimo);
+            // Armamos el CUIT desde los 3 campitos del form
+            $cuit = $pre . "-" . $dni . "-" . $ultimo;
 
-            // El Service lanza una excepción si el CUIT está duplicado
-            $this->companyService->addCompany($company);
+            $data = [
+                'name' => $name,
+                'city' => $city,
+                'description' => $description,
+                'email' => $email,
+                'phoneNumber' => $phoneNumber,
+                'cuit' => $cuit
+            ];
+
+            // Este método del Repo crea el User y la Company
+            $this->companyRepo->createWithUser($data);
             
-            $message = "The company has been saved correctly. Flawless Victory.";
-            $this->showManagerView($message);
+            $this->showCompaniesViews("The company has been saved correctly.");
 
         } catch (Exception $e) {
-            $message = $e->getMessage();
-            $this->showAddView($message);
+            $this->showAddView("Error: " . $e->getMessage());
         }
     }
 
     /**
-     * Procesa la actualización de datos
+     * Procesa la actualización
      */
-    public function update($companyId, $name, $yearFoundation, $city, $description, $email, $phoneNumber, $cuit)
+    // Cambiamos los 7 parámetros por uno solo: $data
+    public function update($data)
     {
         try {
-            $company = new Company();
-            $company->setCompanyId($companyId);
-            $company->setName($name);
-            $company->setYearFoundation($yearFoundation);
-            $company->setCity($city);
-            $company->setDescription($description);
-            $company->setEmail($email);
-            $company->setPhoneNumber($phoneNumber);
-            $company->setCuit($cuit);
+            // Extraemos manualmente los datos del array que mandó el Router
+            $companyId   = $data['companyId'];
+            $name        = $data['name'];
+            $cuit        = $data['cuit'];
+            $email       = $data['email'];
+            $city        = $data['city'];
+            $phoneNumber = $data['phoneNumber'];
+            $active      = $data['active'];
+            $description = $data['description'];
 
-            $this->companyService->updateCompany($company);
-            
-            $this->showManagerView("Company updated successfully.");
+            // 1. Buscamos la empresa en la base de datos
+            $company = $this->companyRepo->getById((int)$companyId);
 
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-            $this->showModifyView($companyId, $message);
+            if($company) {
+                // 2. Seteamos los nuevos valores al objeto Company
+                $company->setName($name);
+                $company->setCuit($cuit);
+                $company->setCity($city);
+                $company->setPhoneNumber($phoneNumber);
+                $company->setDescription($description);
+                $company->setActive((bool)$active);
+
+                // 3. Persistimos los cambios (esto actualiza Company y User)
+                $this->companyRepo->updateCompany($company, $email);
+
+                $this->showCompaniesViews("Company updated successfully!");
+            } else {
+                $this->showCompaniesViews("Error: Company not found.");
+            }
+        } catch (Exception $ex) {
+            $this->showCompaniesViews("Error during update: " . $ex->getMessage());
         }
     }
 
     /**
-     * Procesa la baja de una empresa
+     * Procesa la baja (Baja lógica: active = 0)
      */
     public function deleteCompany($companyId)
     {
-        if ($this->companyService->deleteCompany((int)$companyId)) {
-            header("Location: " . FRONT_ROOT . "Company/showCompaniesViews?msg=deleted");
-        } else {
-            header("Location: " . FRONT_ROOT . "Company/showCompaniesViews?error=activeOffers");
+        try {
+            // El Router suele mandar el ID en un array si viene de un POST
+            $id = is_array($companyId) ? $companyId['companyId'] : $companyId;
+            
+            // 1. Buscamos la empresa
+            $company = $this->companyRepo->getById((int)$id);
+
+            if($company) {
+                // 2. FILTRO: Verificamos si ya está inactiva
+                if($company->isActive() == false) {
+                    $this->showCompaniesViews("The company is already inactive.");
+                    return;
+                }
+
+                // 3. Ejecutamos el borrado lógico a través del repo
+                $this->companyRepo->deleteLogic($company);
+                
+                $this->showCompaniesViews("Company deactivated successfully.");
+            } else {
+                $this->showCompaniesViews("Error: Company not found.");
+            }
+        } catch (Exception $ex) {
+            $this->showCompaniesViews("Error: " . $ex->getMessage());
         }
-        exit();
+    }
+
+    public function getAll(): array
+    {
+        try {
+            $companyList = array();
+            // Traemos todo de companies (c.*) y solo el email de users (u.email)
+            $query = "SELECT c.*, u.email 
+                    FROM " . $this->tableName . " c
+                    INNER JOIN users u ON c.userId = u.userId
+                    WHERE c.active = 1;"; // Opcional: solo traer las activas
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $companyList[] = $this->map($row);
+            }
+
+            return $companyList;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * Mapeo ajustado para incluir el email que viene del JOIN
+     */
+    private function map($row)
+    {
+        $company = new Company();
+        $company->setCompanyId($row["companyId"]);
+        $company->setName($row["name"]);
+        $company->setCuit($row["cuit"]);
+        $company->setCity($row["city"]);
+        $company->setDescription($row["description"]);
+        $company->setPhoneNumber($row["phoneNumber"]);
+        $company->setActive((bool)$row["active"]);
+        $company->setUserId($row["userId"]);
+        
+        // Si tu modelo Company tiene setEmail, lo cargamos acá
+        if(isset($row["email"])) {
+            $company->setEmail($row["email"]);
+        }
+
+        return $company;
+    }
+
+    // CompanyRepository.php
+
+    public function getUserById($userId) 
+    {
+        return $this->userRepo->getById($userId); 
+    }
+
+    public function reactiveCompany($companyId)
+    {
+        try {
+            // Manejamos si viene por POST (array) o directo
+            $id = is_array($companyId) ? $companyId['companyId'] : $companyId;
+            
+            $company = $this->companyRepo->getById((int)$id);
+
+            if($company) {
+                // Pasamos a true el estado
+                $this->companyRepo->reactivateLogic($company);
+                
+                $this->showCompaniesViews("Company reactivated successfully.");
+            } else {
+                $this->showCompaniesViews("Error: Company not found.");
+            }
+        } catch (Exception $ex) {
+            $this->showCompaniesViews("Error: " . $ex->getMessage());
+        }
     }
 }

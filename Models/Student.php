@@ -8,7 +8,7 @@ class Student
     ===================== */
     private int $studentId;
     private int $userId;
-    private int $careerId;
+    private ?int $careerId = null;
 
     /* =====================
        PERSONAL DATA
@@ -58,7 +58,7 @@ class Student
     /* =====================
        CAREER ID
     ===================== */
-    public function getCareerId(): int
+    public function getCareerId(): ?int
     {
         return $this->careerId;
     }

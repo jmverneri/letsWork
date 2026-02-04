@@ -1,79 +1,74 @@
 <?php
-
-use Utils\Utils;
-
-Utils::checkNav();
-
-if (isset($this->message)) {
-     echo "$this->message";
-}
+    use Utils\Utils;
+    Utils::checkNav(); // O la validación de sesión de Admin que uses
 ?>
-<main class="py-5">
 
+<main class="py-5">
      <section id="listado" class="mb-5">
           <div class="container">
+               <h2 class="mb-4">Add New Company</h2>
 
-               <h2 class="mb-4">Add Company</h2>
-
-               <form action="<?php echo FRONT_ROOT ?>Company/AddCompany" method="POST" class="bg-light-alpha p-5" enctype="multipart/form-data">
-                    <div class="row">
-                         <div class="col-lg-4">
-
-                              <label for=""><b>Name</b></label>
-                              <input type="text" name="name" value="" class="form-control" required value="">
-
-                         </div>
-                         <div class="col-lg-4">
-
-                              <label for=""><b>CUIT</b></label>
-                              <br>
-                              <input type="number" placeholder="00" min="20" max="27" name="pre" value="" class="form-control-sm" required value="">
-                              <input type="number" placeholder="00000000" min="11111111" max="99999999" name="dni" value="" class="form-control-sm" required value="">
-                              <input type="number" placeholder="0" min="1" max="9" name="ultimo" value="" class="form-control-sm" required value="">
-
-                         </div>
-                         <div class="col-lg-4">
-
-                              <label for="yearfoundation"><b>Year Foundation</b></label>
-                              <input type="date" name="yearFoundation" id="yearfoundation" value="" min="1900-01-01" max="<?php echo date("Y-m-d"); ?>" class="form-control" required value="">
-
-                         </div>
-                         <div class="col-lg-4">
-
-                              <label for="city"><b>City</b></label>
-                              <input type="text" name="city" value="" id="city" class="form-control" required value="">
-
-                         </div>
-                         <div class="col-lg-4">
-
-                              <label for="description"><b>Description</b></label>
-                              <input type="text" name="description" id="description" value="" class="form-control" required value="">
-
-                         </div>
-                         <div class="col-lg-4">
-
-                              <label for="email"><b>Email</b></label>
-                              <input type="mail" name="email" value="" id="email" class="form-control" required value="">
-
-                         </div>
-                         <div class="col-lg-4">
-
-                              <label for="phonenumber"><b>Phone Number</b></label>
-                              <input type="number" name="phoneNumber" value="" id="phonenumber" class="form-control" required value="">
-
-                         </div>
-
-                         <!-- <div class="col-lg-4">
-                         
-                                   <label for="" ><b>Logo</b></label>
-                                   <input type="file" name="logo" value="" class="form-control" required value="">
-                             
-                         </div>-->
+               <?php if(isset($this->message) && $this->message != "") { ?>
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <?php echo $this->message; ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <button type="submit" name="" class="btn btn-dark ml-auto d-block">Add</button>
+               <?php } ?>
 
+               <form action="<?php echo FRONT_ROOT ?>Company/AddCompany" method="POST" class="bg-light-alpha p-5">
+                    <div class="row">
+                         <div class="col-lg-6">
+                              <label for="email"><b>Company Email (Login)</b></label>
+                              <input type="email" name="email" id="email" class="form-control" placeholder="admin@company.com" required>
+                              <small class="text-muted">Este email se usará para iniciar sesión. La clave será el CUIT.</small>
+                         </div>
+
+                         <div class="col-lg-6">
+                              <label for="name"><b>Company Name</b></label>
+                              <input type="text" name="name" id="name" class="form-control" placeholder="Company Name S.A." required>
+                         </div>
+
+                         <div class="col-lg-6 mt-3">
+                              <label for="cuit"><b>CUIT</b></label>
+                              <input type="text" 
+                                     name="cuit" 
+                                     id="cuit" 
+                                     class="form-control" 
+                                     placeholder="30123456789" 
+                                     pattern="^(30|33|34)\d{8}\d$" 
+                                     title="Debe empezar con 30, 33 o 34 y tener 11 dígitos sin guiones" 
+                                     required>
+                              <small class="text-muted">11 dígitos sin guiones (ej: 30123456789).</small>
+                         </div>
+
+                         <div class="col-lg-6 mt-3">
+                              <label for="city"><b>City</b></label>
+                              <input type="text" name="city" id="city" class="form-control" placeholder="Mar del Plata">
+                         </div>
+
+                         <div class="col-lg-6 mt-3">
+                              <label for="phoneNumber"><b>Phone Number</b></label>
+                              <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="2235123456">
+                         </div>
+
+                         <div class="col-lg-6 mt-3">
+                              <label for="logo"><b>Logo URL</b></label>
+                              <input type="text" name="logo" id="logo" class="form-control" placeholder="http://example.com/logo.png">
+                         </div>
+
+                         <div class="col-lg-12 mt-3">
+                              <label for="description"><b>Description</b></label>
+                              <textarea name="description" id="description" class="form-control" rows="3" placeholder="Tell us about the company..."></textarea>
+                         </div>
+                    </div>
+
+                    <div class="mt-4">
+                         <button type="submit" class="btn btn-primary btn-lg px-5">Add Company</button>
+                         <a href="<?php echo FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn btn-outline-secondary btn-lg px-5 ml-2">Cancel</a>
+                    </div>
                </form>
           </div>
      </section>
 </main>
-<br><br><br>

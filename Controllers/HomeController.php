@@ -30,9 +30,9 @@
 
         public function __construct()
         {
-            $this->studentDAO = DAOFactory::getStudentDAO();    
-            $this->careerDAO = DAOFactory::getCareerDAO();
-            $this->companyDAO = DAOFactory::getCompanyDAO();
+            //$this->studentDAO = DAOFactory::getStudentDAO();    
+            //$this->careerDAO = DAOFactory::getCareerDAO();
+            //$this->companyDAO = DAOFactory::getCompanyDAO();
             
             // 🔑 REPOS Y DATOS REALES
             $this->studentRepo = new StudentRepository();

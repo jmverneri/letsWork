@@ -11,34 +11,78 @@ class UserDAOMySQL implements IUserDAO
     private $connection;
     private $tableName = "users";
 
-    public function add(User $user)
+    public function __construct()
     {
-        try {
-            $query = "INSERT INTO users (email, password, role, active) VALUES (:email, :password, :role, :active);";
-
-            $parameters["email"] = $user->getEmail();
-            $parameters["password"] = $user->getPassword();
-            $parameters["role"] = $user->getRole();
-            $parameters["active"] = $user->getActive() ? 1 : 0;
-
-            $this->connection = Connection::GetInstance();
-            $this->connection->ExecuteNonQuery($query, $parameters);
-
-            // Esto es clave: le pedimos a la conexión el ID que acaba de crear
-            return $this->connection->lastInsertId(); 
-        } catch (Exception $ex) {
-            throw $ex;
-        }
+        $this->connection = Connection::GetInstance();
     }
 
-    // El "string" antes de $email y el ": ?User" al final son obligatorios
+    /**
+     * Inserta un usuario y retorna el ID generado por la base de datos
+     */
+    public function getAndSyncByEmail($email) {
+        // 1. Buscamos localmente
+        $student = $this->userDAO->getByEmail($email);
+
+        if (!$student) {
+            // 2. Buscamos en la API de Python
+            $data = $this->api->getByEmail($email);
+
+            if ($data) {
+                // --- PASO A: Crear el Objeto User y guardarlo ---
+                $user = new \Models\User();
+                $user->setEmail($data['email']);
+                $user->setPassword(password_hash($data['dni'], PASSWORD_DEFAULT));
+                $user->setRole("student");
+                $user->setActive(true);
+
+                // Guardamos el usuario y obtenemos su ID automático
+                $userId = $this->userDAO->add($user); 
+
+                // --- PASO B: Crear el Objeto Student ---
+                $newStudent = new \Models\Student();
+                $newStudent->setUserId($userId); // El cruce de tablas
+                $newStudent->setFirstName($data['firstName']);
+                $newStudent->setLastName($data['lastName']);
+                $newStudent->setDni($data['dni']);
+                $newStudent->setFileNumber($data['fileNumber']);
+                $newStudent->setGender($data['gender']);
+                $newStudent->setBirthDate($data['birthDate']);
+                $newStudent->setPhoneNumber($data['phoneNumber']);
+                $newStudent->setCareerId($data['careerId']);
+                $newStudent->setActive(true);
+
+                // --- PASO C: Guardar el Student en MySQL ---
+                $this->db->add($newStudent);
+
+                $student = $newStudent;
+            }
+        }
+        return $student;
+    }
+
     public function getByEmail(string $email): ?User 
     {
         try {
             $query = "SELECT * FROM " . $this->tableName . " WHERE email = :email";
             $parameters["email"] = $email;
 
-            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query, $parameters);
+
+            if (!empty($resultSet)) {
+                return $this->map($resultSet[0]);
+            }
+            return null;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function getById(int $userId): ?User
+    {
+        try {
+            $query = "SELECT * FROM " . $this->tableName . " WHERE userId = :userId";
+            $parameters["userId"] = $userId;
+
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if (!empty($resultSet)) {
@@ -55,7 +99,6 @@ class UserDAOMySQL implements IUserDAO
         try {
             $userList = array();
             $query = "SELECT * FROM " . $this->tableName;
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {
@@ -67,6 +110,9 @@ class UserDAOMySQL implements IUserDAO
         }
     }
 
+    /**
+     * Mapea el resultado de la DB a un objeto User
+     */
     private function map($row)
     {
         $user = new User();
@@ -74,24 +120,51 @@ class UserDAOMySQL implements IUserDAO
         $user->setEmail($row["email"]);
         $user->setPassword($row["password"]);
         $user->setRole($row["role"]);
-        $user->setActive($row["active"]);
+        $user->setActive((bool)$row["active"]);
 
         return $user;
     }
-
-    public function getById(int $userId): ?User
+    public function add(User $user)
     {
         try {
-            $query = "SELECT * FROM " . $this->tableName . " WHERE userId = :userId";
-            $parameters["userId"] = $userId;
+            $query = "INSERT INTO " . $this->tableName . " (email, password, role, active) VALUES (:email, :password, :role, :active);";
+
+            $parameters["email"] = $user->getEmail();
+            $parameters["password"] = $user->getPassword();
+            $parameters["role"] = $user->getRole();
+            $parameters["active"] = $user->getActive() ? 1 : 0;
+
+            // 1. Ejecutamos la inserción
+            $this->connection->ExecuteNonQuery($query, $parameters);
+
+            // 2. Obtenemos el ID usando Execute (que existe en tu Connection)
+            // Esto evita el error de "getLastId() undefined"
+            $queryId = "SELECT LAST_INSERT_ID() as id";
+            $resultSet = $this->connection->Execute($queryId);
+
+            // Retornamos el ID para que el Repository lo use (igual que en Student)
+            return $resultSet[0]["id"];
+
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function update(User $user)
+    {
+        try {
+            // Solo actualizamos el email y el estado (el password suele ir por otro lado)
+            $query = "UPDATE " . $this->tableName . " SET 
+                email = :email, 
+                active = :active 
+                WHERE userId = :userId;";
+
+            $parameters["email"] = $user->getEmail();
+            $parameters["active"] = $user->getActive() ? 1 : 0;
+            $parameters["userId"] = $user->getUserId();
 
             $this->connection = Connection::GetInstance();
-            $resultSet = $this->connection->Execute($query, $parameters);
-
-            if (!empty($resultSet)) {
-                return $this->map($resultSet[0]);
-            }
-            return null;
+            $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
         }

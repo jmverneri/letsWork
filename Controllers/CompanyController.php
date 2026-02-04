@@ -2,34 +2,38 @@
 
 namespace Controllers;
 
-use DAO\ICompanyDAO;
-use DAO\IJobOfferDAO;
-use DAO\ICareerDAO;
-use Config\DAOFactory;
+use Repositories\CompanyRepository;   
+use Repositories\JobOfferRepository;  
+use Repositories\CareerRepository;
+use Repositories\UserRepository;
+use Models\Company;
 use Utils\Utils;
 
 class CompanyController
 {
-    private ICompanyDAO $companyDAO;
-    private IJobOfferDAO $jobOfferDAO;
-    private ICareerDAO $careerDAO;
+    private CompanyRepository $companyRepo;
+    private JobOfferRepository $jobOfferRepo;
+    private CareerRepository $careerRepo;
+    private UserRepository $userRepo;
+
+    private $message;
 
     public function __construct()
     {
-        $this->companyDAO  = DAOFactory::getCompanyDAO();
-        $this->jobOfferDAO = DAOFactory::getJobOfferDAO();
-        $this->careerDAO = DAOFactory::getCareerDAO();
+        // Instanciamos directamente los Repositories
+        $this->companyRepo = new CompanyRepository();
+        $this->jobOfferRepo = new JobOfferRepository();
+        $this->careerRepo = new CareerRepository();
+        $this->userRepo = new UserRepository();
     }
 
-    /**
-     * Dashboard principal de Company
-     */
     public function dashboard()
     {
         Utils::checkCompanySession();
 
         $user = $_SESSION['loggedUser'];
-        $company = $this->companyDAO->getByUserId($user->getUserId());
+        // Usamos el Repository
+        $company = $this->companyRepo->getByUserId($user->getUserId());
 
         if (!$company || !$company->isActive()) {
             header("Location: " . FRONT_ROOT . "Home/logout");
@@ -39,50 +43,71 @@ class CompanyController
         require_once(COMPANY_VIEWS . "company-dashboard.php");
     }
 
-    /**
-     * Ver perfil de la empresa
-     */
     public function profile()
     {
         Utils::checkCompanySession();
 
         $user = $_SESSION['loggedUser'];
-        $company = $this->companyDAO->getByUserId($user->getUserId());
+        $company = $this->companyRepo->getByUserId($user->getUserId());
 
         require_once(COMPANY_VIEWS . "company-profile.php");
     }
 
-    /**
-     * Formulario edición empresa
-     */
-    public function edit()
-    {
-        Utils::checkCompanySession();
-
-        $user = $_SESSION['loggedUser'];
-        $company = $this->companyDAO->getByUserId($user->getUserId());
-
-        require_once(COMPANY_VIEWS . "company-edit.php");
+    public function redirectAddForm($message = "") {
+        $this->message = $message;
+        require_once(ADMIN_VIEWS . "company-add.php");
     }
 
-    /**
-     * Guardar cambios empresa
-     */
-    public function update($data)
+    public function AddCompany($data) 
     {
-        Utils::checkCompanySession();
+        try {
+            // Validamos si ya existe el CUIT antes de hacer nada
+            if ($this->companyRepo->getByCuit($data['cuit'])) {
+                $this->ShowAddView("Error: El CUIT ya se encuentra registrado.");
+                return;
+            }
 
-        $user = $_SESSION['loggedUser'];
-        $company = $this->companyDAO->getByUserId($user->getUserId());
+            // Llamamos a la lógica del Repository
+            $company = $this->companyRepo->createCompany($data);
 
-        $company->setName($data['name'])
-                ->setCity($data['city'])
-                ->setDescription($data['description'])
-                ->setPhoneNumber($data['phoneNumber']);
+            if ($company) {
+                $this->redirectAddForm("Empresa registrada con éxito. El CUIT es su contraseña.");
+            } else {
+                $this->redirectAddForm("No se pudo completar el registro.");
+            }
 
-        $this->companyDAO->update($company);
+        } catch (\Exception $ex) {
+            $this->redirectAddForm("Error: " . $ex->getMessage());
+        }
+    }
 
-        header("Location: " . FRONT_ROOT . "Company/profile");
-        exit();
+    // Muestra el formulario con los datos actuales
+public function ShowEditView($companyId)
+{
+    $company = $this->companyRepo->getById($companyId);
+    // IMPORTANTE: Como el email está en User, asegúrate que tu getById traiga el email
+    require_once(VIEWS_PATH . "company-edit.php");
+}
+
+    // Procesa la modificación
+    public function EditCompany($companyId, $name, $cuit, $email, $city, $description, $phoneNumber)
+    {
+        try {
+            $company = $this->companyRepo->getById($companyId);
+            
+            if($company) {
+                $company->setName($name);
+                $company->setCuit($cuit);
+                $company->setCity($city);
+                $company->setDescription($description);
+                $company->setPhoneNumber($phoneNumber);
+
+                $this->companyRepo->updateCompany($company, $email);
+                
+                $this->ShowListView("Empresa actualizada correctamente.");
+            }
+        } catch (\Exception $ex) {
+            $this->Index("Error al editar: " . $ex->getMessage());
+        }
     }
 }

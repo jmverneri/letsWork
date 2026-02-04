@@ -60,6 +60,6 @@
 
         public function getByUserId($userId)
         {
-            return $this->studentDAOMySQL->getByUserId($userId);
+            return $this->db->getByUserId($userId);
         }
     }

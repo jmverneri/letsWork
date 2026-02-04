@@ -15,43 +15,22 @@
         }
 
         /**
-         * Método estándar para agregar una empresa manualmente desde el sistema
+         * Agrega una empresa vinculándola a un userId previamente creado
          */
         public function add(Company $company): void
         {
             try {
-                $query = "INSERT INTO {$this->tableName} (name, email, active)
-                        VALUES (:name, :email, :active)";
+                $query = "INSERT INTO {$this->tableName} (userId, name, cuit, city, description, phoneNumber, active)
+                        VALUES (:userId, :name, :cuit, :city, :description, :phoneNumber, :active)";
 
                 $parameters = [
-                    "name"   => $company->getName(),
-                    "email"  => $company->getEmail(),
-                    "active" => $company->getActive()
-                ];
-
-                $this->connection->executeNonQuery($query, $parameters);
-            } catch (Exception $ex) {
-                throw $ex;
-            }
-        }
-
-        /**
-         * Método especial para el REPOSITORY: 
-         * Si el externalId existe, actualiza. Si no, inserta.
-         */
-        public function addOrUpdateFromApi(Company $company): void
-        {
-            try {
-                $query = "INSERT INTO {$this->tableName} (externalId, name, email, active)
-                        VALUES (:externalId, :name, :email, :active)
-                        ON DUPLICATE KEY UPDATE 
-                        name = :name, email = :email, active = :active";
-
-                $parameters = [
-                    "externalId" => $company->getExternalId(),
-                    "name"       => $company->getName(),
-                    "email"      => $company->getEmail(),
-                    "active"     => $company->getActive() ? 1 : 0
+                    "userId"      => $company->getUserId(),
+                    "name"        => $company->getName(),
+                    "cuit"        => $company->getCuit(),
+                    "city"        => $company->getCity(),
+                    "description" => $company->getDescription(),
+                    "phoneNumber" => $company->getPhoneNumber(),
+                    "active"      => $company->isActive() ? 1 : 0
                 ];
 
                 $this->connection->executeNonQuery($query, $parameters);
@@ -68,14 +47,7 @@
                 $result = $this->connection->execute($query);
 
                 foreach ($result as $row) {
-                    $company = new Company();
-                    $company->setCompanyId($row["companyId"]);
-                    $company->setExternalId($row["externalId"] ?? null);
-                    $company->setName($row["name"]);
-                    $company->setEmail($row["email"]);
-                    $company->setActive($row["active"]);
-
-                    $companyList[] = $company;
+                    $companyList[] = $this->map($row);
                 }
 
                 return $companyList;
@@ -91,38 +63,64 @@
                 $parameters = ["id" => $id];
                 $result = $this->connection->execute($query, $parameters);
 
-                if (!empty($result)) {
-                    $row = $result[0];
-                    $company = new Company();
-                    $company->setCompanyId($row["companyId"]);
-                    $company->setExternalId($row["externalId"] ?? null);
-                    $company->setName($row["name"]);
-                    $company->setEmail($row["email"]);
-                    $company->setActive($row["active"]);
-
-                    return $company;
-                }
-                return null;
+                return (!empty($result)) ? $this->map($result[0]) : null;
             } catch (Exception $ex) {
                 throw $ex;
             }
         }
 
+        public function getByCuit(string $cuit): ?Company
+        {
+            try {
+                $query = "SELECT * FROM {$this->tableName} WHERE cuit = :cuit";
+                $parameters = ["cuit" => $cuit];
+                $result = $this->connection->execute($query, $parameters);
+
+                return (!empty($result)) ? $this->map($result[0]) : null;
+            } catch (Exception $ex) {
+                throw $ex;
+            }
+        }
+
+        public function getByUserId(int $userId): ?Company
+        {
+            try {
+                $query = "SELECT * FROM {$this->tableName} WHERE userId = :userId";
+                $parameters = ["userId" => $userId];
+                $result = $this->connection->execute($query, $parameters);
+
+                return (!empty($result)) ? $this->map($result[0]) : null;
+            } catch (Exception $ex) {
+                throw $ex;
+            }
+        }
+
+        // Agregamos ": void" al final para que coincida con la interfaz
         public function update(Company $company): void
         {
             try {
-                $query = "UPDATE {$this->tableName}
-                        SET name = :name, email = :email, active = :active
-                        WHERE companyId = :companyId";
+                $query = "UPDATE " . $this->tableName . " SET 
+                    name = :name, 
+                    cuit = :cuit, 
+                    city = :city, 
+                    description = :description, 
+                    phoneNumber = :phoneNumber, 
+                    active = :active 
+                    WHERE companyId = :companyId;";
 
-                $parameters = [
-                    "companyId" => $company->getCompanyId(),
-                    "name"      => $company->getName(),
-                    "email"     => $company->getEmail(),
-                    "active"    => $company->getActive()
-                ];
+                $parameters["name"] = $company->getName();
+                $parameters["cuit"] = $company->getCuit();
+                $parameters["city"] = $company->getCity();
+                $parameters["description"] = $company->getDescription();
+                $parameters["phoneNumber"] = $company->getPhoneNumber();
+                $parameters["active"] = $company->isActive() ? 1 : 0;
+                $parameters["companyId"] = $company->getCompanyId();
 
-                $this->connection->executeNonQuery($query, $parameters);
+                $this->connection = Connection::GetInstance();
+                
+                // Ejecutamos, pero no retornamos el valor para cumplir con el ": void"
+                $this->connection->ExecuteNonQuery($query, $parameters);
+
             } catch (Exception $ex) {
                 throw $ex;
             }
@@ -137,5 +135,28 @@
             } catch (Exception $ex) {
                 throw $ex;
             }
+        }
+
+        /**
+         * Método privado para convertir filas de la DB en objetos Company
+         */
+        private function map($row): Company
+        {
+            $company = new Company();
+            $company->setCompanyId($row["companyId"]);
+            $company->setUserId($row["userId"] ?? 0);
+            $company->setName($row["name"]);
+            $company->setCuit($row["cuit"] ?? null);
+            $company->setCity($row["city"] ?? null);
+            $company->setDescription($row["description"] ?? null);
+            $company->setPhoneNumber($row["phoneNumber"] ?? null);
+            $company->setActive((bool)$row["active"]);
+
+            // 🔑 Mapeamos el email que viene del INNER JOIN con la tabla Users
+            if(isset($row["email"])) {
+                $company->setEmail($row["email"]);
+            }
+
+            return $company;
         }
     }
