@@ -35,8 +35,8 @@
                         <div class="h1 mb-3">💼</div>
                         <h5 class="fw-bold">Job Offers</h5>
                         <p class="small text-muted mb-4">Control all postings and expired ads.</p>
-                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/listJobOffers" class="btn btn-outline-primary btn-sm btn-block mb-2">Manage Active</a>
-                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/listExpired" class="btn btn-outline-warning btn-sm btn-block">Review Expired</a>
+                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/showActiveJobOffers" class="btn btn-outline-primary btn-sm btn-block mb-2">Manage Active</a>
+                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/showExpiredJobOffers" class="btn btn-outline-warning btn-sm btn-block">Review Expired</a>
                     </div>
                 </div>
             </div>

@@ -1,50 +1,104 @@
 <?php
-
-use Utils\Utils;
-
-Utils::checkNav();
-
+    use Utils\Utils;
+    Utils::checkNav();
 ?>
+
 <main class="py-5">
-    <section id="listado" class="mb-5">
-        <div class="container">
+    <div class="container">
+        <h2 class="mb-4" style="color: #333;">
+            <i class="fas fa-user-graduate"></i> Students Directory
+        </h2>
 
-            <h2 class="mb-4">Students List</h2>
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by last name..." style="max-width: 300px; border-radius: 20px;">
+        </div>
 
-            <div class="container" style="width: 2000px; height: 400px; overflow-y: scroll;">
-                <table class="table bg-light-alpha">
-                    <thead class="thead-dark">
+        <div class="shadow-sm card">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-dark text-white">
                         <tr>
-                            <th scope="col">FILE NUMBER</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Surname</th>
-                            <th scope="col">Gender</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Career</th>
+                            <th style="padding: 15px;">Full Name</th>
+                            <th>File Number</th>
+                            <th>Email (API)</th>
+                            <th>DNI</th>
+                            <th class="text-center">System Status</th>
                         </tr>
                     </thead>
-
-                    <tbody>
-                        <?php if (!empty($studentsView)) : ?>
-                            <?php foreach ($studentsView as $student) : ?>
-                                <tr>
-                                   <td><?= $student['fileNumber'] ?? '—'; ?></td>
-                                    <td><?= $student['firstName']; ?></td>
-                                    <td><?= $student['lastName']; ?></td>
-                                    <td><?= ucfirst($student['gender'] ?? 'Not specified'); ?></td>
-                                    <td><?= $student['email'] ?? '—'; ?></td>
-                                    <td><?= $student['career'] ?? 'No career assigned'; ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else : ?>
-                            <tr>
-                                <td colspan="6">No students found</td>
+                    <tbody id="studentTableBody">
+                        <?php 
+                        if(!empty($studentList)) {
+                            foreach($studentList as $student) { 
+                        ?>
+                            <tr class="student-row">
+                                <td class="last-name-cell" style="vertical-align: middle; padding: 12px;">
+                                    <strong><?php echo $student['lastName'] . ", " . $student['firstName']; ?></strong>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <span class="badge badge-light" style="border: 1px solid #ddd;">
+                                        <?php echo $student['fileNumber']; ?>
+                                    </span>
+                                </td>
+                                <td style="vertical-align: middle; color: #666;">
+                                    <?php echo $student['email']; ?>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <?php echo $student['dni']; ?>
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <?php if($student['isRegistered']) { ?>
+                                        <span class="badge" style="background-color: #28a745; color: white; padding: 6px 12px;">
+                                            <i class="fas fa-check-circle"></i> REGISTERED
+                                        </span>
+                                    <?php } else { ?>
+                                        <span class="badge" style="background-color: #6c757d; color: white; padding: 6px 12px;">
+                                            <i class="fas fa-clock"></i> PENDING
+                                        </span>
+                                    <?php } ?>
+                                </td>
                             </tr>
-                        <?php endif; ?>
+                        <?php 
+                            } 
+                        } else { ?>
+                            <tr>
+                                <td colspan="5" class="text-center py-4">No students found in the API.</td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
-
                 </table>
             </div>
         </div>
-    </section>
+
+        <div class="mt-4">
+            <a href="<?php echo FRONT_ROOT ?>Admin/ShowDashboard" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
 </main>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('.student-row');
+
+        rows.forEach(row => {
+            // Obtenemos el texto del apellido
+            let fullName = row.querySelector('.last-name-cell').textContent.trim().toLowerCase();
+            
+            // Si el nombre completo EMPIEZA con el filtro, lo mostramos
+            // (Usamos trim para limpiar espacios accidentales)
+            if (fullName.startsWith(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
+
+<style>
+    .table thead th { border: none; }
+    .student-row:hover { background-color: #f8f9fa; }
+    .badge { font-weight: 500; letter-spacing: 0.5px; }
+</style>

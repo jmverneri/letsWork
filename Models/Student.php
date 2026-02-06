@@ -21,6 +21,7 @@ class Student
     private ?string $birthDate = null;
     private ?string $phoneNumber = null;
     private bool $active;
+    private $isRegistered;
 
     public function __construct()
     {
@@ -161,5 +162,22 @@ class Student
     {
         $this->active = $active;
         return $this;
+    }
+
+    /**
+     * Get the value of isRegistered
+     */ 
+    public function getIsRegistered()
+    {
+        return $this->isRegistered;
+    }
+
+    /**
+     * Set the value of isRegistered
+     * @param bool $isRegistered
+     */ 
+    public function setIsRegistered($isRegistered)
+    {
+        $this->isRegistered = $isRegistered;
     }
 }

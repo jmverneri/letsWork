@@ -62,4 +62,25 @@
         {
             return $this->db->getByUserId($userId);
         }
+
+        public function getAll() {
+            $apiData = $this->api->getAll(); 
+            $dbUsers = $this->userDAO->getAll(); 
+
+            $registeredEmails = array();
+            foreach($dbUsers as $user) {
+                $registeredEmails[] = $user->getEmail();
+            }
+
+            foreach($apiData as $key => $student) {
+                $apiData[$key]['isRegistered'] = in_array($student['email'], $registeredEmails);
+            }
+
+            // --- AGREGAR ESTO PARA ORDENAR POR APELLIDO ---
+            usort($apiData, function($a, $b) {
+                return strcmp($a['lastName'], $b['lastName']);
+            });
+
+            return $apiData;
+        }
     }

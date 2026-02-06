@@ -71,15 +71,77 @@ class JobOfferDAOMySQL
         }
     }
 
-    public function UpdateActiveStatus($jobOfferId, $status)
+   public function updateActiveStatus($id, $status)
     {
         try {
-            $query = "UPDATE " . $this->tableName . " SET active = :active WHERE jobOfferId = :jobOfferId";
-            $parameters["active"] = $status ? 1 : 0;
-            $parameters["jobOfferId"] = $jobOfferId;
+            $query = "UPDATE " . $this->tableName . " SET active = :status WHERE jobOfferId = :id";
+            
+            $parameters["id"] = $id;
+            $parameters["status"] = ($status) ? 1 : 0;
 
             $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function update(JobOffer $jobOffer)
+    {
+        try {
+            $query = "UPDATE " . $this->tableName . " 
+                    SET title = :title, 
+                        description = :description, 
+                        salary = :salary, 
+                        startDate = :startDate, 
+                        deadline = :deadline, 
+                        active = :active, 
+                        companyId = :companyId, 
+                        jobPositionId = :jobPositionId 
+                    WHERE jobOfferId = :jobOfferId";
+
+            $parameters["title"] = $jobOffer->getTitle();
+            $parameters["description"] = $jobOffer->getDescription();
+            $parameters["salary"] = $jobOffer->getSalary();
+            $parameters["startDate"] = $jobOffer->getStartDate();
+            $parameters["deadline"] = $jobOffer->getDeadline();
+            $parameters["active"] = $jobOffer->getActive();
+            $parameters["companyId"] = $jobOffer->getCompanyId();
+            $parameters["jobPositionId"] = $jobOffer->getJobPositionId();
+            $parameters["jobOfferId"] = $jobOffer->getJobOfferId();
+
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function getById($id)
+    {
+        try {
+            $query = "SELECT * FROM " . $this->tableName . " WHERE jobOfferId = :id";
+            $parameters["id"] = $id;
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query, $parameters);
+
+            if (!empty($resultSet)) {
+                $row = $resultSet[0];
+                $jobOffer = new JobOffer();
+                $jobOffer->setJobOfferId($row["jobOfferId"]);
+                $jobOffer->setTitle($row["title"]);
+                $jobOffer->setDescription($row["description"]);
+                $jobOffer->setSalary($row["salary"]);
+                $jobOffer->setStartDate($row["startDate"]);
+                $jobOffer->setDeadline($row["deadline"]);
+                $jobOffer->setActive($row["active"]);
+                $jobOffer->setCompanyId($row["companyId"]);
+                $jobOffer->setJobPositionId($row["jobPositionId"]);
+
+                return $jobOffer;
+            }
+            return null;
         } catch (Exception $ex) {
             throw $ex;
         }

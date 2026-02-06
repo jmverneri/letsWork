@@ -82,12 +82,12 @@ class CompanyController
     }
 
     // Muestra el formulario con los datos actuales
-public function ShowEditView($companyId)
-{
-    $company = $this->companyRepo->getById($companyId);
-    // IMPORTANTE: Como el email está en User, asegúrate que tu getById traiga el email
-    require_once(VIEWS_PATH . "company-edit.php");
-}
+    public function ShowEditView($companyId)
+    {
+        $company = $this->companyRepo->getById($companyId);
+        // IMPORTANTE: Como el email está en User, asegúrate que tu getById traiga el email
+        require_once(VIEWS_PATH . "company-edit.php");
+    }
 
     // Procesa la modificación
     public function EditCompany($companyId, $name, $cuit, $email, $city, $description, $phoneNumber)

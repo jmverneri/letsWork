@@ -25,34 +25,20 @@
         }
 
         public function showStudentList()
-        {
-            Utils::checkSession();
+    {
+        Utils::checkNav();
 
-            $students = $this->studentDAO->getAll();
-            $careers  = $this->careerDAO->getAll();
+        // 1. El Repo ahora devuelve un Array de Arrays (API + flag isRegistered)
+        $studentList = $this->studentRepo->getAll(); 
 
-            $careerMap = [];
-            foreach ($careers as $career) {
-                $careerMap[$career->getCareerId()] = $career->getDescription();
-            }
+        // 2. Si tenés este array_map para filtrar o comparar, cambialo así:
+        // (Asegurate de que las llaves coincidan con el var_dump que vimos)
+        $registeredIds = array_map(function($student) {
+            return $student['studentId']; // <-- Cambio: de objeto a array
+        }, $studentList);
 
-            $studentsView = [];
-
-            foreach ($students as $student) {
-                $user = $this->userDAO->getById($student->getUserId());
-
-                $studentsView[] = [
-                    'fileNumber' => $student->getFileNumber(),
-                    'firstName'  => $student->getFirstName(),
-                    'lastName'   => $student->getLastName(),
-                    'gender'     => $student->getGender(),
-                    'email'      => $user ? $user->getEmail() : null,
-                    'career'     => $careerMap[$student->getCareerId()] ?? null,
-                ];
-            }
-
-            require_once(ADMIN_VIEWS . "student-list.php");
-        }
+        require_once(ADMIN_VIEWS . "student-list.php");
+    }
 
         public function updateCareers() 
         {
@@ -75,5 +61,12 @@
             $_SESSION['message'] = "Empresas sincronizadas correctamente.";
             header("Location: " . FRONT_ROOT . "Home/menuAdmin");
             exit();
+        }
+
+        public function showDashboard()
+        {
+            Utils::checkNav();
+        
+            require_once(ADMIN_VIEWS . "admin-dashboard.php");
         }
     }

@@ -21,7 +21,18 @@ class StudentDAOApi implements IStudentDAO {
         return null;
     }
 
-    public function getAll() { return array(); }
+   public function getAll() {
+        $options = array("http" => array("header" => "x-api-key: " . API_KEY . "\r\n"));
+        $context = stream_context_create($options);
+        $response = @file_get_contents(API_URL . "students", false, $context);
+
+        if($response) {
+            return json_decode($response, true); // Retornamos el array crudo con los 11 campos
+        }
+        return array();
+    }
+
+                   
     public function getById($id) { return null; }
     public function add(Student $student) { return 0; }
     public function getByUserId(int $userId): ?Student { return null; }
