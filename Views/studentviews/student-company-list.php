@@ -13,7 +13,7 @@ Utils::checkNav();
             <div class="container" style="width: 100%; height: 400px; overflow-y: scroll;">
                 <div class="container" position="fixed">
                         <form action="index.php" method="GET">
-                            <input type="hidden" name="url" value="StudentCompany/showListView">
+                            <input type="hidden" name="url" value="StudentCompany/showCompaniesViews">
                             <input type="text" name="search" class="form-control">
                             <button type="submit">Search</button>
                         </form>
@@ -26,8 +26,8 @@ Utils::checkNav();
                         <th>Actions</th>
                     </thead>
                     <tbody>
-                        <?php if (!empty($companiesWithUser)): ?>
-                            <?php foreach ($companiesWithUser as $item):
+                        <?php if (!empty($companiesWithEmail)): ?>
+                            <?php foreach ($companiesWithEmail as $item):
                                 $company = $item['company'];
                                 $email   = $item['email'];
                             ?>
@@ -36,7 +36,7 @@ Utils::checkNav();
                                     <td><?= htmlspecialchars($company->getCity() ?? '-') ?></td>
                                     <td><?= htmlspecialchars($email) ?></td>
                                     <td>
-                                        <a href="<?= FRONT_ROOT ?>JobOffer/showOffersByCareer/<?= $company->getCompanyId(); ?>"
+                                        <a href="<?= FRONT_ROOT ?>StudentJobOffer/showOffersByCompany/<?= $company->getCompanyId(); ?>"
                                            class="btn btn-secondary">
                                             Job Offers
                                         </a>

@@ -12,10 +12,10 @@
         <div class="collapse navbar-collapse" id="navStudent">
             <ul class="navbar-nav ml-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentJobOffer/listJobOffers">Browse Jobs</a>
+                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers">Browse Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentCompany/showListView">Companies</a>
+                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentCompany/showCompaniesViews">Companies</a>
                 </li>
                 <li class="nav-item border-left ml-lg-3 pl-lg-3">
                     <a class="nav-link font-weight-bold" href="<?php echo FRONT_ROOT ?>Student/showStudentProfile">

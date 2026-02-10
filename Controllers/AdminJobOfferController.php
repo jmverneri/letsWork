@@ -64,7 +64,7 @@ class AdminJobOfferController
                 $this->jobOfferRepo->add($jobOffer);
 
                 // Si todo sale bien, volvemos a la lista
-                header("location: " . FRONT_ROOT . "AdminCompany/showActiveJobOffers");
+                header("location: " . FRONT_ROOT . "AdminJobOffer/showActiveJobOffers");
                 
             } catch (Exception $ex) {
                 // Si hay error, volvemos a la vista de alta con el ID de la empresa
@@ -79,10 +79,8 @@ class AdminJobOfferController
             $company = $this->companyRepo->getById($companyId);
             $jobOfferList = $this->jobOfferRepo->getByCompanyId($companyId);
             
-            // ESTA ES LA LÍNEA QUE TE FALTA:
             $companiesList = $this->companyRepo->getAll(); 
             
-            // También asegurate de tener esta para las posiciones:
             $careerList = $this->jobPositionDAO->getAll(); 
 
             require_once(ADMIN_VIEWS . "job-offer-list.php");

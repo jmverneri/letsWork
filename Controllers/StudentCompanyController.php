@@ -4,63 +4,65 @@ namespace Controllers;
 use Services\CompanyService;
 use Utils\Utils;
 
-use DAO\ICompanyDAO;
-use DAO\IJobOfferDAO;
-use DAO\ICareerDAO;
-use Config\DAOFactory;
+use Repositories\CompanyRepository;
+use Models\Company;
 
 class StudentCompanyController
 {
-    private CompanyService $companyService;
-    private ICompanyDAO $companyDAO;
-    private IJobOfferDAO $jobOfferDAO;
-    private ICareerDAO $careerDAO;
+    private $companyRepo;
+    public $message;
+    public $company;
 
     public function __construct()
     {
         // Solo verificamos que haya una sesión activa (Alumno o cualquier rol logueado)
         Utils::checkSession();
-        $this->companyService = new CompanyService();
-        $this->companyDAO  = DAOFactory::getCompanyDAO();
-        $this->jobOfferDAO = DAOFactory::getJobOfferDAO();
-        $this->careerDAO = DAOFactory::getCareerDAO();
+        $this->companyRepo = new CompanyRepository();
+        
     }
 
     /**
      * Lista todas las empresas con una vista amigable para el estudiante
      */
-    public function showListView()
+    public function showCompaniesViews($data = "")
     {
-        Utils::checkSession();
-        $search = $_GET['search'] ?? "";
+        // Si $data es un array, es que viene del formulario POST
+        $search = "";
+        if (is_array($data) && isset($data['search'])) {
+            $search = $data['search'];
+        } elseif (isset($_GET['search'])) { // Por si acaso queda algún link GET
+            $search = $_GET['search'];
+        }
 
-        $companyList = $this->companyDAO->getAll();
-        $userDAO = DAOFactory::getUserDAO();
+        $this->message = is_string($data) ? $data : "";
 
-        $companiesWithUser = [];
-
+        $companyList = $this->companyRepo->getAll();
+        $companiesWithEmail = [];
         foreach ($companyList as $company) {
+        // Si hay un término de búsqueda...
+        if (!empty($search)) {
+            $companyName = strtolower($company->getName());
+            $searchTerm = strtolower($search);
 
-            // Filtro por nombre si hay search
-            if ($search !== "" && !str_starts_with(
-                    strtolower($company->getName()),
-                    strtolower($search)
-                )) {
+            // strpos devuelve la posición del término. 
+            // Si NO es 0 (cero), significa que o no está, o está en el medio.
+            // Usamos !== 0 para descartar todo lo que no empiece exacto.
+            if (strpos($companyName, $searchTerm) !== 0) {
                 continue;
             }
-
-            // Obtener el usuario dueño de la company
-            $user = $userDAO->getById($company->getUserId());
-
-            $companiesWithUser[] = [
-                'company' => $company,
-                'email'   => $user ? $user->getEmail() : '—'
-            ];
         }
-        
-        // Esta vista NO tiene botones de borrar ni editar
+
+        $user = $this->companyRepo->getUserById($company->getUserId());
+
+        $companiesWithEmail[] = [
+            'company' => $company,
+            'email'   => ($user) ? $user->getEmail() : 'No email'
+        ];
+        }
+
         require_once(STUDENT_VIEWS . "student-company-list.php");
     }
+    
 
     /**
      * Muestra el detalle completo de una sola empresa

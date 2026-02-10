@@ -17,7 +17,7 @@
                         <div class="display-4 mb-3">🚀</div>
                         <h4 class="card-title fw-bold">Job Offers</h4>
                         <p class="text-muted small">Browse all available positions and apply to the ones that fit your profile.</p>
-                        <a href="<?= FRONT_ROOT ?>StudentJobOffer/listJobOffers" class="btn btn-warning btn-block font-weight-bold shadow-sm">
+                        <a href="<?= FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers" class="btn btn-warning btn-block font-weight-bold shadow-sm">
                             Explore Opportunities
                         </a>
                     </div>
@@ -30,7 +30,7 @@
                         <div class="display-4 mb-3">🏢</div>
                         <h4 class="card-title fw-bold">Companies</h4>
                         <p class="text-muted small">Learn more about the companies registered in our network.</p>
-                        <a href="<?= FRONT_ROOT ?>StudentCompany/showListView" class="btn btn-outline-dark btn-block">
+                        <a href="<?= FRONT_ROOT ?>StudentCompany/showCompaniesViews" class="btn btn-outline-dark btn-block">
                             View Directory
                         </a>
                     </div>

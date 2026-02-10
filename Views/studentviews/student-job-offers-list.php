@@ -19,21 +19,19 @@ Utils::checkNav();
                             <th>Deadline</th>
                             <th>Salary</th>
                             <th>Description</th>
-                            <th>Career</th>
                             <th>Company</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
 
-                    <?php if (!empty($jobOffers)): ?>
-                        <?php foreach ($jobOffers as $jobOffer): ?>
+                    <?php if (!empty($jobOfferList)): ?>
+                        <?php foreach ($jobOfferList as $jobOffer): ?>
                             <tr>
                                 <td><?= $jobOffer->getStartDate(); ?></td>
                                 <td><?= $jobOffer->getDeadline(); ?></td>
                                 <td><?= $jobOffer->getSalary(); ?></td>
                                 <td><?= $jobOffer->getDescription(); ?></td>
-                                <td><?= $jobOffer->getCareerName() ?></td>
                                 <td><?= $jobOffer->getCompanyName() ?></td>
                                 <td>
                                     <a href="<?= FRONT_ROOT ?>StudentJobOffer/addStudentToAJobOffer/<?= $jobOffer->getJobOfferId(); ?>">

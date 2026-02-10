@@ -58,7 +58,7 @@
                         <div class="h1 mb-3">🔐</div>
                         <h5 class="fw-bold">Security</h5>
                         <p class="small text-muted mb-4">Create and manage internal system accounts.</p>
-                        <a href="<?= FRONT_ROOT ?>User/showCreateUserForm" class="btn btn-secondary btn-sm btn-block">Add System User</a>
+                        <a href="<?= FRONT_ROOT ?>Admin/showCreateUserForm" class="btn btn-secondary btn-sm btn-block">Add System User</a>
                     </div>
                 </div>
             </div>

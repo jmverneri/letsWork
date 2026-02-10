@@ -102,7 +102,7 @@
 
         public function studentValidation($email)
         {
-            $student = $this->studentDAO->getStudentByMail($email);
+            $student = $this->studentRepo->getStudentByMail($email);
 
             if ($student !== null) {
                 require_once(VIEWS_PATH . "student-registration.php");
@@ -116,10 +116,10 @@
         {
             if ($password === $confirmPass) {
 
-                $student = $this->studentDAO->getStudentByMail($email);
+                $student = $this->studentRepo->getStudentByMail($email);
                 $student->setPassword($password);
 
-                $this->studentDAO->add($student);
+                $this->studentRepo->add($student);
 
                 require_once(VIEWS_PATH . "student-profile.php");
             }

@@ -169,4 +169,32 @@ class UserDAOMySQL implements IUserDAO
             throw $ex;
         }
     }
+
+    public function delete(int $userId)
+    {
+        try {
+            $query = "UPDATE " . $this->tableName . " 
+                  SET active = 0 
+                  WHERE userId = :userId AND role = 'admin'";
+            $parameters["userId"] = $userId;
+
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function activate(int $userId)
+    {
+        try {
+            $query = "UPDATE " . $this->tableName . " 
+                    SET active = 1 
+                    WHERE userId = :userId AND role = 'admin'";
+
+            $parameters["userId"] = $userId;
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 }

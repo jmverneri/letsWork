@@ -1,59 +1,135 @@
 <?php
     namespace Controllers;
 
-    use Services\JobOfferService;
+    use Repositories\JobOfferRepository as JobOfferRepository;
+    use Repositories\CompanyRepository as CompanyRepository;
+    use Repositories\JobPositionRepository as JobPositionRepository;
+    use Repositories\StudentRepository as StudentRepository;
+    use Models\JobOffer as JobOffer;
+    use \Exception as Exception;
     use Utils\Utils;
 
-    use DAO\ICompanyDAO;
-    use DAO\ICareerDAO;
-
-    use Config\DAOFactory;
 
     class StudentJobOfferController
     {
-        private JobOfferService $jobOfferService;
-        private ICompanyDAO $companyDAO;
-        private ICareerDAO $careerDAO;
+        private $jobOfferRepo;
+        private $companyRepo;
+        private $jobPositionRepo;
+        private $studentRepo;
 
         public function __construct()
         {
             Utils::checkStudentSession();
-            $this->jobOfferService = new JobOfferService();
-            $this->companyDAO = DAOFactory::getCompanyDAO();
-            $this->careerDAO  = DAOFactory::getCareerDAO();
+            $this->jobOfferRepo = new JobOfferRepository();
+            $this->companyRepo = new CompanyRepository();
+            $this->companyRepo = new CompanyRepository();
+            $this->studentRepo = new StudentRepository();
+            $this->jobPositionRepo = new JobPositionRepository();
         }
 
-        public function listJobOffers()
+        public function showActiveJobOffers() 
         {
-            $jobOffers = $this->jobOfferService->getActive();
+            // 1. Verificación de seguridad y datos del estudiante
+            Utils::checkNav();
+            $userLogged = $_SESSION["loggedUser"];
+        
+            $student = $this->studentRepo->getByUserId($userLogged->getUserId());
 
-            $careerMap = [];
-            foreach ($this->careerDAO->getAll() as $career) {
-                $careerMap[$career->getCareerId()] = $career->getDescription();
+            if(!$student) {
+                // Manejo de error si no es un estudiante válido
+                require_once(VIEWS_PATH . "header.php");
+                echo "Error: Student data not found.";
+                return;
             }
 
-            $companyMap = [];
-            foreach ($this->companyDAO->getAll() as $company) {
-                $companyMap[$company->getCompanyId()] = $company->getName();
+            $studentCareerId = $student->getCareerId();
+
+            // 2. Obtención de datos brutos
+            $allOffers = $this->jobOfferRepo->getAll();
+            $allPositions = $this->jobPositionRepo->getAll();
+
+            // 3. OPTIMIZACIÓN: Creamos un "mapa" de posiciones indexado por ID.
+            $positionsMap = [];
+            foreach($allPositions as $pos) {
+                $positionsMap[$pos->getJobPositionId()] = $pos;
             }
 
-            foreach ($jobOffers as $jobOffer) {
-                $jobOffer->setCareerName(
-                    $careerMap[$jobOffer->getCareerId()] ?? 'N/A'
-                );
+            // 4. FILTRADO: Aplicamos la lógica de negocio
+            $jobOfferList = array_filter($allOffers, function($offer) use ($studentCareerId, $positionsMap) {
+                // Primero: La oferta debe estar activa
+                if (!$offer->getActive()) {
+                    return false;
+                }
 
-                $jobOffer->setCompanyName(
-                    $companyMap[$jobOffer->getCompanyId()] ?? 'N/A'
-                );
+                // Segundo: Buscamos la posición en nuestro mapa usando el ID
+                $posId = $offer->getJobPositionId();
+                
+                if (isset($positionsMap[$posId])) {
+                    $position = $positionsMap[$posId];
+                    // Tercero: El careerId de la posición debe coincidir con el del alumno
+                    return ($position->getCareerId() == $studentCareerId);
+                }
 
-            }
+                return false;
+            });
+
+            // 5. Datos extra para la vista (nombres de empresas)
+            $companiesList = $this->companyRepo->getAll();
+
+            // 6. Carga de la vista
             require_once(STUDENT_VIEWS . "student-job-offers-list.php");
         }
 
-        public function view($id)
+        public function showOffersByCompany($companyId)
         {
-            $jobOffer = $this->jobOfferService->getById($id);
-            require_once(STUDENT_VIEWS . "joboffer-view.php");
+            try {
+                // 1. Identificar al estudiante y su carrera
+                Utils::checkNav();
+                $userLogged = $_SESSION["loggedUser"];
+                $student = $this->studentRepo->getByUserId($userLogged->getUserId());
+
+                if (!$student) {
+                    throw new Exception("No se pudieron cargar los datos del estudiante.");
+                }
+
+                $studentCareerId = $student->getCareerId();
+
+                // 2. Obtener la empresa y sus ofertas
+                $company = $this->companyRepo->getById($companyId);
+                $allOffers = $this->jobOfferRepo->getByCompanyId($companyId);
+                
+                // 3. Preparar el Mapa de Posiciones para el filtro rápido
+                $allPositions = $this->jobPositionRepo->getAll();
+                $positionsMap = [];
+                foreach($allPositions as $pos) {
+                    $positionsMap[$pos->getJobPositionId()] = $pos;
+                }
+
+                // 4. Filtrar: Activas + Carrera del Estudiante
+                $jobOfferList = array_filter($allOffers, function($offer) use ($studentCareerId, $positionsMap) {
+                    // Regla 1: Debe estar activa
+                    if (!$offer->getActive()) return false;
+
+                    // Regla 2: Debe pertenecer a la carrera del alumno
+                    $posId = $offer->getJobPositionId();
+                    if (isset($positionsMap[$posId])) {
+                        return $positionsMap[$posId]->getCareerId() == $studentCareerId;
+                    }
+
+                    return false;
+                });
+
+                // 5. Datos extra para la vista
+                $companiesList = $this->companyRepo->getAll(); 
+                // Usamos $allPositions para que la vista pueda mostrar nombres de puestos
+                $jobPositionsList = $allPositions; 
+
+                require_once(STUDENT_VIEWS . "student-job-offers-list.php");
+
+            } catch (Exception $ex) {
+                // Es mejor mandar el error a una vista o usar un log
+                echo "Error: " . $ex->getMessage();
+            }
         }
 
         public function addStudentToAJobOffer($jobOfferId)
@@ -61,8 +137,6 @@
             Utils::checkStudentSession();
 
             $studentId = $_SESSION['loggedUser']->getUserId();
-            var_dump($_SESSION['loggedUser']);
-die;
 
 
             $this->jobOfferService->addStudentToJobOffer($jobOfferId, $studentId);
