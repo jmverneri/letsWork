@@ -12,6 +12,9 @@
         <div class="collapse navbar-collapse" id="navStudent">
             <ul class="navbar-nav ml-auto align-items-center">
                 <li class="nav-item">
+                    <a class="nav-link" href="<?= FRONT_ROOT ?>StudentJobOffer/showMyApplications">My Applications</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers">Browse Jobs</a>
                 </li>
                 <li class="nav-item">

@@ -34,11 +34,19 @@ Utils::checkNav();
                                 <td><?= $jobOffer->getDescription(); ?></td>
                                 <td><?= $jobOffer->getCompanyName() ?></td>
                                 <td>
-                                    <a href="<?= FRONT_ROOT ?>StudentJobOffer/addStudentToAJobOffer/<?= $jobOffer->getJobOfferId(); ?>">
-                                        <button class="btn btn-success btn-sm">
-                                            Apply
-                                        </button>
-                                    </a>
+                                    <?php 
+                                    // 1. Verificamos si el estudiante ya aplicó a ESTA oferta específica
+                                    // Nota: $student viene de tu Controller (el que tiene el getStudentId())
+                                    if($this->applicationDAO->isStudentApplied($student->getStudentId(), $jobOffer->getJobOfferId())): 
+                                    ?>
+                                        <span class="badge badge-info">Already Applied</span>
+                                    <?php else: ?>
+                                        <a href="<?= FRONT_ROOT ?>StudentJobOffer/apply/<?= $jobOffer->getJobOfferId(); ?>">
+                                            <button class="btn btn-success btn-sm">
+                                                Apply
+                                            </button>
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -5,6 +5,7 @@
     use Repositories\CompanyRepository as CompanyRepository;
     use Repositories\JobPositionRepository as JobPositionRepository;
     use Repositories\StudentRepository as StudentRepository;
+    use DAO\ApplicationDAO as ApplicationDAO;
     use Models\JobOffer as JobOffer;
     use \Exception as Exception;
     use Utils\Utils;
@@ -16,6 +17,7 @@
         private $companyRepo;
         private $jobPositionRepo;
         private $studentRepo;
+        private $applicationDAO;
 
         public function __construct()
         {
@@ -25,6 +27,7 @@
             $this->companyRepo = new CompanyRepository();
             $this->studentRepo = new StudentRepository();
             $this->jobPositionRepo = new JobPositionRepository();
+            $this->applicationDAO = new ApplicationDAO();
         }
 
         public function showActiveJobOffers() 
@@ -132,16 +135,51 @@
             }
         }
 
-        public function addStudentToAJobOffer($jobOfferId)
-        {
-            Utils::checkStudentSession();
+        public function apply($jobOfferId) {
+        try {
+            Utils::checkNav();
+            $userLogged = $_SESSION["loggedUser"];
+            
+            // Traemos al alumno para tener su ID de base de datos
+            $student = $this->studentRepo->getByUserId($userLogged->getUserId());
 
-            $studentId = $_SESSION['loggedUser']->getUserId();
+            if($student) {
+                // 1. Verificamos que no haya aplicado antes (Seguridad extra)
+                if(!$this->applicationDAO->isStudentApplied($student->getStudentId(), $jobOfferId)) {
+                    
+                    $today = date("Y-m-d H:i:s");
+                    
+                    // 2. Guardamos la aplicación
+                    $this->applicationDAO->add($student->getStudentId(), $jobOfferId, $today);
+                    
+                    $message = "¡Postulación exitosa!";
+                } else {
+                    $message = "Ya te has postulado a esta oferta anteriormente.";
+                }
+            }
+            
+            // 3. Redirigimos a la lista para que vea los cambios
+            $this->showActiveJobOffers(); 
 
+            } catch (Exception $ex) {
+                echo "Error al aplicar: " . $ex->getMessage();
+            }
+        }
 
-            $this->jobOfferService->addStudentToJobOffer($jobOfferId, $studentId);
+        public function showMyApplications() {
+            Utils::checkNav();
+            $userLogged = $_SESSION["loggedUser"];
+            
+            // Obtenemos el estudiante para tener su ID de base de datos
+            $student = $this->studentRepo->getByUserId($userLogged->getUserId());
 
-            header("Location: " . FRONT_ROOT . "StudentJobOffer/listJobOffers");
-            exit();
+            if($student) {
+                $applicationList = $this->applicationDAO->getApplicationsByStudent($student->getStudentId());
+                
+                // Cargamos la vista específica del historial
+                require_once(STUDENT_VIEWS . "student-applications-history.php");
+            } else {
+                echo "Error: Student not found.";
+            }
         }
     }
