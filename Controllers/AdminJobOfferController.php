@@ -4,6 +4,7 @@ namespace Controllers;
 use Repositories\JobOfferRepository as JobOfferRepository;
 use Repositories\CompanyRepository as CompanyRepository;
 use DAO\JobPositionDAOMySQL as JobPositionDAO;
+use DAO\ApplicationDAO as ApplicationDAO;
 use Models\JobOffer as JobOffer;
 use \Exception as Exception;
 
@@ -13,12 +14,14 @@ class AdminJobOfferController
     private $jobOfferRepo;
     private $companyRepo;
     private $jobPositionDAO;
+    private $applicationDAO;
 
     public function __construct()
     {
         $this->jobOfferRepo = new JobOfferRepository();
         $this->companyRepo = new CompanyRepository();
         $this->jobPositionDAO = new JobPositionDAO();
+        $this->applicationDAO = new ApplicationDAO();
     }
 
     public function showAddView($companyId = null, $message = "")
@@ -174,15 +177,8 @@ class AdminJobOfferController
 
     public function showActiveJobOffers() {
         
-        // Traemos TODAS las ofertas
-        $allOffers = $this->jobOfferRepo->getAll();
-        
-        // Filtramos solo las activas (puedes hacerlo también vía SQL para más eficiencia)
-        $jobOfferList = array_filter($allOffers, function($offer) {
-            return $offer->getActive() == true;
-        });
+       $jobOfferList = $this->jobOfferRepo->getOpenOffers();
 
-        // Necesitamos las empresas para mostrar los nombres en la tabla
         $companiesList = $this->companyRepo->getAll();
 
         require_once(ADMIN_VIEWS."admin-active-offers-list.php");
@@ -201,5 +197,30 @@ class AdminJobOfferController
         $companiesList = $this->companyRepo->getAll();
 
         require_once(ADMIN_VIEWS."admin-expired-offers-list.php");
+    }
+
+    public function showApplicants($jobOfferId)
+    {
+        try {
+            // 1. Opcional: Traer los datos de la oferta para mostrar el título en la vista
+            $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+            
+            // 2. Traer la lista de alumnos postulados usando el DAO de aplicaciones
+            // Nota: Asegurate de tener $this->applicationDAO inicializado en el constructor
+            $applicantList = $this->applicationDAO->getApplicantsByOffer($jobOfferId);
+
+            // 3. Cargar la vista
+            require_once(ADMIN_VIEWS . "admin-job-offer-applicants.php");
+            
+        } catch (Exception $ex) {
+            echo "Error al obtener postulantes: " . $ex->getMessage();
+        }
+    }
+
+    public function declineApplicant($studentId, $jobOfferId)
+    {
+        // En lugar de borrar, marcamos como 'declined' o 'rejected'
+        $this->applicationDAO->UpdateStatus($studentId, $jobOfferId, 'declined');
+        $this->showApplicants($jobOfferId);
     }
 }

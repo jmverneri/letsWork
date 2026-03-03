@@ -61,4 +61,10 @@ class JobOfferRepository
         // Pasamos el ID y el nuevo estado (true/false o 1/0)
         $this->jobOfferDAO->updateActiveStatus($id, $status);
     }
+
+    public function getOpenOffers()
+    {
+        // Le pedimos al DAO las que cumplen la regla de negocio (Activas + Vigentes)
+        return $this->jobOfferDAO->GetOpenOffers();
+    }
 }

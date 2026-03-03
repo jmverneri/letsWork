@@ -23,11 +23,11 @@ Utils::checkNav();
             <table class="table" id="offersTable" style="width: 100%; table-layout: fixed; margin-bottom: 0; border-collapse: collapse;">
                 <thead style="background: #212529; color: white;">
                     <tr>
-                        <th style="width: 18%; padding: 12px;">Company</th>
-                        <th style="width: 22%; padding: 12px;">Position</th>
+                        <th style="width: 15%; padding: 12px;">Company</th>
+                        <th style="width: 20%; padding: 12px;">Position</th>
                         <th style="width: 15%; padding: 12px; text-align: center;">Deadline</th>
-                        <th style="width: 30%; padding: 12px;">Description</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Actions</th>
+                        <th style="width: 25%; padding: 12px;">Description</th>
+                        <th style="width: 25%; padding: 12px; text-align: center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,16 +69,28 @@ Utils::checkNav();
                                 </td>
 
                                 <td style="vertical-align: middle; text-align: center; padding: 12px;">
-                                    <div style="display: flex; justify-content: center; gap: 5px;">
+                                    <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
+                                        
+                                        <a href="<?php echo FRONT_ROOT ?>AdminJobOffer/showApplicants/<?php echo $jobOffer->getJobOfferId(); ?>" 
+                                           class="btn btn-warning btn-sm" 
+                                           title="View Applicants"
+                                           style="font-size: 0.7rem; padding: 5px 10px; color: #212529; border-radius: 4px; text-decoration: none; font-weight: bold; border: 1px solid #e0a800;">
+                                            <i class="fas fa-users"></i> Applicants
+                                        </a>
+
                                         <a href="<?php echo FRONT_ROOT . "AdminJobOffer/showModifyJobOfferView/" . $jobOffer->getJobOfferId(); ?>" 
-                                           class="btn btn-info btn-sm" style="font-size: 0.7rem; padding: 4px 8px; color: white; border-radius: 4px; text-decoration: none;">
-                                            Edit
+                                           class="btn btn-info btn-sm" 
+                                           style="font-size: 0.7rem; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none;">
+                                            <i class="fas fa-edit"></i> Edit
                                         </a>
+
                                         <a href="<?php echo FRONT_ROOT ?>AdminJobOffer/deleteJobOffer/<?php echo $jobOffer->getJobOfferId(); ?>/<?php echo $jobOffer->getCompanyId(); ?>" 
-                                           class="btn btn-danger btn-sm" style="font-size: 0.7rem; padding: 4px 8px; color: white; border-radius: 4px; text-decoration: none;"
-                                           onclick="return confirm('Close this offer?')">
-                                            Close
+                                           class="btn btn-danger btn-sm" 
+                                           style="font-size: 0.7rem; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none;"
+                                           onclick="return confirm('Are you sure you want to close this offer?')">
+                                            <i class="fas fa-times"></i> Close
                                         </a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -86,6 +98,7 @@ Utils::checkNav();
                     } else { ?>
                         <tr>
                             <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                                <i class="fas fa-folder-open fa-2x mb-3"></i><br>
                                 No active job offers at the moment.
                             </td>
                         </tr>

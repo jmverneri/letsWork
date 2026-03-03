@@ -68,19 +68,54 @@ class ApplicationDAO {
 
     public function getApplicationsByStudent($studentId) {
         try {
-            // Traemos datos de la oferta y el nombre de la empresa uniendo las tablas
-            $query = "SELECT jo.*, a.applicationDate, c.name as companyName 
-                    FROM " . $this->tableName . " a
+            // Traemos el deadline y usamos CURDATE() para saber si ya expiró
+            $query = "SELECT jo.title, jo.active as offerActive, jo.deadline, 
+                            a.status as appStatus, a.applicationDate, c.name as companyName,
+                            IF(jo.deadline >= CURDATE() AND jo.active = 1, 1, 0) as isRealActive
+                    FROM applications a
                     INNER JOIN job_offers jo ON a.jobOfferId = jo.jobOfferId
                     INNER JOIN companies c ON jo.companyId = c.companyId
                     WHERE a.studentId = :studentId
-                    ORDER BY a.applicationDate DESC"; // Lo más reciente primero
+                    ORDER BY a.applicationDate DESC";
 
-            $parameters["studentId"] = $studentId;
+            $this->connection = Connection::GetInstance();
+            return $this->connection->Execute($query, ["studentId" => $studentId]);
+        } catch (Exception $ex) { throw $ex; }
+    }
+
+    public function getApplicantsByOffer($jobOfferId) {
+        try {
+            // El a.* trae el 'status' de la tabla applications
+            $query = "SELECT s.*, u.email, a.applicationDate, a.status 
+                    FROM applications a
+                    INNER JOIN students s ON a.studentId = s.studentId
+                    INNER JOIN users u ON s.userId = u.userId
+                    WHERE a.jobOfferId = :jobOfferId
+                    ORDER BY s.lastName ASC";
+
+            $parameters["jobOfferId"] = $jobOfferId;
             $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
-            return $resultSet; // Retornamos el array asociativo directamente para la vista
+            return $resultSet; 
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function UpdateStatus($studentId, $jobOfferId, $status)
+    {
+        try {
+            $query = "UPDATE " . $this->tableName . " 
+                    SET status = :status 
+                    WHERE studentId = :studentId AND jobOfferId = :jobOfferId";
+
+            $parameters["status"] = $status;
+            $parameters["studentId"] = $studentId;
+            $parameters["jobOfferId"] = $jobOfferId;
+
+            $this->connection = Connection::GetInstance();
+            return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
         }

@@ -146,4 +146,43 @@ class JobOfferDAOMySQL
             throw $ex;
         }
     }
+
+    public function GetOpenOffers()
+    {
+        try {
+            $jobOfferList = array();
+
+            // Agregamos el filtro: active = 1 Y la fecha de hoy es menor o igual al deadline
+            $query = "SELECT jo.*, c.name as companyName, jp.description as jobPositionDescription
+                    FROM " . $this->tableName . " jo
+                    INNER JOIN companies c ON jo.companyId = c.companyId
+                    INNER JOIN job_positions jp ON jo.jobPositionId = jp.jobPositionId
+                    WHERE jo.active = 1 AND jo.deadline >= CURDATE()";
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $jobOffer = new JobOffer();
+                $jobOffer->setJobOfferId($row["jobOfferId"]);
+                $jobOffer->setTitle($row["title"]);
+                $jobOffer->setDescription($row["description"]);
+                $jobOffer->setSalary($row["salary"]);
+                $jobOffer->setStartDate($row["startDate"]);
+                $jobOffer->setDeadline($row["deadline"]);
+                $jobOffer->setActive($row["active"]);
+                $jobOffer->setCompanyId($row["companyId"]);
+                $jobOffer->setJobPositionId($row["jobPositionId"]);
+                
+                $jobOffer->setCompanyName($row["companyName"]);
+                $jobOffer->setJobPositionDescription($row["jobPositionDescription"]);
+
+                array_push($jobOfferList, $jobOffer);
+            }
+
+            return $jobOfferList;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 }

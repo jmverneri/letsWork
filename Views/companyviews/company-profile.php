@@ -29,12 +29,7 @@ Utils::checkNav();
                     <th>CUIT</th>
                     <td><?= htmlspecialchars($company->getCuit() ?? '—') ?></td>
                 </tr>
-
-                <tr>
-                    <th>Year of Foundation</th>
-                    <td><?= htmlspecialchars($company->getYearFoundation() ?? '—') ?></td>
-                </tr>
-
+                
                 <tr>
                     <th>City</th>
                     <td><?= htmlspecialchars($company->getCity() ?? '—') ?></td>

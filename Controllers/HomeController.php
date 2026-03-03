@@ -13,7 +13,7 @@
     use DAO\IUserDAO;
     use DAO\UserDAOMySQL as UserDAO;
     use DAO\StudentDAOMySQL as StudentDAO;
-    use DAO\ICompanyDAO;
+    use Repositories\CompanyRepository as CompanyRepository;
     use Repositories\StudentRepository;
 
     use Config\DAOFactory;
@@ -24,24 +24,20 @@
         private IStudentDAO $studentDAO;
         private ICareerDAO $careerDAO;
         private IUserDAO $userDAO;
-        private ICompanyDAO $companyDAO;
+        private CompanyRepository $companyRepo;
         private $studentRepo;
         private $studentDAOMySQL; // Agregamos la propiedad para evitar el warning de deprecated
 
         public function __construct()
         {
-            //$this->studentDAO = DAOFactory::getStudentDAO();    
-            //$this->careerDAO = DAOFactory::getCareerDAO();
-            //$this->companyDAO = DAOFactory::getCompanyDAO();
-            
             // 🔑 REPOS Y DATOS REALES
             $this->studentRepo = new StudentRepository();
             
-            // Usamos UserDAO porque pusimos el "as UserDAO" arriba
             $this->userDAO = new UserDAO(); 
             
-            // Usamos StudentDAO porque pusimos el "as StudentDAO" arriba
             $this->studentDAOMySQL = new StudentDAO();
+
+            $this->companyRepo = new CompanyRepository();
         }
 
         public function index($message = "")
@@ -91,7 +87,7 @@
             $user = $_SESSION['loggedUser'];
 
             // 🔑 cargar Company por userId
-            $company = $this->companyDAO->getByUserId($user->getUserId());
+            $company = $this->companyRepo->getByUserId($user->getUserId());
 
             if (!$company) {
                 die("Company not found for userId " . $user->getUserId());
