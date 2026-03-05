@@ -185,4 +185,90 @@ class JobOfferDAOMySQL
             throw $ex;
         }
     }
+
+    public function getExpiredOffersToNotify() {
+        $expiredList = array();
+        // Buscamos ofertas que vencieron (deadline < hoy), estén activas y no notificadas
+        $query = "SELECT * FROM job_offers 
+                WHERE expirationDate < CURDATE() 
+                AND active = 1 
+                AND notified = 0";
+
+        try {
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $jobOffer = new JobOffer();
+                $jobOffer->setJobOfferId($row["jobOfferId"]);
+                $jobOffer->setTitle($row["title"]);
+                $jobOffer->setDescription($row["description"]);
+                $jobOffer->setSalary($row["salary"]);
+                $jobOffer->setStartDate($row["startDate"]);
+                $jobOffer->setDeadline($row["deadline"]);
+                $jobOffer->setActive($row["active"]);
+                $jobOffer->setCompanyId($row["companyId"]);
+                $jobOffer->setJobPositionId($row["jobPositionId"]);
+                array_push($expiredList, $jobOffer);
+            }
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        return $expiredList;
+    }
+
+    public function markAsNotified($jobOfferId) {
+        $query = "UPDATE job_offers SET notified = 1 WHERE jobOfferId = :jobOfferId";
+        $parameters["jobOfferId"] = $jobOfferId;
+
+        try {
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function getExpiredToNotify()
+    {
+        $expiredList = array();
+        $query = "SELECT * FROM job_offers 
+                WHERE deadline <= CURDATE() 
+                AND active = 1 
+                AND notified = 0";
+
+        try {
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $jobOffer = new JobOffer();
+                $jobOffer->setJobOfferId($row["jobOfferId"]);
+                $jobOffer->setTitle($row["title"]);
+                $jobOffer->setDeadline($row["deadline"]);
+                $jobOffer->setActive($row["active"]);
+                // Agregá los setters que necesites para tu modelo
+                
+                array_push($expiredList, $jobOffer);
+            }
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        return $expiredList;
+    }
+
+    public function updateNotifiedStatus($jobOfferId, $status)
+    {
+        $query = "UPDATE job_offers SET notified = :notified WHERE jobOfferId = :jobOfferId";
+        
+        $parameters["notified"] = $status ? 1 : 0;
+        $parameters["jobOfferId"] = $jobOfferId;
+
+        try {
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 }

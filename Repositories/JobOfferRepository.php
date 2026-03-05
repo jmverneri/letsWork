@@ -67,4 +67,14 @@ class JobOfferRepository
         // Le pedimos al DAO las que cumplen la regla de negocio (Activas + Vigentes)
         return $this->jobOfferDAO->GetOpenOffers();
     }
+    
+    public function getExpiredToNotify()
+    {
+        return $this->jobOfferDAO->getExpiredToNotify();
+    }
+
+    public function updateNotifiedStatus($jobOfferId, $status)
+    {
+        $this->jobOfferDAO->updateNotifiedStatus($jobOfferId, $status);
+    }
 }

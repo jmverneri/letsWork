@@ -3,16 +3,22 @@ namespace Controllers;
 
 use Repositories\JobOfferRepository as JobOfferRepository;
 use Repositories\CompanyRepository as CompanyRepository;
+use Repositories\StudentRepository as StudentRepository;
+use Repositories\UserRepository as UserRepository;
 use DAO\JobPositionDAOMySQL as JobPositionDAO;
 use DAO\ApplicationDAO as ApplicationDAO;
 use Models\JobOffer as JobOffer;
 use \Exception as Exception;
+use Dompdf\Dompdf;
+use Utils\MailService as MailService;
 
 class AdminJobOfferController
 {
     /** @var \DAO\JobOfferDAOMySQL */
     private $jobOfferRepo;
     private $companyRepo;
+    private $studentRepo;
+    private $userRepo;
     private $jobPositionDAO;
     private $applicationDAO;
 
@@ -20,6 +26,8 @@ class AdminJobOfferController
     {
         $this->jobOfferRepo = new JobOfferRepository();
         $this->companyRepo = new CompanyRepository();
+        $this->studentRepo = new StudentRepository();
+        $this->userRepo = new UserRepository();
         $this->jobPositionDAO = new JobPositionDAO();
         $this->applicationDAO = new ApplicationDAO();
     }
@@ -177,9 +185,11 @@ class AdminJobOfferController
 
     public function showActiveJobOffers() {
         
-       $jobOfferList = $this->jobOfferRepo->getOpenOffers();
+        $this->processExpiredOffers();   
+        
+        $jobOfferList = $this->jobOfferRepo->getOpenOffers();
 
-        $companiesList = $this->companyRepo->getAll();
+       $companiesList = $this->companyRepo->getAll();
 
         require_once(ADMIN_VIEWS."admin-active-offers-list.php");
     }
@@ -217,10 +227,105 @@ class AdminJobOfferController
         }
     }
 
-    public function declineApplicant($studentId, $jobOfferId)
+    public function declineApplicant($studentId, $jobOfferId) {
+        try {
+            // 1. Cambiamos el estado en la BD (Update normal)
+            $this->applicationDAO->updateStatus($studentId, $jobOfferId, 'declined');
+
+            // 2. Traemos TODOS los postulantes de esa oferta 
+            // (Este es el método que ya tenés y que debería tener el JOIN con la tabla Users)
+            $applicants = $this->applicationDAO->getApplicantsByOffer($jobOfferId);
+
+            // 3. Buscamos al alumno específico dentro de esa lista para sacarle el mail
+            $targetApplicant = null;
+            foreach ($applicants as $app) {
+                if ($app['studentId'] == $studentId) {
+                    $targetApplicant = $app;
+                    break;
+                }
+            }
+
+            // 4. Si lo encontramos, mandamos el mail
+            if ($targetApplicant) {
+                $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+                
+                $to = $targetApplicant['email']; // El mail que viene del JOIN con Users
+                $subject = "Application Update: " . $jobOffer->getTitle();
+                $message = "<h2>Hello " . $targetApplicant['firstName'] . "</h2>" .
+                        "<p>We are sorry to inform you that your application for <strong>" . 
+                        $jobOffer->getTitle() . "</strong> has been declined.</p>";
+
+                MailService::send($to, $subject, $message);
+            }
+
+            $this->showApplicants($jobOfferId);
+
+        } catch (Exception $ex) {
+            $this->showApplicants($jobOfferId, "Error: " . $ex->getMessage());
+        }
+    }
+
+    public function generateApplicantsPDF($jobOfferId) 
     {
-        // En lugar de borrar, marcamos como 'declined' o 'rejected'
-        $this->applicationDAO->UpdateStatus($studentId, $jobOfferId, 'declined');
-        $this->showApplicants($jobOfferId);
+        try {
+            require_once(ROOT . "Vendor/dompdf/autoload.inc.php"); 
+
+            // 2. Instancia con el namespace completo
+            $dompdf = new Dompdf(); 
+
+            $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+            $applicantList = $this->applicationDAO->getApplicantsByOffer($jobOfferId);
+
+            if ($jobOffer) {
+                ob_start();
+                require_once(ADMIN_VIEWS . "pdf-applicants-template.php");
+                $html = ob_get_clean();
+
+                ob_end_clean();
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+
+                // Esto abre el PDF en una pestaña nueva
+                $dompdf->stream("Applicants_" . $jobOffer->getTitle() . ".pdf", array("Attachment" => false));
+            }
+        } catch (Exception $ex) {
+            // Si falla, mostramos el error en la pantalla normal
+            echo "Error generating PDF: " . $ex->getMessage();
+        }
+    }
+
+   private function processExpiredOffers() 
+    {
+        try {
+            $expiredOffers = $this->jobOfferRepo->getExpiredToNotify();
+
+            foreach ($expiredOffers as $offer) {
+                $applicants = $this->applicationDAO->getApplicantsByOffer($offer->getJobOfferId());
+
+                // Solo mandamos mails y marcamos como notificada si REALMENTE hay gente a quien avisar
+                if (!empty($applicants)) {
+                    foreach ($applicants as $app) {
+                        $to = $app['email'];
+                        $subject = "Job Offer Closed: " . $offer->getTitle();
+                        $message = "<h2>Hello " . $app['firstName'] . "</h2>" .
+                                "<p>The application period for <strong>" . $offer->getTitle() . "</strong> has ended.</p>" .
+                                "<p>Thank you for participating in this process.</p>";
+
+                        MailService::send($to, $subject, $message);
+                    }
+                    // Si llegamos acá, es porque procesamos alumnos
+                    $this->jobOfferRepo->updateNotifiedStatus($offer->getJobOfferId(), true);
+                } else {
+                    // OPCIONAL: Si no hay alumnos, quizás quieras marcarla como notificada igual 
+                    // para que no la siga buscando el DAO, o dejarla en 0 hasta que decidas qué hacer.
+                    // Mi consejo: Márcala como notificada para limpiar la base de datos.
+                    $this->jobOfferRepo->updateNotifiedStatus($offer->getJobOfferId(), true);
+                }
+            }
+        } catch (Exception $ex) {
+            error_log("Error in processExpiredOffers: " . $ex->getMessage());
+        }
     }
 }

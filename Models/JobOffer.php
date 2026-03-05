@@ -10,7 +10,6 @@ class JobOffer
     private $startDate;
     private $deadline;
     private $active;
-
     private $companyId;
     private $jobPositionId;
 

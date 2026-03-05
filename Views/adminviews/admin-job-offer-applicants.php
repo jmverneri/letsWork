@@ -16,6 +16,13 @@ Utils::checkNav();
                 Total: <?php echo count($applicantList); ?>
             </span>
         </div>
+
+        <div class="mb-3">
+            <a href="<?= FRONT_ROOT ?>AdminJobOffer/generateApplicantsPDF/<?= $jobOffer->getJobOfferId() ?>" 
+            class="btn btn-danger" target="_blank">
+                <i class="fas fa-file-pdf"></i> Download PDF List
+            </a>
+        </div>
         
         <div class="shadow-sm" style="background: white; border-radius: 8px; border: 1px solid #dee2e6; overflow: hidden;">
             <table class="table table-hover" style="margin-bottom: 0; border-collapse: collapse;">
