@@ -8,6 +8,21 @@ Utils::checkNav();
         <div class="container-fluid px-4"> 
             <h2 class="mb-4 text-dark">Company Management</h2>
 
+            <h2 class="mb-4 text-dark">Company Management</h2>
+
+            <?php if (isset($_SESSION['success_message'])) { ?>
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <?php 
+                        echo $_SESSION['success_message']; 
+                        unset($_SESSION['success_message']); // Lo borramos para que no aparezca de nuevo al refrescar
+                    ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php } ?>
+
            <form action="<?php echo FRONT_ROOT . "AdminCompany/showCompaniesViews" ?>" method="POST" class="form-inline mb-4">
                 <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by name..." value="<?php echo (isset($search)) ? $search : ''; ?>">
                 <button class="btn btn-primary" type="submit">Search</button>

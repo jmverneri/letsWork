@@ -59,4 +59,27 @@ class CareerDAOMySQL {
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) { throw $ex; }
     }
+
+    public function getAll()
+    {
+        $careerList = array();
+        $query = "SELECT * FROM " . $this->tableName . " ORDER BY description ASC";
+
+        try {
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $career = new Career();
+                $career->setCareerId($row["careerId"]);
+                $career->setDescription($row["description"]);
+                $career->setActive($row["active"]);
+                
+                array_push($careerList, $career);
+            }
+            return $careerList;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 }

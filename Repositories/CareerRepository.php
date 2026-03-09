@@ -33,18 +33,22 @@ class CareerRepository
         return false;
     }
 
+    public function getAll() 
+    {
+        return $this->db->getAll();
+    }
+
     public function getById($careerId)
     {
-        // 1. Intentamos buscar en la base de datos local
+        // 1. Buscamos en BD local
         $career = $this->db->getById($careerId);
 
-        // 2. Si no existe, lo buscamos en la API
+        // 2. Si no está, lo buscamos en la API (usando los nombres correctos del constructor)
         if (!$career) {
-            $career = $this->careerDAOApi->getById($careerId);
+            $career = $this->api->getById($careerId);
 
-            // 3. Si la API lo encontró, lo guardamos en nuestra BD para el futuro
             if ($career) {
-                $this->careerDAOMySQL->add($career);
+                $this->db->addFromApi($career);
             }
         }
 

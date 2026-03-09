@@ -63,7 +63,7 @@ class CompanyController
         try {
             // Validamos si ya existe el CUIT antes de hacer nada
             if ($this->companyRepo->getByCuit($data['cuit'])) {
-                $this->ShowAddView("Error: El CUIT ya se encuentra registrado.");
+                $this->redirectAddForm("Error: El CUIT ya se encuentra registrado.");
                 return;
             }
 
@@ -71,7 +71,12 @@ class CompanyController
             $company = $this->companyRepo->createCompany($data);
 
             if ($company) {
-                $this->redirectAddForm("Empresa registrada con éxito. El CUIT es su contraseña.");
+               // Guardamos el mensaje en la sesión para que no se pierda al redireccionar
+                $_SESSION['success_message'] = "Empresa registrada con éxito. El CUIT es su contraseña.";
+                
+                // Redirigimos a la ruta que maneja el Router
+                header("location: " . FRONT_ROOT . "AdminCompany/showCompaniesViews");
+                exit();
             } else {
                 $this->redirectAddForm("No se pudo completar el registro.");
             }
