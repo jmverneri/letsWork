@@ -14,13 +14,13 @@ class CompanyJobOfferController
 {
     private CompanyRepository $companyRepo;
     private CareerRepository $careerRepo;
-    private JobOfferRepository $jobOfferRepository;
+    private JobOfferRepository $jobOfferRepo;
     private JobPositionRepository $jobPositionRepo;  
 
     public function __construct()
     {
         Utils::checkCompanySession();
-        $this->jobOfferRepository = new JobOfferRepository();
+        $this->jobOfferRepo = new JobOfferRepository();
         $this->jobPositionRepo = new JobPositionRepository();
         $this->companyRepo = new CompanyRepository();
         $this->careerRepo = new CareerRepository();
@@ -35,10 +35,21 @@ class CompanyJobOfferController
             $user = $_SESSION['loggedUser'];
             $company = $this->companyRepo->getByUserId($user->getUserId());
             
-            $jobOffers = $this->jobOfferRepository->getByCompanyId($company->getCompanyId());
+            $jobOffers = $this->jobOfferRepo->getByCompanyId($company->getCompanyId());
             
-            // Necesitamos los nombres de las carreras para la tabla
+            // Traemos todas las carreras para el mapeo de nombres
             $careers = $this->careerRepo->getAll();
+            $careerMap = [];
+            foreach ($careers as $career) {
+                $careerMap[$career->getCareerId()] = $career->getDescription();
+            }
+
+            // Traemos todos los puestos para saber a qué carrera pertenece cada uno
+            $positions = $this->jobPositionRepo->getAll(); 
+            $positionToCareerMap = [];
+            foreach ($positions as $pos) {
+                $positionToCareerMap[$pos->getJobPositionId()] = $pos->getCareerId();
+            }
 
             require_once(COMPANY_VIEWS . "company-joboffer-list.php");
         } catch (Exception $ex) {
@@ -62,33 +73,48 @@ class CompanyJobOfferController
     /**
      * Procesar el alta de una oferta
      */
-  public function add($title, $description, $salary, $startDate, $deadline, $jobPositionId)
+    public function add($request)
     {
         try {
+            // 1. Validar sesión
+            if (!isset($_SESSION['loggedUser'])) {
+                throw new Exception("Debe iniciar sesión para publicar una oferta.");
+            }
+
             $user = $_SESSION['loggedUser'];
             $company = $this->companyRepo->getByUserId($user->getUserId());
 
+            if (!$company) {
+                throw new Exception("No se encontró la empresa asociada a este usuario.");
+            }
+
+            // 2. Crear y popular el modelo
             $jobOffer = new JobOffer();
             $jobOffer->setCompanyId($company->getCompanyId())
-                    ->setTitle($title)
-                    ->setDescription($description)
-                    ->setSalary($salary)
-                    ->setStartDate($startDate)
-                    ->setDeadline($deadline)
-                    ->setJobPositionId($jobPositionId)
+                    ->setTitle($request["title"]) // Extraemos directamente del array
+                    ->setDescription($request["description"])
+                    ->setSalary($request["salary"])
+                    ->setStartDate($request["startDate"])
+                    ->setDeadline($request["deadline"])
+                    ->setJobPositionId($request["jobPositionId"])
                     ->setActive(true);
 
-            // Usamos el servicio para guardar
-            $this->jobOfferRepository->add($jobOffer);
+            // 3. Persistir
+            $this->jobOfferRepo->add($jobOffer);
             
+            // Redirección exitosa
             header("Location: " . FRONT_ROOT . "CompanyJobOffer/listMyOffers");
+            exit();
+
         } catch (Exception $ex) {
-            $message = $ex->getMessage();
-            // Recargamos los datos necesarios para que el formulario no falle al volver a mostrarse
-            $careers = $this->careerRepo->getAll(); 
-            // Si necesitas puestos, agrégalos aquí también:
-            // $jobPositions = $this->jobPositionRepo->getAll(); 
+            // 4. Manejo de errores: Capturamos el problema y enviamos el mensaje a la vista
+            $errorMessage = $ex->getMessage();
             
+            // Recargamos los datos necesarios para que el formulario siga siendo funcional
+            $careers = $this->careerRepo->getAll(); 
+            $jobPositions = $this->jobPositionRepo->getAll(); 
+            
+            // Requerimos la vista pasando el mensaje de error
             require_once(COMPANY_VIEWS . "joboffer-add.php");
         }
     }
@@ -100,11 +126,11 @@ class CompanyJobOfferController
     {
         try {
             // Podrías validar aquí que la oferta pertenezca a la empresa logueada
-            $jobOffer = $this->jobOfferRepository->getById($jobOfferId);
+            $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
             
             // Usamos el Service para obtener la data procesada
             // (Asegúrate de que tu DAO devuelva info útil del estudiante)
-            $applicants = $this->jobOfferRepository->getApplicantsByOffer($jobOfferId);
+            $applicants = $this->jobOfferRepo->getApplicantsByOffer($jobOfferId);
 
             require_once(COMPANY_VIEWS . "joboffer-applicants.php");
         } catch (Exception $ex) {
@@ -119,11 +145,113 @@ class CompanyJobOfferController
     public function delete($jobOfferId)
     {
         try {
-            $this->jobOfferService->delete($jobOfferId);
+            $this->jobOfferRepo->delete($jobOfferId);
             header("Location: " . FRONT_ROOT . "CompanyJobOffer/listMyOffers");
         } catch (Exception $ex) {
             $message = $ex->getMessage();
             $this->listMyOffers();
+        }
+    }
+
+    public function viewDetails($jobOfferId)
+    {
+        try {
+            // 1. Obtenemos la oferta específica
+            $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+
+            if (!$jobOffer) {
+                throw new Exception("Job Offer not found.");
+            }
+
+            // 2. Necesitamos la data de la carrera y el puesto para mostrar nombres, no IDs
+            $careers = $this->careerRepo->getAll();
+            $careerMap = [];
+            foreach ($careers as $career) {
+                $careerMap[$career->getCareerId()] = $career->getDescription();
+            }
+
+            $positions = $this->jobPositionRepo->getAll(); 
+            $positionMap = [];
+            $positionToCareerMap = [];
+            foreach ($positions as $pos) {
+                $positionMap[$pos->getJobPositionId()] = $pos->getDescription();
+                $positionToCareerMap[$pos->getJobPositionId()] = $pos->getCareerId();
+            }
+
+            require_once(COMPANY_VIEWS . "company-joboffer-detail.php");
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $this->listMyOffers();
+        }
+    }
+
+    public function reactive($jobOfferId)
+    {
+        try {
+            $this->jobOfferRepo->updateActiveStatus($jobOfferId, true);
+            
+            header("Location: " . FRONT_ROOT . "CompanyJobOffer/listMyOffers");
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $this->listMyOffers();
+        }
+    }
+
+    /**
+ * Muestra el formulario con los datos de la oferta a editar
+ */
+    public function showEditForm($jobOfferId)
+    {
+        try {
+            $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+            
+            if (!$jobOffer) {
+                throw new Exception("No se encontró la oferta.");
+            }
+
+            // Cargamos los datos para los selectores
+            $careers = $this->careerRepo->getAll();
+            $jobPositions = $this->jobPositionRepo->getAll();
+
+            require_once(COMPANY_VIEWS . "company-joboffer-edit.php");
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+            $this->listMyOffers();
+        }
+    }
+
+    /**
+     * Procesa la actualización
+     */
+    public function edit($request)
+    {
+        try {
+            // 1. PRIMERO: Traemos la oferta completa de la DB
+            $jobOffer = $this->jobOfferRepo->getById($request["jobOfferId"]);
+
+            if (!$jobOffer) {
+                throw new Exception("No se encontró la oferta para editar.");
+            }
+
+            // 2. AHORA: Actualizamos solo los campos que vienen del formulario
+            $jobOffer->setTitle($request["title"]);
+            $jobOffer->setDescription($request["description"]);
+            $jobOffer->setSalary($request["salary"]);
+            $jobOffer->setStartDate($request["startDate"]);
+            $jobOffer->setDeadline($request["deadline"]);
+            $jobOffer->setJobPositionId($request["jobPositionId"]);
+            
+            // ¡OJO! No tocamos $jobOffer->setActive() ni ->setCompanyId() 
+            // porque ya los trae del objeto original que recuperamos en el paso 1.
+
+            // 3. Persistimos el objeto completo
+            $this->jobOfferRepo->update($jobOffer);
+            
+            header("Location: " . FRONT_ROOT . "CompanyJobOffer/listMyOffers");
+            exit();
+        } catch (Exception $ex) {
+            $errorMessage = $ex->getMessage();
+            $this->showEditForm($request["jobOfferId"]);
         }
     }
 }

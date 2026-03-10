@@ -8,6 +8,7 @@ use Repositories\CareerRepository;
 use Repositories\UserRepository;
 use Models\Company;
 use Utils\Utils;
+use \Exception;
 
 class CompanyController
 {
@@ -94,25 +95,53 @@ class CompanyController
         require_once(VIEWS_PATH . "company-edit.php");
     }
 
-    // Procesa la modificación
-    public function EditCompany($companyId, $name, $cuit, $email, $city, $description, $phoneNumber)
+  /**
+     * Procesa la edición de una empresa y su email asociado
+     */
+    public function EditCompany()
     {
-        try {
-            $company = $this->companyRepo->getById($companyId);
-            
-            if($company) {
-                $company->setName($name);
-                $company->setCuit($cuit);
-                $company->setCity($city);
-                $company->setDescription($description);
-                $company->setPhoneNumber($phoneNumber);
+        if ($_POST) {
+            try {
+                // 1. Validaciones básicas de seguridad
+                if (!isset($_POST['companyId'])) {
+                    throw new Exception("ID de empresa no proporcionado.");
+                }
 
-                $this->companyRepo->updateCompany($company, $email);
+                // 2. Recuperamos la empresa existente desde el repositorio
+                // Esto garantiza que mantenemos el userId, el logo, etc., que ya teníamos
+                $company = $this->companyRepo->getById($_POST['companyId']);
+
+                if (!$company) {
+                    throw new Exception("No se encontró la empresa a editar.");
+                }
+
+                // 3. Actualizamos los atributos propios de la empresa
+                $company->setName($_POST['name']);
+                $company->setCity($_POST['city'] ?? null);
+                $company->setDescription($_POST['description'] ?? null);
+                $company->setPhoneNumber($_POST['phoneNumber'] ?? null);
+                $company->setCuit($_POST['cuit'] ?? null);
+                $company->setActive(isset($_POST['active'])); 
+
+                // 4. Delegamos la actualización completa al repositorio.
+                // Pasamos el objeto $company modificado y el nuevo email recibido por POST.
+                // El repositorio se encargará de actualizar 'companies' y 'users'.
+                $this->companyRepo->updateCompany($company, $_POST['email']);
+
+                // 5. Redirección exitosa
+                header("Location: " . FRONT_ROOT . "Company/List");
+                exit();
+
+            } catch (Exception $ex) {
+                // Si algo falla, capturamos el mensaje para mostrarlo en la vista
+                $message = $ex->getMessage();
                 
-                $this->ShowListView("Empresa actualizada correctamente.");
+                // Re-cargamos la vista de edición (asegúrate de que $company esté disponible)
+                require_once(VIEWS_PATH . "company-edit.php");
             }
-        } catch (\Exception $ex) {
-            $this->Index("Error al editar: " . $ex->getMessage());
+        } else {
+            // Redirigir si acceden por GET sin datos
+            header("Location: " . FRONT_ROOT . "Company/List");
         }
     }
 }

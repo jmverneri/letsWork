@@ -10,7 +10,7 @@ Utils::checkNav();
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>My Job Offers</h2>
 
-            <a href="<?= FRONT_ROOT ?>JobOffer/showAddForm"
+            <a href="<?= FRONT_ROOT ?>CompanyJobOffer/showAddView"
                class="btn btn-success">
                 + New Job Offer
             </a>
@@ -41,7 +41,14 @@ Utils::checkNav();
                             </td>
 
                             <td>
-                                <?= htmlspecialchars($careerMap[$jobOffer->getCareerId()] ?? 'No career') ?>
+                            <?php 
+                                // 1. Obtenemos el ID del puesto de la oferta
+                                $posId = $jobOffer->getJobPositionId();
+                                // 2. Buscamos qué carrera le corresponde a ese puesto
+                                $carId = $positionToCareerMap[$posId] ?? null;
+                                // 3. Mostramos el nombre de la carrera
+                                echo htmlspecialchars($careerMap[$carId] ?? 'N/A');
+                            ?>
                             </td>
 
                             <td>
@@ -49,7 +56,7 @@ Utils::checkNav();
                             </td>
 
                             <td>
-                                <?php if ($jobOffer->getStatus()) : ?>
+                                <?php if ($jobOffer->getActive()) : ?>
                                     <span class="badge bg-success">Active</span>
                                 <?php else : ?>
                                     <span class="badge bg-secondary">Closed</span>
@@ -58,21 +65,26 @@ Utils::checkNav();
 
                             <td class="text-center">
 
-                                <a href="<?= FRONT_ROOT ?>JobOffer/show/<?= $jobOffer->getJobOfferId() ?>"
-                                   class="btn btn-sm btn-info">
+                                <a href="<?= FRONT_ROOT ?>CompanyJobOffer/viewDetails/<?= $jobOffer->getJobOfferId() ?>"
+                                class="btn btn-sm btn-info">
                                     View
                                 </a>
 
-                                <a href="<?= FRONT_ROOT ?>JobOffer/showEditForm/<?= $jobOffer->getJobOfferId() ?>"
-                                   class="btn btn-sm btn-warning">
-                                    Edit
-                                </a>
-
-                                <?php if ($jobOffer->getStatus()) : ?>
-                                    <a href="<?= FRONT_ROOT ?>JobOffer/close/<?= $jobOffer->getJobOfferId() ?>"
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Close this Job Offer?')">
-                                        Close
+                                <?php if ($jobOffer->getActive()) : ?>
+                                    <a href="<?= FRONT_ROOT ?>CompanyJobOffer/showEditForm/<?= $jobOffer->getJobOfferId() ?>"
+                                    class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="<?= FRONT_ROOT ?>CompanyJobOffer/delete/<?= $jobOffer->getJobOfferId() ?>"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Estás seguro de cerrar esta oferta?')">
+                                        <i class="fas fa-times"></i> Close
+                                    </a>
+                                <?php else : ?>
+                                    <a href="<?= FRONT_ROOT ?>CompanyJobOffer/reactive/<?= $jobOffer->getJobOfferId() ?>"
+                                    class="btn btn-sm btn-success"
+                                    onclick="return confirm('¿Deseas volver a activar esta oferta?')">
+                                        <i class="fas fa-redo"></i> Reactivate
                                     </a>
                                 <?php endif; ?>
 
