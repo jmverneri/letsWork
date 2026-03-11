@@ -88,17 +88,20 @@ class CompanyController
     }
 
     // Muestra el formulario con los datos actuales
-    public function ShowEditView($companyId)
+    public function showEditView()
     {
-        $company = $this->companyRepo->getById($companyId);
-        // IMPORTANTE: Como el email está en User, asegúrate que tu getById traiga el email
-        require_once(VIEWS_PATH . "company-edit.php");
+        $user = $_SESSION['loggedUser'];
+        $company = $this->companyRepo->getByUserId($user->getUserId());
+        
+        // Necesitamos el email que está en el usuario
+        $email = $user->getEmail();
+        require_once(COMPANY_VIEWS . "company-edit.php");
     }
 
   /**
      * Procesa la edición de una empresa y su email asociado
      */
-    public function EditCompany()
+    public function editCompany()
     {
         if ($_POST) {
             try {
@@ -106,7 +109,6 @@ class CompanyController
                 if (!isset($_POST['companyId'])) {
                     throw new Exception("ID de empresa no proporcionado.");
                 }
-
                 // 2. Recuperamos la empresa existente desde el repositorio
                 // Esto garantiza que mantenemos el userId, el logo, etc., que ya teníamos
                 $company = $this->companyRepo->getById($_POST['companyId']);
@@ -129,7 +131,7 @@ class CompanyController
                 $this->companyRepo->updateCompany($company, $_POST['email']);
 
                 // 5. Redirección exitosa
-                header("Location: " . FRONT_ROOT . "Company/List");
+                header("Location: " . FRONT_ROOT . "Company/profile");
                 exit();
 
             } catch (Exception $ex) {
@@ -141,7 +143,7 @@ class CompanyController
             }
         } else {
             // Redirigir si acceden por GET sin datos
-            header("Location: " . FRONT_ROOT . "Company/List");
+            header("Location: " . FRONT_ROOT . "Company/profile");
         }
     }
 }

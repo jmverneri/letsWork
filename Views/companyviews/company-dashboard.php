@@ -25,7 +25,7 @@
                         <h4 class="card-title">Company Settings</h4>
                         <p class="text-muted small">Update your location, description and contact data.</p>
                         <a href="<?= FRONT_ROOT ?>Company/profile" class="btn btn-secondary btn-block">View Profile</a>
-                        <a href="<?= FRONT_ROOT ?>Company/EditCompany" class="btn btn-outline-secondary btn-block">Edit Information</a>
+                        <a href="<?= FRONT_ROOT ?>Company/showEditView" class="btn btn-outline-secondary btn-block">Edit Information</a>
                     </div>
                 </div>
             </div>

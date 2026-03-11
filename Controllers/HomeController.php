@@ -2,7 +2,7 @@
 
     namespace Controllers;
 
-    use Models\User;
+    use Models\User as User;
     use Models\Student;
     use Models\UserCompany;
     use Models\Career;
@@ -142,18 +142,26 @@
 
             // 5. Redirección según el Rol
             switch ($user->getRole()) {
-                case \Models\User::ROLE_ADMIN:
+                case User::ROLE_ADMIN:
                     header("Location: " . FRONT_ROOT . "Home/menuAdmin");
                     break;
 
-                case \Models\User::ROLE_STUDENT:
+                case User::ROLE_STUDENT:
                     // Obtenemos los datos específicos del alumno para la sesión
                     $_SESSION['student'] = $this->studentDAOMySQL->getByUserId($user->getUserId());
                     header("Location: " . FRONT_ROOT . "Home/menuStudent");
                     break;
 
-                case \Models\User::ROLE_COMPANY:
-                    // Aquí podrías cargar datos específicos de la empresa si tuvieras una tabla Company
+                case User::ROLE_COMPANY:
+                    // 1. Buscamos la empresa asociada al usuario
+                    $company = $this->companyRepo->getByUserId($user->getUserId());
+
+                    // 2. Validación de estado: Si no existe o está inactiva, bloqueamos
+                    if (!$company || !$company->isActive()) {
+                        $_SESSION['login_error'] = "Su cuenta de empresa ha sido desactivada. Contacte al administrador.";
+                        header("Location: " . FRONT_ROOT . "Home/index");
+                        exit();
+                    }
                     header("Location: " . FRONT_ROOT . "Home/menuCompany");
                     break;
 

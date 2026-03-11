@@ -50,7 +50,7 @@ Utils::checkNav();
 
         <div class="text-center mt-4">
             <a class="btn btn-warning"
-               href="<?= FRONT_ROOT ?>Company/edit">
+               href="<?= FRONT_ROOT ?>Company/showEditView">
                 Edit Company Data
             </a>
 
