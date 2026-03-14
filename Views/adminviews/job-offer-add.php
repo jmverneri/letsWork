@@ -8,7 +8,7 @@ Utils::checkNav();
           <div class="container">
                <h2 class="mb-4 text-dark">Add New Job Offer</h2>
                
-               <form action="<?php echo FRONT_ROOT . "AdminJobOffer/add" ?>" method="POST" class="bg-light-custom p-5 shadow-sm rounded">
+               <form action="<?php echo FRONT_ROOT . "AdminJobOffer/add" ?>" method="POST" enctype="multipart/form-data" class="bg-light-custom p-5 shadow-sm rounded">
                     <div class="row">                         
                          
                          <div class="col-lg-12">
@@ -90,6 +90,11 @@ Utils::checkNav();
                                    <label>Description / Requirements</label>
                                    <textarea name="description" class="form-control" rows="4" required></textarea>
                               </div>
+                         </div>
+                         <div class="form-group mt-3">
+                              <label for="flyer"><strong>Offer Flyer (Image):</strong></label>
+                              <input type="file" name="flyer" class="form-control-file" accept="image/png, image/jpeg">
+                              <small class="form-text text-muted">Only .jpg or .png images allowed.</small>
                          </div>
                     </div>
 

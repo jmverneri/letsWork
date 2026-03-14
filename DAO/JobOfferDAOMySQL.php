@@ -13,8 +13,8 @@ class JobOfferDAOMySQL
     public function Add(JobOffer $jobOffer)
     {
         try {
-            $query = "INSERT INTO " . $this->tableName . " (title, description, salary, startDate, deadline, active, companyId, jobPositionId) 
-                      VALUES (:title, :description, :salary, :startDate, :deadline, :active, :companyId, :jobPositionId);";
+            $query = "INSERT INTO job_offers (title, description, salary, startDate, deadline, active, companyId, jobPositionId, flyer_image_path) 
+                  VALUES (:title, :description, :salary, :startDate, :deadline, :active, :companyId, :jobPositionId, :flyer_image_path);";
 
             $parameters["title"] = $jobOffer->getTitle();
             $parameters["description"] = $jobOffer->getDescription();
@@ -24,6 +24,7 @@ class JobOfferDAOMySQL
             $parameters["active"] = $jobOffer->getActive() ? 1 : 0;
             $parameters["companyId"] = $jobOffer->getCompanyId();
             $parameters["jobPositionId"] = $jobOffer->getJobPositionId();
+            $parameters["flyer_image_path"]  = $jobOffer->getFlyerImagePath();
 
             $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
@@ -57,6 +58,7 @@ class JobOfferDAOMySQL
                 $jobOffer->setActive($row["active"]);
                 $jobOffer->setCompanyId($row["companyId"]);
                 $jobOffer->setJobPositionId($row["jobPositionId"]);
+                $jobOffer->setFlyerImagePath($row["flyer_image_path"] ?? null);
                 
                 // Seteamos los nombres que vienen del JOIN
                 $jobOffer->setCompanyName($row["companyName"]);
@@ -97,7 +99,8 @@ class JobOfferDAOMySQL
                         deadline = :deadline, 
                         active = :active, 
                         companyId = :companyId, 
-                        jobPositionId = :jobPositionId 
+                        jobPositionId = :jobPositionId,
+                        flyer_image_path = :flyer_image_path 
                     WHERE jobOfferId = :jobOfferId";
 
             $parameters["title"] = $jobOffer->getTitle();
@@ -108,6 +111,7 @@ class JobOfferDAOMySQL
             $parameters["active"] = $jobOffer->getActive();
             $parameters["companyId"] = $jobOffer->getCompanyId();
             $parameters["jobPositionId"] = $jobOffer->getJobPositionId();
+            $parameters["flyer_image_path"] = $jobOffer->getFlyerImagePath(); // Incluido en el UPDATE
             $parameters["jobOfferId"] = $jobOffer->getJobOfferId();
 
             $this->connection = Connection::GetInstance();
@@ -138,6 +142,7 @@ class JobOfferDAOMySQL
                 $jobOffer->setActive($row["active"]);
                 $jobOffer->setCompanyId($row["companyId"]);
                 $jobOffer->setJobPositionId($row["jobPositionId"]);
+                $jobOffer->setFlyerImagePath($row["flyer_image_path"] ?? null);
 
                 return $jobOffer;
             }
@@ -173,6 +178,7 @@ class JobOfferDAOMySQL
                 $jobOffer->setActive($row["active"]);
                 $jobOffer->setCompanyId($row["companyId"]);
                 $jobOffer->setJobPositionId($row["jobPositionId"]);
+                $jobOffer->setFlyerImagePath($row["flyer_image_path"] ?? null);
                 
                 $jobOffer->setCompanyName($row["companyName"]);
                 $jobOffer->setJobPositionDescription($row["jobPositionDescription"]);

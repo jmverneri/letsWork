@@ -56,13 +56,13 @@ class AdminJobOfferController
         }
     }
 
-    public function add()
+   public function add()
     {
-        if($_POST) {
+        if ($_POST) {
             try {
                 $jobOffer = new JobOffer();
                 
-                // Extraemos los datos del POST manualmente
+                // 1. Datos básicos
                 $jobOffer->setTitle($_POST["title"]);
                 $jobOffer->setDescription($_POST["description"]);
                 $jobOffer->setSalary($_POST["salary"]);
@@ -72,15 +72,44 @@ class AdminJobOfferController
                 $jobOffer->setJobPositionId($_POST["jobPositionId"]);
                 $jobOffer->setActive(true);
 
+                $flyerPath = null;
+                if (isset($_FILES['flyer']) && $_FILES['flyer']['error'] === UPLOAD_ERR_OK) {
+                    
+                    $uploadDir = 'uploads/job-offers/';
+                    
+                    // Validar que sea realmente una imagen (seguridad)
+                    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($fileInfo, $_FILES['flyer']['tmp_name']);
+                    $allowedTypes = ['image/jpeg', 'image/png'];
+
+                    if (in_array($mimeType, $allowedTypes)) {
+                        // Generar un nombre único para evitar sobreescritura
+                        $extension = ($mimeType == 'image/jpeg') ? '.jpg' : '.png';
+                        $fileName = 'flyer_' . uniqid() . $extension;
+                        $targetPath = $uploadDir . $fileName;
+
+                        // Mover el archivo del temporal al destino final
+                        if (move_uploaded_file($_FILES['flyer']['tmp_name'], $targetPath)) {
+                            $flyerPath = $fileName;
+                        }
+                    } else {
+                        throw new Exception("Invalid file type. Only JPG or PNG allowed.");
+                    }
+                }
+
+                // Guardamos el nombre del archivo en el objeto
+                $jobOffer->setFlyerImagePath($flyerPath);
+
+                // 3. Guardar en BD
                 $this->jobOfferRepo->add($jobOffer);
 
-                // Si todo sale bien, volvemos a la lista
                 header("location: " . FRONT_ROOT . "AdminJobOffer/showActiveJobOffers");
                 
             } catch (Exception $ex) {
-                // Si hay error, volvemos a la vista de alta con el ID de la empresa
-                $this->showAddView($_POST["companyId"], "Error: " . $ex->getMessage());
-            }
+            // Si no hay companyId en el POST, intentamos mandarlo a una vista general o mostrar el error
+            $companyId = isset($_POST["companyId"]) ? $_POST["companyId"] : null;
+            $this->showAddView($companyId, "Error: " . $ex->getMessage());
+        }
         }
     }
 
@@ -204,6 +233,13 @@ class AdminJobOfferController
             return ($offer->getDeadline() < $today || $offer->getActive() == false);
         });
 
+        $filter = $_GET['positionFilter'] ?? null;
+        if (!empty($filter)) {
+            $filter = strtolower($filter);
+            $jobOfferList = array_filter($jobOfferList, function($offer) use ($filter) {
+                return strpos(strtolower($offer->getTitle()), $filter) !== false;
+            });
+        }
         $companiesList = $this->companyRepo->getAll();
 
         require_once(ADMIN_VIEWS."admin-expired-offers-list.php");

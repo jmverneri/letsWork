@@ -98,6 +98,34 @@ class CompanyJobOfferController
                     ->setDeadline($request["deadline"])
                     ->setJobPositionId($request["jobPositionId"])
                     ->setActive(true);
+                    
+            $flyerPath = null;
+                if (isset($_FILES['flyer']) && $_FILES['flyer']['error'] === UPLOAD_ERR_OK) {
+                    
+                    $uploadDir = 'uploads/job-offers/';
+                    
+                    // Validar que sea realmente una imagen (seguridad)
+                    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($fileInfo, $_FILES['flyer']['tmp_name']);
+                    $allowedTypes = ['image/jpeg', 'image/png'];
+
+                    if (in_array($mimeType, $allowedTypes)) {
+                        // Generar un nombre único para evitar sobreescritura
+                        $extension = ($mimeType == 'image/jpeg') ? '.jpg' : '.png';
+                        $fileName = 'flyer_' . uniqid() . $extension;
+                        $targetPath = $uploadDir . $fileName;
+
+                        // Mover el archivo del temporal al destino final
+                        if (move_uploaded_file($_FILES['flyer']['tmp_name'], $targetPath)) {
+                            $flyerPath = $fileName;
+                        }
+                    } else {
+                        throw new Exception("Invalid file type. Only JPG or PNG allowed.");
+                    }
+                }
+
+                // Guardamos el nombre del archivo en el objeto
+                $jobOffer->setFlyerImagePath($flyerPath);
 
             // 3. Persistir
             $this->jobOfferRepo->add($jobOffer);

@@ -50,7 +50,13 @@ Utils::checkNav();
                                 </td>
 
                                 <td class="position-cell" style="vertical-align: middle; padding: 12px;">
-                                    <strong style="color: #333;"><?php echo $jobOffer->getTitle(); ?></strong>
+                                <?php if ($jobOffer->getFlyerImagePath()) { ?>
+                                        <div class="mb-2">
+                                            <img src="<?= str_replace('index.php', '', $_SERVER['PHP_SELF']) . 'uploads/job-offers/' . $jobOffer->getFlyerImagePath(); ?>" 
+                                                alt="Flyer" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
+                                        </div>
+                                    <?php } ?>    
+                                <strong style="color: #333;"><?php echo $jobOffer->getTitle(); ?></strong>
                                     <br>
                                     <small style="color: #28a745; font-weight: bold;">
                                         $<?php echo number_format($jobOffer->getSalary(), 2); ?>
@@ -121,11 +127,14 @@ Utils::checkNav();
         let rows = document.querySelectorAll('.offer-row');
 
         rows.forEach(row => {
+            // Buscamos el texto dentro de la fila
             let positionText = row.querySelector('.position-cell strong').textContent.toLowerCase();
-            if (positionText.includes(filter)) {
-                row.style.display = "";
+            
+            // CAMBIO AQUÍ: usamos .startsWith() en lugar de .includes()
+            if (positionText.startsWith(filter)) {
+                row.style.display = ""; // Coincide desde el inicio, se muestra
             } else {
-                row.style.display = "none";
+                row.style.display = "none"; // No coincide, se oculta
             }
         });
     });

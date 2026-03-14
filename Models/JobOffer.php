@@ -12,6 +12,7 @@ class JobOffer
     private $active;
     private $companyId;
     private $jobPositionId;
+    private $flyerImagePath;   
 
     // Atributos "Virtuales" para facilitar la lectura en las vistas (llenados vía JOIN en el DAO)
     private ?string $careerName = null;
@@ -24,31 +25,31 @@ class JobOffer
 
     public function getJobOfferId() { 
         return $this->jobOfferId; 
-        }
+    }
 
     public function setJobOfferId($jobOfferId) { 
         $this->jobOfferId = $jobOfferId; return $this; 
-        }
+    }
 
     public function getTitle() { 
         return $this->title; 
-        }
+    }
 
     public function setTitle($title) { 
         $this->title = $title; return $this; 
-        }
+    }
 
     public function getDescription() { 
         return $this->description; 
-        }
+    }
 
     public function setDescription($description) { 
         $this->description = $description; return $this; 
-        }
+    }
 
     public function getSalary() { 
         return $this->salary; 
-        }
+    }
 
     public function setSalary($salary) { 
         $this->salary = $salary; return $this; 
@@ -56,11 +57,11 @@ class JobOffer
 
     public function getStartDate() { 
         return $this->startDate; 
-        }
+    }
 
     public function setStartDate($startDate) { 
         $this->startDate = $startDate; return $this; 
-        }
+    }
 
     public function getDeadline() { 
         return $this->deadline; 
@@ -76,11 +77,11 @@ class JobOffer
 
     public function setActive($active) { 
         $this->active = $active; return $this; 
-        }
+    }
 
     public function getCompanyId() { 
         return $this->companyId; 
-        }
+    }
 
     public function setCompanyId($companyId) { 
         $this->companyId = $companyId; return $this; 
@@ -97,25 +98,34 @@ class JobOffer
     // Getters y Setters para nombres (Uso en Vistas)
     public function setCareerName(?string $name): void { 
         $this->careerName = $name; 
-        }
+    }
 
     public function getCareerName(): string { 
         return $this->careerName ?? 'N/A'; 
-        }
+    }
 
     public function setCompanyName(?string $name): void { 
         $this->companyName = $name; 
-        }
+    }
 
     public function getCompanyName(): string { 
         return $this->companyName ?? 'N/A'; 
-        }
+    }
 
     public function setJobPositionDescription(?string $desc): void { 
         $this->jobPositionDescription = $desc; 
-        }
+    }
 
     public function getJobPositionDescription(): string { 
         return $this->jobPositionDescription ?? 'N/A'; 
-        }
+    }
+
+    public function getFlyerImagePath() {
+        return $this->flyerImagePath;
+    }
+
+    public function setFlyerImagePath($flyerImagePath) {
+        $this->flyerImagePath = $flyerImagePath;
+        return $this;
+    }
 }

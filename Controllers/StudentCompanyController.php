@@ -105,4 +105,22 @@ class StudentCompanyController
         // Redirigir o mostrar vista
         $this->showListView($message);
     }
+
+    public function showCompanyDetails($companyId)
+    {
+        // 1. Verificamos sesión
+        Utils::checkNav();
+        
+        // 2. Buscamos la empresa específica por ID
+        // Supongo que tienes un método en tu repositorio que hace esto:
+        $company = $this->companyRepo->getById($companyId);
+        
+        if($company) {
+            // 3. Cargamos la vista de detalles
+            require_once(STUDENT_VIEWS . "company-details.php");
+        } else {
+            // Manejo de error si no existe
+            echo "Company not found.";
+        }
+    }
 }

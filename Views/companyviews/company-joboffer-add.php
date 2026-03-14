@@ -8,7 +8,7 @@ Utils::checkNav();
     <div class="container">
         <h2 class="mb-4">Add New Job Offer</h2>
         
-        <form action="<?php echo FRONT_ROOT . "CompanyJobOffer/add" ?>" method="POST">
+        <form action="<?php echo FRONT_ROOT . "CompanyJobOffer/add" ?>" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>Title</label>
@@ -38,10 +38,17 @@ Utils::checkNav();
                     <input type="number" name="salary" class="form-control" step="0.01">
                 </div>
                 <div class="col-md-4 mb-3">
+                    <label>Flyer Image</label>
+                    <input type="file" name="flyer" class="form-control" accept="image/*">
+                </div>
+                <div class="col-md-4 mb-3">
                     <label>Start Date</label>
                     <input type="date" name="startDate" class="form-control" required>
                 </div>
-                <div class="col-md-4 mb-3">
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
                     <label>Deadline</label>
                     <input type="date" name="deadline" class="form-control" required>
                 </div>

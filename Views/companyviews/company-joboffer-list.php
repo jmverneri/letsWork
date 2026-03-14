@@ -25,6 +25,7 @@ Utils::checkNav();
             <table class="table table-hover bg-light-alpha">
                 <thead class="thead-dark">
                     <tr>
+                        <th>Flyer</th>
                         <th>Title</th>
                         <th>Career</th>
                         <th>Expiration</th>
@@ -36,6 +37,14 @@ Utils::checkNav();
                 <tbody>
                     <?php foreach ($jobOffers as $jobOffer) : ?>
                         <tr>
+                            <td style="vertical-align: middle;">
+                                    <?php if ($jobOffer->getFlyerImagePath()): ?>
+                                        <img src="<?= str_replace('index.php', '', $_SERVER['PHP_SELF']) . 'uploads/job-offers/' . $jobOffer->getFlyerImagePath(); ?>" 
+                                            alt="Flyer" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                    <?php else: ?>
+                                        <span class="text-muted" style="font-size: 0.7rem;">N/A</span>
+                                    <?php endif; ?>
+                                </td>
                             <td>
                                 <?= htmlspecialchars($jobOffer->getTitle()) ?>
                             </td>
