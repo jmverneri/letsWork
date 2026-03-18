@@ -192,11 +192,11 @@ class JobOfferDAOMySQL
         }
     }
 
-    public function getExpiredOffersToNotify() {
+    public function getExpiredToNotify() {
         $expiredList = array();
         // Buscamos ofertas que vencieron (deadline < hoy), estén activas y no notificadas
         $query = "SELECT * FROM job_offers 
-                WHERE expirationDate < CURDATE() 
+                WHERE deadline <= CURDATE() 
                 AND active = 1 
                 AND notified = 0";
 
@@ -233,34 +233,6 @@ class JobOfferDAOMySQL
         } catch (Exception $ex) {
             throw $ex;
         }
-    }
-
-    public function getExpiredToNotify()
-    {
-        $expiredList = array();
-        $query = "SELECT * FROM job_offers 
-                WHERE deadline <= CURDATE() 
-                AND active = 1 
-                AND notified = 0";
-
-        try {
-            $this->connection = Connection::GetInstance();
-            $resultSet = $this->connection->Execute($query);
-
-            foreach ($resultSet as $row) {
-                $jobOffer = new JobOffer();
-                $jobOffer->setJobOfferId($row["jobOfferId"]);
-                $jobOffer->setTitle($row["title"]);
-                $jobOffer->setDeadline($row["deadline"]);
-                $jobOffer->setActive($row["active"]);
-                // Agregá los setters que necesites para tu modelo
-                
-                array_push($expiredList, $jobOffer);
-            }
-        } catch (Exception $ex) {
-            throw $ex;
-        }
-        return $expiredList;
     }
 
     public function updateNotifiedStatus($jobOfferId, $status)

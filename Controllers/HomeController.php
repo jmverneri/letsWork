@@ -140,6 +140,10 @@
             // 4. Login exitoso
             $_SESSION['loggedUser'] = $user;
 
+            if ($user->getMustChangePassword()) {
+                header("Location: " . FRONT_ROOT . "User/ShowChangePasswordView");
+                exit();
+            }
             // 5. Redirección según el Rol
             switch ($user->getRole()) {
                 case User::ROLE_ADMIN:

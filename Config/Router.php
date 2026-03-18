@@ -9,6 +9,7 @@ class Router
         'Company',
         'Career',
         'JobOffer',
+        'User',
         'AdminJobOffer',
         'CompanyJobOffer',
         'StudentJobOffer',

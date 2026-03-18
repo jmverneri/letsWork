@@ -21,6 +21,7 @@ class MailService {
             $mail->Username   = '338f8fde96e8a3';
             $mail->Password   = '1f204a9274ee81';
             $mail->Port       = 2525;
+            $mail->CharSet = 'UTF-8';
 
             // Remitente y Destinatario
             $mail->setFrom('admin@letswork.com', 'Lets Work System');

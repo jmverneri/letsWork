@@ -19,4 +19,16 @@ class UserRepository {
     public function getByEmail($email) {
         return $this->dao->getByEmail($email);
     }
+
+    public function UpdatePassword($email, $newPassword) {
+        $this->dao->UpdatePassword($email, $newPassword);
+    }
+    public function UpdatePasswordAndClearFlag($email, $hashedPassword)
+    {
+        try {
+            $this->dao->UpdatePasswordAndClearFlag($email, $hashedPassword);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
 }

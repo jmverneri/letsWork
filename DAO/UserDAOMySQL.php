@@ -122,6 +122,10 @@ class UserDAOMySQL implements IUserDAO
         $user->setRole($row["role"]);
         $user->setActive((bool)$row["active"]);
 
+        if(isset($row["mustChangePassword"])) {
+            $user->setMustChangePassword((bool)$row["mustChangePassword"]);
+        }
+
         return $user;
     }
     public function add(User $user)
@@ -192,6 +196,34 @@ class UserDAOMySQL implements IUserDAO
                     WHERE userId = :userId AND role = 'admin'";
 
             $parameters["userId"] = $userId;
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function UpdatePassword($email, $password) {
+        $query = "UPDATE users SET password = :password, mustChangePassword = 1 WHERE email = :email";
+        $parameters["email"] = $email;
+        $parameters["password"] = $password;
+
+        try {
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function UpdatePasswordAndClearFlag($email, $password)
+    {
+        $query = "UPDATE users SET password = :password, mustChangePassword = 0 WHERE email = :email";
+
+        $parameters["password"] = $password;
+        $parameters["email"] = $email;
+
+        try {
+            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;

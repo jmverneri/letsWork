@@ -13,9 +13,14 @@
             </div>
         <?php endif; ?>
 
+        <?php if (isset($messageSuccess) && !empty($messageSuccess)): ?>
+            <div class="alert alert-success py-2 text-center" role="alert" style="font-size: 0.9rem; border-radius: 8px;">
+                <?php echo htmlspecialchars($messageSuccess); ?>
+            </div>
+        <?php endif; ?>
+
         <div class="card border-0 shadow-sm p-4" style="border-radius: 12px;">
             <form action='index.php?url=Home/login' method="post">
-                
                 <div class="mb-3">
                     <label class="form-label small fw-bold text-muted">E-mail</label>
                     <input type="email" name="email" class="form-control py-2" 
@@ -36,11 +41,11 @@
 
             <hr class="my-4" style="opacity: 0.1;">
 
-            <form action="index.php?url=UserCompany/ShowUserCompanyRegistrationView" method="get">
-                <button class="btn btn-link w-100 text-decoration-none text-muted small" type="submit">
+            <div class="text-center mt-3">
+                <a href="<?= FRONT_ROOT ?>User/ShowForgotPasswordView" class="text-decoration-none text-muted small">
                     ¿Olvidaste la contraseña?
-                </button>
-            </form>
+                </a>
+            </div>
         </div>
     </section>
 </main>

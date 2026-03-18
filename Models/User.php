@@ -24,7 +24,7 @@ class User
     private $userId;
     private $email;
     private $password;
-    private $role; // 'admin' | 'student' | 'company'
+    private $role;
     private bool $mustChangePassword = false;
     private $active;
     
@@ -106,12 +106,6 @@ class User
         }
         
         $this->role = $role;
-        return $this;
-    }
-    
-     public function setMustChangePassword(bool $value): self
-    {
-        $this->mustChangePassword = $value;
         return $this;
     }
     
@@ -244,6 +238,14 @@ class User
 
     public function setActive($active) { 
         $this->active = $active; 
+    }
+
+    public function getMustChangePassword() {
+        return $this->mustChangePassword;
+    }
+
+    public function setMustChangePassword($mustChangePassword) {
+        $this->mustChangePassword = $mustChangePassword;
     }
 }
 ?>

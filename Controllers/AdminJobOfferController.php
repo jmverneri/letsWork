@@ -218,7 +218,7 @@ class AdminJobOfferController
         
         $jobOfferList = $this->jobOfferRepo->getOpenOffers();
 
-       $companiesList = $this->companyRepo->getAll();
+        $companiesList = $this->companyRepo->getAll();
 
         require_once(ADMIN_VIEWS."admin-active-offers-list.php");
     }
