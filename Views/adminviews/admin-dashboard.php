@@ -77,6 +77,19 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; border-top: 4px solid #0d6efd; background-color: #f8faff;">
+                    <div class="card-body p-4">
+                        <div class="h1 mb-3">📊</div>
+                        <h5 class="fw-bold text-primary">Analytics</h5>
+                        <p class="small text-muted mb-4">View platform statistics, offer activity and top positions.</p>
+                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/ShowAnalytics" class="btn btn-primary btn-sm btn-block shadow-sm fw-bold">
+                        Open Analytics
+                        </a>
+                    </div>
+                </div>
+    </div>
+</div>
         </div>
 
         <div style="height: 150px; display: block; clear: both;"></div>

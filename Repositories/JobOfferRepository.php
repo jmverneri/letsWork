@@ -77,4 +77,16 @@ class JobOfferRepository
     {
         $this->jobOfferDAO->updateNotifiedStatus($jobOfferId, $status);
     }
+
+    public function getStats()
+    {
+        // El DAO ya hace el SUM(CASE...) que es súper eficiente
+        return $this->jobOfferDAO->GetStats();
+    }
+
+    public function getTopPositions()
+    {
+        // El DAO ya trae el TOP 5 con el JOIN de posiciones
+        return $this->jobOfferDAO->GetTopPositions();
+    }
 }

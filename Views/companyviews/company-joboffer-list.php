@@ -104,6 +104,10 @@ Utils::checkNav();
             </table>
 
         <?php endif; ?>
-
+        <div class="mt-4">
+                <a href="<?php echo FRONT_ROOT . "Home/menuCompany" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
     </section>
 </main>

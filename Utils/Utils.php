@@ -53,6 +53,8 @@ class Utils
             } elseif ($_SESSION['loggedUser']->isCompany()) {
                 require_once(COMPANY_VIEWS . "company-nav.php");
             }
+        } else {
+            require_once(VIEWS_PATH . "guest-nav.php");
         }
     }
 

@@ -187,4 +187,24 @@
             header("Location: " . FRONT_ROOT . "Home/index");
             exit();
         }
+
+        // En Controllers/HomeController.php
+
+    public function Privacy() {
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "privacy.php");
+        require_once(VIEWS_PATH . "footer.php");
+    }
+
+    public function Terms() {
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "terms.php");
+        require_once(VIEWS_PATH . "footer.php");
+    }
+
+    public function Support() {
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "support.php");
+        require_once(VIEWS_PATH . "footer.php");
+    }
     }

@@ -364,4 +364,13 @@ class AdminJobOfferController
             error_log("Error in processExpiredOffers: " . $ex->getMessage());
         }
     }
+
+    public function ShowAnalytics() {
+
+        // Traemos la info del DAO de Ofertas
+        $offerStats = $this->jobOfferRepo->GetStats();
+        $topPositions = $this->jobOfferRepo->GetTopPositions();
+        
+        require_once(ADMIN_VIEWS . "admin-analytics.php");
+    }
 }

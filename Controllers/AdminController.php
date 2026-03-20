@@ -152,4 +152,4 @@
 
         require_once(ADMIN_VIEWS . "add-admin.php");
     }
-    }
+}

@@ -249,4 +249,46 @@ class JobOfferDAOMySQL
             throw $ex;
         }
     }
+
+    /**
+     * Retorna estadísticas de ofertas: activas vs inactivas
+     */
+    public function GetStats()
+    {
+        try {
+            // Contamos cuántas están activas y cuántas no
+            $query = "SELECT 
+                        SUM(CASE WHEN active = 1 AND deadline >= CURDATE() THEN 1 ELSE 0 END) as active_count,
+                        SUM(CASE WHEN active = 0 OR deadline < CURDATE() THEN 1 ELSE 0 END) as inactive_count,
+                        COUNT(*) as total_count
+                      FROM " . $this->tableName;
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query);
+
+            return (!empty($resultSet)) ? $resultSet[0] : null;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * Retorna el top 5 de posiciones con más ofertas
+     */
+    public function GetTopPositions()
+    {
+        try {
+            $query = "SELECT jp.description, COUNT(jo.jobOfferId) as count
+                      FROM job_offers jo
+                      INNER JOIN job_positions jp ON jo.jobPositionId = jp.jobPositionId
+                      GROUP BY jp.jobPositionId
+                      ORDER BY count DESC
+                      LIMIT 5";
+
+            $this->connection = Connection::GetInstance();
+            return $this->connection->Execute($query);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 }

@@ -9,11 +9,17 @@
                 </span>
             </div>
 
-            <div class="col-md-4 text-center mb-3 mb-md-0">
+           <div class="col-md-4 text-center mb-3 mb-md-0">
                 <ul class="list-inline mb-0">
-                    <li class="list-inline-item"><a href="#" class="text-muted small text-decoration-none mx-2">Privacidad</a></li>
-                    <li class="list-inline-item"><a href="#" class="text-muted small text-decoration-none mx-2">Términos</a></li>
-                    <li class="list-inline-item"><a href="#" class="text-muted small text-decoration-none mx-2">Soporte</a></li>
+                    <li class="list-inline-item">
+                        <a href="<?= FRONT_ROOT ?>Home/Privacy" class="text-muted small text-decoration-none mx-2">Privacidad</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= FRONT_ROOT ?>Home/Terms" class="text-muted small text-decoration-none mx-2">Términos</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= FRONT_ROOT ?>Home/Support" class="text-muted small text-decoration-none mx-2">Soporte</a>
+                    </li>
                 </ul>
             </div>
 
