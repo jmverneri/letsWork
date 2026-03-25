@@ -6,6 +6,8 @@ use Repositories\CompanyRepository;
 use Repositories\CareerRepository;
 use Repositories\JobOfferRepository;
 use Repositories\JobPositionRepository;  
+use DAO\NotificationDAO as NotificationDAO;
+use DAO\StudentPreferenceDAO;
 use Models\JobOffer;
 use Utils\Utils;
 use Exception;
@@ -16,6 +18,8 @@ class CompanyJobOfferController
     private CareerRepository $careerRepo;
     private JobOfferRepository $jobOfferRepo;
     private JobPositionRepository $jobPositionRepo;  
+    private StudentPreferenceDAO $studentPreferenceDAO;
+    private NotificationDAO $notificationDAO;
 
     public function __construct()
     {
@@ -24,6 +28,8 @@ class CompanyJobOfferController
         $this->jobPositionRepo = new JobPositionRepository();
         $this->companyRepo = new CompanyRepository();
         $this->careerRepo = new CareerRepository();
+        $this->studentPreferenceDAO = new StudentPreferenceDAO();
+        $this->notificationDAO = new NotificationDAO();
     }
 
     /**
@@ -128,7 +134,17 @@ class CompanyJobOfferController
                 $jobOffer->setFlyerImagePath($flyerPath);
 
             // 3. Persistir
-            $this->jobOfferRepo->add($jobOffer);
+            $newId = $this->jobOfferRepo->add($jobOffer);
+
+            if($newId > 0) {
+                // 2. Le ponemos el ID al objeto
+                $jobOffer->setJobOfferId($newId);
+                
+                // 3. Notificamos una sola vez con los datos completos
+                $this->notifyInterestedStudents($jobOffer);
+                
+                $message = "Oferta publicada con éxito.";
+            }
             
             // Redirección exitosa
             header("Location: " . FRONT_ROOT . "CompanyJobOffer/listMyOffers");
@@ -143,7 +159,7 @@ class CompanyJobOfferController
             $jobPositions = $this->jobPositionRepo->getAll(); 
             
             // Requerimos la vista pasando el mensaje de error
-            require_once(COMPANY_VIEWS . "joboffer-add.php");
+            require_once(COMPANY_VIEWS . "company-joboffer-add.php");
         }
     }
 
@@ -280,6 +296,19 @@ class CompanyJobOfferController
         } catch (Exception $ex) {
             $errorMessage = $ex->getMessage();
             $this->showEditForm($request["jobOfferId"]);
+        }
+    }
+
+    private function notifyInterestedStudents($jobOffer) {
+    // 1. Buscamos qué alumnos están interesados en esta categoría (JobPosition)
+        $interestedStudents = $this->studentPreferenceDAO->getStudentIdsByPosition($jobOffer->getJobPositionId());
+        if(!empty($interestedStudents)) {
+            $message = "¡Nueva oportunidad! Se publicó la oferta: " . $jobOffer->getTitle();
+            
+            foreach($interestedStudents as $row) {
+                // 2. Creamos la notificación para cada alumno
+                $this->notificationDAO->create($row['studentId'], $jobOffer->getJobOfferId(), $message);
+            }
         }
     }
 }

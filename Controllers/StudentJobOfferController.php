@@ -6,6 +6,7 @@
     use Repositories\JobPositionRepository as JobPositionRepository;
     use Repositories\StudentRepository as StudentRepository;
     use DAO\ApplicationDAO as ApplicationDAO;
+    use DAO\NotificationDAO;
     use Models\JobOffer as JobOffer;
     use \Exception as Exception;
     use Utils\Utils;
@@ -18,6 +19,8 @@
         private $jobPositionRepo;
         private $studentRepo;
         private $applicationDAO;
+        private NotificationDAO $notificationDAO;
+        
 
         public function __construct()
         {
@@ -28,6 +31,7 @@
             $this->studentRepo = new StudentRepository();
             $this->jobPositionRepo = new JobPositionRepository();
             $this->applicationDAO = new ApplicationDAO();
+            $this->notificationDAO = new NotificationDAO();
         }
 
         public function showActiveJobOffers() 
@@ -180,6 +184,43 @@
                 require_once(STUDENT_VIEWS . "student-applications-history.php");
             } else {
                 echo "Error: Student not found.";
+            }
+        }
+
+        public function showOfferDetails($jobOfferId)
+        {
+            try {
+                Utils::checkNav();
+                $userLogged = $_SESSION["loggedUser"];
+                $student = $this->studentRepo->getByUserId($userLogged->getUserId());
+
+                if (!$student) {
+                    throw new \Exception("No se pudieron cargar los datos del estudiante.");
+                }
+
+                $this->notificationDAO->markAsRead($student->getStudentId(), $jobOfferId);
+
+                // 1. Obtenemos la oferta específica
+                $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+
+                if (!$jobOffer || !$jobOffer->getActive()) {
+                    throw new \Exception("La oferta no existe o ya no está activa.");
+                }
+
+                // 2. Obtenemos los datos complementarios para mostrar en la ficha
+                $company = $this->companyRepo->getById($jobOffer->getCompanyId());
+                $jobPosition = $this->jobPositionRepo->getById($jobOffer->getJobPositionId());
+
+                // 3. Verificamos que el alumno YA NO haya aplicado (para mostrar o no el botón de Postularse)
+                $alreadyApplied = $this->applicationDAO->isStudentApplied($student->getStudentId(), $jobOfferId);
+
+                // 4. Cargamos una vista de "Detalle"
+                require_once(STUDENT_VIEWS . "student-job-offer-detail.php");
+
+            } catch (\Exception $ex) {
+                // Si hay error, lo mandamos a la lista con un mensaje
+                $errorMessage = $ex->getMessage();
+                $this->showActiveJobOffers();
             }
         }
     }

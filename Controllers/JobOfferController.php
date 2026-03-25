@@ -1,20 +1,18 @@
 <?php
-//JobOffer general para las vistas compartidas. Evita duplicar codigo
 
 namespace Controllers;
 
-use Services\JobOfferService;
-use Config\DAOFactory;
+use Repositories\JobOfferRepository;
 use Utils\Utils;
 
 class JobOfferController
 {
-    private JobOfferService $jobOfferService;
+    private JobOfferRepository $jobOfferRepo;
     private $careerDAO;
+
     public function __construct()
     {
-        $this->jobOfferService = new JobOfferService();
-        $this->careerDAO = DAOFactory::getCareerDAO();
+        $this->jobOfferRepo = new JobOfferRepository();
     }
 
     /**

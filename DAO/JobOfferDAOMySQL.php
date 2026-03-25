@@ -27,7 +27,9 @@ class JobOfferDAOMySQL
             $parameters["flyer_image_path"]  = $jobOffer->getFlyerImagePath();
 
             $this->connection = Connection::GetInstance();
-            return $this->connection->ExecuteNonQuery($query, $parameters);
+            $this->connection->ExecuteNonQuery($query, $parameters);
+
+            return $this->connection->lastInsertId();
         } catch (Exception $ex) {
             throw $ex;
         }

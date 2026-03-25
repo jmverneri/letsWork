@@ -13,6 +13,7 @@
     use DAO\IUserDAO;
     use DAO\UserDAOMySQL as UserDAO;
     use DAO\StudentDAOMySQL as StudentDAO;
+    use DAO\NotificationDAO;
     use Repositories\CompanyRepository as CompanyRepository;
     use Repositories\StudentRepository;
 
@@ -26,7 +27,8 @@
         private IUserDAO $userDAO;
         private CompanyRepository $companyRepo;
         private $studentRepo;
-        private $studentDAOMySQL; // Agregamos la propiedad para evitar el warning de deprecated
+        private $studentDAOMySQL;
+        private NotificationDAO $notificationDAO;
 
         public function __construct()
         {
@@ -38,6 +40,8 @@
             $this->studentDAOMySQL = new StudentDAO();
 
             $this->companyRepo = new CompanyRepository();
+
+            $this->notificationDAO = new NotificationDAO();
         }
 
         public function index($message = "")
@@ -75,6 +79,10 @@
                 require_once(VIEWS_PATH . "login.php");
                 exit();
             }
+
+            $studentId = $student->getStudentId();
+            $notifications = $this->notificationDAO->getUnreadByStudent($studentId);
+            $cantNotif = count($notifications);
 
             $_SESSION['student'] = $student;
             require_once(STUDENT_VIEWS . "student-dashboard.php");
@@ -207,4 +215,4 @@
         require_once(VIEWS_PATH . "support.php");
         require_once(VIEWS_PATH . "footer.php");
     }
-    }
+}

@@ -7,6 +7,8 @@ use Repositories\StudentRepository as StudentRepository;
 use Repositories\UserRepository as UserRepository;
 use DAO\JobPositionDAOMySQL as JobPositionDAO;
 use DAO\ApplicationDAO as ApplicationDAO;
+use DAO\NotificationDAO as NotificationDAO;
+use DAO\StudentPreferenceDAO;
 use Models\JobOffer as JobOffer;
 use \Exception as Exception;
 use Dompdf\Dompdf;
@@ -21,6 +23,8 @@ class AdminJobOfferController
     private $userRepo;
     private $jobPositionDAO;
     private $applicationDAO;
+    private StudentPreferenceDAO $studentPreferenceDAO;
+    private NotificationDAO $notificationDAO;
 
     public function __construct()
     {
@@ -30,6 +34,8 @@ class AdminJobOfferController
         $this->userRepo = new UserRepository();
         $this->jobPositionDAO = new JobPositionDAO();
         $this->applicationDAO = new ApplicationDAO();
+        $this->studentPreferenceDAO = new StudentPreferenceDAO();
+        $this->notificationDAO = new NotificationDAO();
     }
 
     public function showAddView($companyId = null, $message = "")
@@ -102,6 +108,18 @@ class AdminJobOfferController
 
                 // 3. Guardar en BD
                 $this->jobOfferRepo->add($jobOffer);
+
+                $this->notifyInterestedStudents($jobOffer);
+
+                $newId = $this->jobOfferRepo->add($jobOffer);
+
+                if($newId > 0) {
+                    // Le asignamos el ID al objeto para que el motor de alertas sepa cuál es
+                    $jobOffer->setJobOfferId($newId);
+                    
+                    // Disparamos la función de notificaciones que armamos antes
+                    $this->notifyInterestedStudents($jobOffer);
+                }
 
                 header("location: " . FRONT_ROOT . "AdminJobOffer/showActiveJobOffers");
                 
@@ -367,10 +385,23 @@ class AdminJobOfferController
 
     public function ShowAnalytics() {
 
-        // Traemos la info del DAO de Ofertas
         $offerStats = $this->jobOfferRepo->GetStats();
         $topPositions = $this->jobOfferRepo->GetTopPositions();
         
         require_once(ADMIN_VIEWS . "admin-analytics.php");
+    }
+
+    private function notifyInterestedStudents($jobOffer) {
+    // 1. Buscamos qué alumnos están interesados en esta categoría (JobPosition)
+        $interestedStudents = $this->studentPreferenceDAO->getStudentIdsByPosition($jobOffer->getJobPositionId());
+
+        if(!empty($interestedStudents)) {
+            $message = "¡Nueva oportunidad! Se publicó la oferta: " . $jobOffer->getTitle();
+            
+            foreach($interestedStudents as $row) {
+                // 2. Creamos la notificación para cada alumno
+                $this->notificationDAO->create($row['studentId'], $jobOffer->getJobOfferId(), $message);
+            }
+        }
     }
 }

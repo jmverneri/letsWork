@@ -1,6 +1,6 @@
 <?php
     use Utils\Utils;
-    Utils::checkNav();
+    Utils::checkNav($notifications, $cantNotif);
 ?>
 
 <main class="py-5" style="background-color: #fbfbfa; min-height: 80vh;">
@@ -48,6 +48,12 @@
                         </a>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="<?= FRONT_ROOT ?>Student/showPreferencesView" class="btn btn-info text-white">
+                    <i class="bi bi-bell-fill me-2"></i> Configurar Alertas de Empleo
+                </a>
             </div>
         </div>
 

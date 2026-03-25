@@ -45,8 +45,24 @@
 
                          <div class="col-lg-6 mt-3">
                               <label for="city"><b>City</b></label>
-                              <input type="text" name="city" id="city" class="form-control" placeholder="Mar del Plata">
-                         </div>
+                              <select name="city" id="city" class="form-control" required>
+                                   <option value="" disabled selected>Select a city...</option>
+                                   <optgroup label="Buenos Aires">
+                                        <option value="Mar del Plata">Mar del Plata</option>
+                                        <option value="Bahía Blanca">Bahía Blanca</option>
+                                        <option value="La Plata">La Plata</option>
+                                        <option value="Tandil">Tandil</option>
+                                        <option value="CABA">CABA</option>
+                                   </optgroup>
+                                   <optgroup label="Interior">
+                                        <option value="Córdoba">Córdoba</option>
+                                        <option value="Rosario">Rosario</option>
+                                        <option value="Mendoza">Mendoza</option>
+                                        <option value="Tucumán">Tucumán</option>
+                                   </optgroup>
+                                   <option value="Other">Other / International</option>
+                              </select>
+                              </div>
 
                          <div class="col-lg-6 mt-3">
                               <label for="phoneNumber"><b>Phone Number</b></label>

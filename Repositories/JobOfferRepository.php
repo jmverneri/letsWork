@@ -18,8 +18,7 @@ class JobOfferRepository
 
     public function add(JobOffer $jobOffer)
     {
-        // Aquí podrías validar que la fecha de cierre sea posterior a la de inicio
-        $this->jobOfferDAO->add($jobOffer);
+        return $this->jobOfferDAO->add($jobOffer);
     }
 
     public function getAll()

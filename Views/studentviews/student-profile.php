@@ -1,7 +1,7 @@
 <?php
 use Utils\Utils;
 
-Utils::checkNav();
+Utils::checkNav($notifications, $cantNotif);
 
 $user = $_SESSION['loggedUser'];
 ?>
@@ -9,6 +9,21 @@ $user = $_SESSION['loggedUser'];
     <section id="listado" class="mb-5">
         <div class="container">
             <h2 class="mb-4">Student Profile</h2>
+            <?php if (isset($message) && !empty($message)): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <?php echo $message; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($errorMessage) && !empty($errorMessage)): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <?php echo $errorMessage; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
 
             <table class="table bg-light-alpha">
                 <thead>
