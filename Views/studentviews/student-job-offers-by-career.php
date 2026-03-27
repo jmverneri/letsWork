@@ -9,8 +9,8 @@ Utils::checkNav();
     
 
         <div class="container">
-            <h2 class="mb-3">Job Offers By Career</h2>
-            <h4 class="mb-4">Career: <?php echo $career->getDescription();?></h4>
+            <h2 class="mb-3">Ofertas Laborales Por Carrera</h2>
+            <h4 class="mb-4">Carrera: <?php echo $career->getDescription();?></h4>
             <div class="container" style="width: 2000px; height: 400px; overflow-y: scroll;">
                 <div class="container" position="fixed">
                     <form action="<?php echo FRONT_ROOT ?>JobOffer/getJobOfferByName" method="POST" enctype="multipart/form-data">
@@ -23,11 +23,11 @@ Utils::checkNav();
                 <table class="table bg-light-alpha">
                     <div class="container" position="fixed">
                     <thead>
-                        <th class="header" scope="col" position="sticky">Name</th>
-                        <th class="header" scope="col" position="sticky">Start Day</th>
-                        <th class="header" scope="col" position="sticky">DeadLine</th>
-                        <th class="header" scope="col" position="sticky">Description</th>
-                        <th class="header" scope="col" position="sticky">Salary</th>
+                        <th class="header" scope="col" position="sticky">Nombre</th>
+                        <th class="header" scope="col" position="sticky">Comienzo</th>
+                        <th class="header" scope="col" position="sticky">Fin</th>
+                        <th class="header" scope="col" position="sticky">Descripción</th>
+                        <th class="header" scope="col" position="sticky">Salario</th>
                         
                         <th class="header" scope="col" position="sticky"></th>
                         <th class="header" scope="col" position="sticky"></th>
@@ -63,7 +63,7 @@ Utils::checkNav();
                                  
                             }
                         }else{
-                             echo "There aren't Job Offers for this company";
+                             echo "No hay ofertas laborales para esta empresa";
                         }
                         ?>
                         

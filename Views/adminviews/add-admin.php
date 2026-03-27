@@ -8,7 +8,7 @@
         <div class="row justify-content-center">
             <div class="col-md-9"> <div class="card shadow mb-5">
                     <div class="card-header bg-dark text-white">
-                        <h4 class="mb-0"><i class="fas fa-user-shield"></i> Create New Admin</h4>
+                        <h4 class="mb-0"><i class="fas fa-user-shield"></i> Crear Nuevo Admin</h4>
                     </div>
                     <div class="card-body">
                         <form action="<?php echo FRONT_ROOT ?>Admin/addAdmin" method="POST">
@@ -22,16 +22,16 @@
                                     <input type="password" name="password" id="password" class="form-control" minlength="4" required>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="confirm_password">Confirm</label>
+                                    <label for="confirm_password">Confirmar</label>
                                     <input type="password" id="confirm_password" class="form-control" required>
                                 </div>
                             </div>
                             
-                            <div id="pass-error" class="text-danger small mb-3" style="display:none;">Passwords do not match</div>
+                            <div id="pass-error" class="text-danger small mb-3" style="display:none;">Passwords no coinciden</div>
 
                             <div class="d-flex justify-content-between align-items-center">
-                                <a href="<?php echo FRONT_ROOT ?>Admin/ShowDashboard" class="btn btn-outline-secondary">Back</a>
-                                <button type="submit" id="submit-btn" class="btn btn-primary px-4">Create Administrator</button>
+                                <a href="<?php echo FRONT_ROOT ?>Admin/ShowDashboard" class="btn btn-outline-secondary">Atrás</a>
+                                <button type="submit" id="submit-btn" class="btn btn-primary px-4">Crear Administrador</button>
                             </div>
                         </form>
                     </div>

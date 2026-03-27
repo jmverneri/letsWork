@@ -6,11 +6,11 @@
 <main class="py-5">
     <div class="container">
         <h2 class="mb-4" style="color: #333;">
-            <i class="fas fa-user-graduate"></i> Students Directory
+            <i class="fas fa-user-graduate"></i> Directorio de Estudiantes
         </h2>
 
         <div class="mb-4">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search by last name..." style="max-width: 300px; border-radius: 20px;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por apellido..." style="max-width: 300px; border-radius: 20px;">
         </div>
 
         <div class="shadow-sm card">
@@ -18,8 +18,8 @@
                 <table class="table table-hover mb-0">
                     <thead class="bg-dark text-white">
                         <tr>
-                            <th style="padding: 15px;">Full Name</th>
-                            <th>File Number</th>
+                            <th style="padding: 15px;">Nombre completo</th>
+                            <th>Matrícula</th>
                             <th>Email (API)</th>
                             <th>DNI</th>
                             <th class="text-center">System Status</th>
@@ -48,11 +48,11 @@
                                 <td class="text-center" style="vertical-align: middle;">
                                     <?php if($student['isRegistered']) { ?>
                                         <span class="badge" style="background-color: #28a745; color: white; padding: 6px 12px;">
-                                            <i class="fas fa-check-circle"></i> REGISTERED
+                                            <i class="fas fa-check-circle"></i> REGISTRADO
                                         </span>
                                     <?php } else { ?>
                                         <span class="badge" style="background-color: #6c757d; color: white; padding: 6px 12px;">
-                                            <i class="fas fa-clock"></i> PENDING
+                                            <i class="fas fa-clock"></i> PENDIENTE
                                         </span>
                                     <?php } ?>
                                 </td>

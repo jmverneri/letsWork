@@ -8,7 +8,7 @@ Utils::checkNav();
 <main class="py-5">
     <section class="mb-5">
         <div class="container">
-            <h2 class="mb-4">Available Job Offers</h2>
+            <h2 class="mb-4">Ofertas laborales disponibles</h2>
 
             <div class="container" style="max-height: 400px; overflow-y: auto;">
 
@@ -16,11 +16,11 @@ Utils::checkNav();
                     <thead>
                         <tr>
                             <th>Flyer</th>
-                            <th>Start Date</th>
-                            <th>Deadline</th>
-                            <th>Salary</th>
-                            <th>Description</th>
-                            <th>Company</th>
+                            <th>Comienzo</th>
+                            <th>Fin</th>
+                            <th>Salario</th>
+                            <th>Descripción</th>
+                            <th>Companía</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -48,11 +48,11 @@ Utils::checkNav();
                                     // Nota: $student viene de tu Controller (el que tiene el getStudentId())
                                     if($this->applicationDAO->isStudentApplied($student->getStudentId(), $jobOffer->getJobOfferId())): 
                                     ?>
-                                        <span class="badge badge-info">Already Applied</span>
+                                        <span class="badge badge-info">Aplicado</span>
                                     <?php else: ?>
                                         <a href="<?= FRONT_ROOT ?>StudentJobOffer/apply/<?= $jobOffer->getJobOfferId(); ?>">
                                             <button class="btn btn-success btn-sm">
-                                                Apply
+                                                Aplicar
                                             </button>
                                         </a>
                                     <?php endif; ?>
@@ -61,7 +61,7 @@ Utils::checkNav();
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7">No active job offers available.</td>
+                            <td colspan="7">No hay ofertas laborales activas disponibles.</td>
                         </tr>
                     <?php endif; ?>
 
@@ -70,7 +70,7 @@ Utils::checkNav();
             </div>
             <div class="mt-4">
                 <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
                 </a>
             </div>
         </div>

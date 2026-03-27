@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Applicants Report</title>
+    <title>Reporte de Aplicantes</title>
     <style>
         body { font-family: 'Helvetica', sans-serif; color: #333; }
         .header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
@@ -16,18 +16,18 @@
 </head>
 <body>
     <div class="header">
-        <h1>List of Applicants</h1>
-        <h2>Offer: <?php echo $jobOffer->getTitle(); ?></h2>
-        <p>Generated on: <?php echo date('d/m/Y H:i'); ?></p>
+        <h1>Lista de Applicantes</h1>
+        <h2>Oferta: <?php echo $jobOffer->getTitle(); ?></h2>
+        <p>Generada el: <?php echo date('d/m/Y H:i'); ?></p>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Student Name</th>
+                <th>Nombre del Estudiante</th>
                 <th>Email</th>
-                <th>Application Date</th>
-                <th>Current Status</th>
+                <th>Fecha de Aplicación</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@
                 </tr>
             <?php } 
             } else { ?>
-                <tr><td colspan="4" style="text-align: center;">No applicants found for this offer.</td></tr>
+                <tr><td colspan="4" style="text-align: center;">Sin aplicantes encontrados para esta oferta.</td></tr>
             <?php } ?>
         </tbody>
     </table>

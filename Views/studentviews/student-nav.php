@@ -2,7 +2,7 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="<?php echo FRONT_ROOT ?>Home/menuStudent">
             <img src="<?= IMG_PATH ?>Lets.png" width="30" height="30" class="d-inline-block align-top" alt="">
-            LETS WORK <span class="badge badge-warning ml-2" style="font-size: 0.7rem;">STUDENT</span>
+            LETS WORK <span class="badge badge-warning ml-2" style="font-size: 0.7rem;">ESTUDIANTE</span>
         </a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navStudent" aria-controls="navStudent" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,21 +49,21 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= FRONT_ROOT ?>StudentJobOffer/showMyApplications">My Applications</a>
+                    <a class="nav-link" href="<?= FRONT_ROOT ?>StudentJobOffer/showMyApplications">Mis Aplicaciones</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers">Browse Jobs</a>
+                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers">Buscar Trabajos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentCompany/showCompaniesViews">Companies</a>
+                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentCompany/showCompaniesViews">Companías</a>
                 </li>
                 <li class="nav-item border-left ml-lg-3 pl-lg-3">
                     <a class="nav-link font-weight-bold text-white" href="<?php echo FRONT_ROOT ?>Student/showStudentProfile">
-                        My Profile
+                        Mi Perfil
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-outline-light btn-sm ml-lg-3 px-3" href="<?php echo FRONT_ROOT ?>Home/logout">Logout</a>
+                    <a class="btn btn-outline-light btn-sm ml-lg-3 px-3" href="<?php echo FRONT_ROOT ?>Home/logout">Cerrar cesión</a>
                 </li>
             </ul>
         </div>

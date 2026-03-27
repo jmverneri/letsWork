@@ -9,11 +9,11 @@ Utils::checkNav();
 
     <div class="row">
         <div class="col-md-6 mb-3">
-            <label>Title</label>
+            <label>Título</label>
             <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($jobOffer->getTitle()) ?>" required>
         </div>
         <div class="col-md-6 mb-3">
-            <label>Job Position</label>
+            <label>Posición Laboral</label>
             <select name="jobPositionId" class="form-control" required>
                 <?php foreach($jobPositions as $pos) { ?>
                     <option value="<?= $pos->getJobPositionId() ?>" <?= ($pos->getJobPositionId() == $jobOffer->getJobPositionId()) ? 'selected' : '' ?>>
@@ -26,26 +26,26 @@ Utils::checkNav();
 
     <div class="row">
         <div class="col-md-4 mb-3">
-            <label>Salary</label>
+            <label>Salario</label>
             <input type="number" name="salary" class="form-control" step="0.01" value="<?= $jobOffer->getSalary() ?>">
         </div>
         <div class="col-md-4 mb-3">
-            <label>Start Date</label>
+            <label>Fecha de Comienzo</label>
             <input type="date" name="startDate" class="form-control" value="<?= $jobOffer->getStartDate() ?>" required>
         </div>
         <div class="col-md-4 mb-3">
-            <label>Deadline</label>
+            <label>Fin</label>
             <input type="date" name="deadline" class="form-control" value="<?= $jobOffer->getDeadline() ?>" required>
         </div>
     </div>
 
     <div class="mb-4">
-        <label>Description</label>
+        <label>Descripción</label>
         <textarea name="description" class="form-control" rows="5" required><?= htmlspecialchars($jobOffer->getDescription()) ?></textarea>
     </div>
 
     <div class="d-flex justify-content-end">
         <a href="<?= FRONT_ROOT ?>CompanyJobOffer/listMyOffers" class="btn btn-secondary mr-2">Cancel</a>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </div>
 </form>

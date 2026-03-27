@@ -8,17 +8,17 @@ Utils::checkNav();
     <section class="container">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>My Job Offers</h2>
+            <h2>Mis Ofertas Laborales</h2>
 
             <a href="<?= FRONT_ROOT ?>CompanyJobOffer/showAddView"
                class="btn btn-success">
-                + New Job Offer
+                + Nueva Oferta Laboral
             </a>
         </div>
 
         <?php if (empty($jobOffers)) : ?>
             <div class="alert alert-info text-center">
-                You have not created any Job Offers yet.
+                No creaste ningúna oferta laboral todavía.
             </div>
         <?php else : ?>
 
@@ -26,11 +26,11 @@ Utils::checkNav();
                 <thead class="thead-dark">
                     <tr>
                         <th>Flyer</th>
-                        <th>Title</th>
-                        <th>Career</th>
-                        <th>Expiration</th>
+                        <th>Título</th>
+                        <th>Carrera</th>
+                        <th>Expiración</th>
                         <th>Status</th>
-                        <th class="text-center">Actions</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
 
@@ -66,9 +66,9 @@ Utils::checkNav();
 
                             <td>
                                 <?php if ($jobOffer->getActive()) : ?>
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-success">Activa</span>
                                 <?php else : ?>
-                                    <span class="badge bg-secondary">Closed</span>
+                                    <span class="badge bg-secondary">Cerrada</span>
                                 <?php endif; ?>
                             </td>
 
@@ -76,24 +76,24 @@ Utils::checkNav();
 
                                 <a href="<?= FRONT_ROOT ?>CompanyJobOffer/viewDetails/<?= $jobOffer->getJobOfferId() ?>"
                                 class="btn btn-sm btn-info">
-                                    View
+                                    Ver
                                 </a>
 
                                 <?php if ($jobOffer->getActive()) : ?>
                                     <a href="<?= FRONT_ROOT ?>CompanyJobOffer/showEditForm/<?= $jobOffer->getJobOfferId() ?>"
                                     class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Edit
+                                        <i class="fas fa-edit"></i> Editar
                                     </a>
                                     <a href="<?= FRONT_ROOT ?>CompanyJobOffer/delete/<?= $jobOffer->getJobOfferId() ?>"
                                     class="btn btn-sm btn-danger"
                                     onclick="return confirm('¿Estás seguro de cerrar esta oferta?')">
-                                        <i class="fas fa-times"></i> Close
+                                        <i class="fas fa-times"></i> Cerrar
                                     </a>
                                 <?php else : ?>
                                     <a href="<?= FRONT_ROOT ?>CompanyJobOffer/reactive/<?= $jobOffer->getJobOfferId() ?>"
                                     class="btn btn-sm btn-success"
                                     onclick="return confirm('¿Deseas volver a activar esta oferta?')">
-                                        <i class="fas fa-redo"></i> Reactivate
+                                        <i class="fas fa-redo"></i> Reactivar
                                     </a>
                                 <?php endif; ?>
 
@@ -106,7 +106,7 @@ Utils::checkNav();
         <?php endif; ?>
         <div class="mt-4">
                 <a href="<?php echo FRONT_ROOT . "Home/menuCompany" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
                 </a>
             </div>
     </section>

@@ -6,34 +6,34 @@ Utils::checkNav();
 <main class="py-5">
      <section id="listado" class="mb-5">
           <div class="container">
-               <h2 class="mb-4 text-white">Edit Job Offer: <?php echo $jobOffer->getTitle(); ?></h2>               
+               <h2 class="mb-4 text-white">Editar Oferta Laboral: <?php echo $jobOffer->getTitle(); ?></h2>               
                
                <form action="<?php echo FRONT_ROOT . "AdminJobOffer/modifyJobOffer" ?>" method="POST" class="bg-light-alpha p-5">
                     <div class="row">
                          <input type="hidden" name="jobOfferId" value="<?php echo $jobOffer->getJobOfferId(); ?>" />
                          
                          <div class="col-lg-4">
-                              <label for=""><b>Job Offer Title</b></label>
+                              <label for=""><b>Título de la Oferta Laboral</b></label>
                               <input type="text" name="title" class="form-control" required value="<?php echo $jobOffer->getTitle(); ?>" />
                          </div>
 
                          <div class="col-lg-4">
-                              <label for=""><b>Start Date</b></label>
+                              <label for=""><b>Comienzo</b></label>
                               <input type="date" name="startDate" class="form-control" required value="<?php echo $jobOffer->getStartDate(); ?>" />
                          </div>
 
                          <div class="col-lg-4">
-                              <label for=""><b>Deadline</b></label>
+                              <label for=""><b>Fin</b></label>
                               <input type="date" name="deadline" class="form-control" required value="<?php echo $jobOffer->getDeadline(); ?>" />
                          </div>
 
                          <div class="col-lg-12 mt-3">
-                              <label for=""><b>Description</b></label>
+                              <label for=""><b>Descripción</b></label>
                               <textarea name="description" class="form-control" rows="3" required><?php echo $jobOffer->getDescription(); ?></textarea>
                          </div>
 
                          <div class="col-lg-4 mt-3">
-                              <label for=""><b>Salary</b></label>
+                              <label for=""><b>Salario</b></label>
                               <input type="number" min="1" name="salary" class="form-control" required value="<?php echo $jobOffer->getSalary(); ?>" />
                          </div>
 
@@ -46,7 +46,7 @@ Utils::checkNav();
                          </div>
 
                          <div class="col-lg-4 mt-3">
-                              <label for=""><b>Job Position</b></label>
+                              <label for=""><b>Posición Laboral</b></label>
                               <select name="jobPositionId" class="form-control" required>
                                    <?php foreach ($jobPositionList as $jobPosition) { ?>
                                         <option value="<?php echo $jobPosition->getJobPositionId(); ?>" 
@@ -63,7 +63,7 @@ Utils::checkNav();
 
                     <div class="mt-4 text-right">
                          <a href="<?php echo FRONT_ROOT . "AdminJobOffer/showListView/" . $jobOffer->getCompanyId(); ?>" class="btn btn-secondary shadow-sm">Cancel</a>
-                         <button type="submit" class="btn btn-primary shadow-sm">Save Changes</button>
+                         <button type="submit" class="btn btn-primary shadow-sm">Guardar Cambios</button>
                     </div>
                </form>
           </div>

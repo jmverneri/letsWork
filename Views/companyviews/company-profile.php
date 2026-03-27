@@ -9,11 +9,11 @@ Utils::checkNav();
 <main class="py-5">
     <section class="container">
 
-        <h2 class="mb-4 text-primary text-center">Company Profile</h2>
+        <h2 class="mb-4 text-primary text-center">Perfil de Compañía</h2>
 
         <?php if (!isset($company)) : ?>
             <div class="alert alert-danger text-center">
-                Company information not found.
+                Información de Compañía no encontrada.
             </div>
         <?php return; endif; ?>
 
@@ -21,7 +21,7 @@ Utils::checkNav();
             <tbody>
 
                 <tr>
-                    <th style="width: 30%">Company Name</th>
+                    <th style="width: 30%">Nombre de Compañía</th>
                     <td><?= htmlspecialchars($company->getName()) ?></td>
                 </tr>
 
@@ -31,17 +31,17 @@ Utils::checkNav();
                 </tr>
                 
                 <tr>
-                    <th>City</th>
+                    <th>Ciudad</th>
                     <td><?= htmlspecialchars($company->getCity() ?? '—') ?></td>
                 </tr>
 
                 <tr>
-                    <th>Description</th>
+                    <th>Descripción</th>
                     <td><?= nl2br(htmlspecialchars($company->getDescription() ?? '—')) ?></td>
                 </tr>
 
                 <tr>
-                    <th>Phone Number</th>
+                    <th>Nûmero de Teléfono</th>
                     <td><?= htmlspecialchars($company->getPhoneNumber() ?? '—') ?></td>
                 </tr>
 
@@ -51,12 +51,12 @@ Utils::checkNav();
         <div class="text-center mt-4">
             <a class="btn btn-warning"
                href="<?= FRONT_ROOT ?>Company/showEditView">
-                Edit Company Data
+                Editar Información de Compañía
             </a>
 
             <a class="btn btn-secondary"
                href="<?= FRONT_ROOT ?>Company/dashboard">
-                Back to Dashboard
+                BVolver al Dashboard
             </a>
         </div>
 

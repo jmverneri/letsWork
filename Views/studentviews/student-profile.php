@@ -8,7 +8,7 @@ $user = $_SESSION['loggedUser'];
 <main class="py-5">
     <section id="listado" class="mb-5">
         <div class="container">
-            <h2 class="mb-4">Student Profile</h2>
+            <h2 class="mb-4">Perfil del Estudiante</h2>
             <?php if (isset($message) && !empty($message)): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>
@@ -28,13 +28,13 @@ $user = $_SESSION['loggedUser'];
             <table class="table bg-light-alpha">
                 <thead>
                     <tr>
-                        <th>File Number</th>
-                        <th>Name</th>
-                        <th>Last Name</th>
+                        <th>Matrícula</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>DNI</th>
-                        <th>Birthday</th>
+                        <th>Fecha de nacimiento</th>
                         <th>Email</th>
-                        <th>Phone Number</th>
+                        <th>Número de teléfono</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,11 +52,11 @@ $user = $_SESSION['loggedUser'];
                 </tbody>
             </table>
 
-            <h3 class="mb-4">Academic Status</h3>
+            <h3 class="mb-4">Status Académico</h3>
             <table class="table bg-light-alpha">
                 <thead>
                     <tr>
-                        <th>Career</th>
+                        <th>Carrera</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,7 +69,7 @@ $user = $_SESSION['loggedUser'];
             </table>
             <div class="mt-4">
                 <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
                 </a>
             </div>
         </div>

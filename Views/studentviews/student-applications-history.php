@@ -8,18 +8,18 @@ Utils::checkNav();
 <main class="py-5">
     <div class="container">
         <h2 class="mb-4" style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
-            <i class="fas fa-file-signature text-primary"></i> My Job Applications
+            <i class="fas fa-file-signature text-primary"></i> Mis Aplicaciones De Trabajo
         </h2>           
     
         <div class="shadow-sm" style="background: white; border-radius: 8px; border: 1px solid #dee2e6; overflow: hidden;">
             <table class="table table-hover" style="width: 100%; table-layout: fixed; margin-bottom: 0; border-collapse: collapse;">
                 <thead style="background: #007bff; color: white;">
                     <tr>
-                        <th style="width: 20%; padding: 12px;">Company</th>
-                        <th style="width: 25%; padding: 12px;">Position</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Date Applied</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Offer Status</th>
-                        <th style="width: 25%; padding: 12px; text-align: center;">My Status</th>
+                        <th style="width: 20%; padding: 12px;">Companía</th>
+                        <th style="width: 25%; padding: 12px;">Posición</th>
+                        <th style="width: 15%; padding: 12px; text-align: center;">Fecha de Aplicación</th>
+                        <th style="width: 15%; padding: 12px; text-align: center;">Status de la Oferta</th>
+                        <th style="width: 25%; padding: 12px; text-align: center;">Mi Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,11 +49,11 @@ Utils::checkNav();
                                 <td style="vertical-align: middle; text-align: center;">
                                     <?php if ($isOfferActuallyOpen) { ?>
                                         <span class="badge badge-info" style="font-weight: 500;">
-                                            <i class="fas fa-check-circle"></i> Open
+                                            <i class="fas fa-check-circle"></i> Abierta
                                         </span>
                                     <?php } else { ?>
                                         <span class="badge badge-secondary" style="font-weight: 500; background-color: #6c757d;">
-                                            <i class="fas fa-clock"></i> Expired
+                                            <i class="fas fa-clock"></i> Expirada
                                         </span>
                                     <?php } ?>
                                 </td>
@@ -61,25 +61,25 @@ Utils::checkNav();
                                 <td style="vertical-align: middle; text-align: center;">
                                     <?php if ($currentAppStatus === 'active') { ?>
                                         <div class="text-success" style="font-weight: bold; font-size: 0.9rem;">
-                                            <i class="fas fa-spinner fa-spin mr-1"></i> In Review
+                                            <i class="fas fa-spinner fa-spin mr-1"></i> En Revisión
                                         </div>
                                     <?php } else { ?>
                                         <div class="text-danger" style="font-weight: bold; font-size: 0.9rem;">
-                                            <i class="fas fa-times-circle mr-1"></i> Declined
+                                            <i class="fas fa-times-circle mr-1"></i> Declinada
                                         </div>
                                     <?php } ?>
                                 </td>
                             </tr>
                         <?php } 
                     } else { ?>
-                        <tr><td colspan="5" class="text-center" style="padding: 50px;">No applications found.</td></tr>
+                        <tr><td colspan="5" class="text-center" style="padding: 50px;">No se encontraron aplicaciones.</td></tr>
                     <?php } ?>
                 </tbody>
             </table>
         </div>
         <div class="mt-4">
                 <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
                 </a>
         </div>
     </div>

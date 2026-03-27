@@ -7,7 +7,7 @@
     <div class="container">
         
         <div class="text-center mb-5">
-            <p class="text-muted">Find your next career move today.</p>
+            <p class="text-muted">Encontrá el próximo movimiento en tu carrera.</p>
         </div>
 
         <div class="row justify-content-center">
@@ -15,10 +15,10 @@
                 <div class="card h-100 border-0 shadow-sm text-center p-3" style="border-radius: 15px;">
                     <div class="card-body">
                         <div class="display-4 mb-3">🚀</div>
-                        <h4 class="card-title fw-bold">Job Offers</h4>
-                        <p class="text-muted small">Browse all available positions and apply to the ones that fit your profile.</p>
+                        <h4 class="card-title fw-bold">Ofertas de trabajo</h4>
+                        <p class="text-muted small">Busca todas las ofertas y aplicá a las que se ajusten a tu perfil.</p>
                         <a href="<?= FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers" class="btn btn-warning btn-block font-weight-bold shadow-sm">
-                            Explore Opportunities
+                            Explorá Oportunidades
                         </a>
                     </div>
                 </div>
@@ -28,10 +28,10 @@
                 <div class="card h-100 border-0 shadow-sm text-center p-3" style="border-radius: 15px;">
                     <div class="card-body">
                         <div class="display-4 mb-3">🏢</div>
-                        <h4 class="card-title fw-bold">Companies</h4>
-                        <p class="text-muted small">Learn more about the companies registered in our network.</p>
+                        <h4 class="card-title fw-bold">Companías</h4>
+                        <p class="text-muted small">Aprendé más sobre las compańas registradas en nuestra red.</p>
                         <a href="<?= FRONT_ROOT ?>StudentCompany/showCompaniesViews" class="btn btn-outline-dark btn-block">
-                            View Directory
+                            Ver Directorio
                         </a>
                     </div>
                 </div>
@@ -41,10 +41,10 @@
                 <div class="card h-100 border-0 shadow-sm text-center p-3" style="border-radius: 15px;">
                     <div class="card-body">
                         <div class="display-4 mb-3">👤</div>
-                        <h4 class="card-title fw-bold">My Profile</h4>
-                        <p class="text-muted small">Review your academic status and keep your contact info updated.</p>
+                        <h4 class="card-title fw-bold">Mi Perfil</h4>
+                        <p class="text-muted small">Revisá tu estatus académico y mantené actualizada tu información de contacto.</p>
                         <a href="<?= FRONT_ROOT ?>Student/showStudentProfile" class="btn btn-outline-secondary btn-block">
-                            Check My Data
+                            Chequear Mi Información
                         </a>
                     </div>
                 </div>

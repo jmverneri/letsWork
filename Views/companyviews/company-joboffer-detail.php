@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <p><strong><i class="fas fa-graduation-cap"></i> Career:</strong> 
+                        <p><strong><i class="fas fa-graduation-cap"></i> Carrera:</strong> 
                             <?= $careerMap[$positionToCareerMap[$jobOffer->getJobPositionId()]] ?? 'N/A' ?>
                         </p>
                         <p><strong><i class="fas fa-briefcase"></i> Position:</strong> 
@@ -21,15 +21,15 @@
                         </p>
                     </div>
                     <div class="col-md-6 text-md-right">
-                        <p><strong><i class="fas fa-calendar-alt"></i> Start Date:</strong> <?= $jobOffer->getStartDate() ?></p>
-                        <p><strong><i class="fas fa-hourglass-end"></i> Deadline:</strong> <?= $jobOffer->getDeadline() ?></p>
-                        <p><strong><i class="fas fa-money-bill-wave"></i> Salary:</strong> $<?= number_format($jobOffer->getSalary(), 2) ?></p>
+                        <p><strong><i class="fas fa-calendar-alt"></i> Fecha de Comienzo:</strong> <?= $jobOffer->getStartDate() ?></p>
+                        <p><strong><i class="fas fa-hourglass-end"></i> Finalización:</strong> <?= $jobOffer->getDeadline() ?></p>
+                        <p><strong><i class="fas fa-money-bill-wave"></i> Salario:</strong> $<?= number_format($jobOffer->getSalary(), 2) ?></p>
                     </div>
                 </div>
 
                 <hr>
 
-                <h5>Description</h5>
+                <h5>Descripción</h5>
                 <p class="text-justify" style="white-space: pre-line;">
                     <?= htmlspecialchars($jobOffer->getDescription()) ?>
                 </p>
@@ -37,10 +37,10 @@
 
             <div class="card-footer text-muted">
                 <a href="<?= FRONT_ROOT ?>CompanyJobOffer/listMyOffers" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Volver a la Lista
                 </a>
                 <a href="<?= FRONT_ROOT ?>CompanyJobOffer/showEditForm/<?= $jobOffer->getJobOfferId() ?>" class="btn btn-warning">
-                    <i class="fas fa-edit"></i> Edit Offer
+                    <i class="fas fa-edit"></i> Editar Oferta
                 </a>
             </div>
         </div>

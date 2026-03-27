@@ -6,15 +6,15 @@
             <h2 class="mb-4">Student Profile</h2>
             <table class="table bg-light-alpha">
                 <thead>
-                    <th>Name</th>
-                    <th>Last Name</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
                     <th>DNI</th>
-                    <th>Gender</th>
-                    <th>Birthday</th>
+                    <th>Género</th>
+                    <th>Fecha de nacimiento</th>
                     <th>Id</th>
-                    <th>Career</th>
+                    <th>Carrera</th>
                     <th>Email</th>
-                    <th>Phone Number</th>
+                    <th>Número de teléfono</th>
                 </thead>
                 <tbody>
 
@@ -48,11 +48,11 @@
                     <input type="password" alt="strongPass" name="password" class="form-control " placeholder="User required" required>
                   
 
-                    <label for="" align="center">Confirm Password</label>
+                    <label for="" align="center">Confirmar Password</label>
                     <input type="password" alt="strongPass" name="confirmPass" class="form-control form-control-sm" placeholder="Password required" required>
 
                  
-                        <button class="btn btn-warning btn-block btn-sm " type="submit">Registration</button>
+                        <button class="btn btn-warning btn-block btn-sm " type="submit">Registración</button>
                     
                 </div>
 

@@ -9,7 +9,7 @@ Utils::checkNav();
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 style="color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 10px;">
-                <i class="fas fa-history"></i> Expired or Inactive Job Offers
+                <i class="fas fa-history"></i> Ofertas Laborales Expiradas o Inactivas
             </h2>
             <div style="position: relative; width: 300px;">
                 <i class="fas fa-search" style="position: absolute; left: 10px; top: 10px; color: #aaa;"></i>
@@ -23,11 +23,11 @@ Utils::checkNav();
             <table class="table" style="width: 100%; table-layout: fixed; margin-bottom: 0; border-collapse: collapse;">
                 <thead style="background: #6c757d; color: white;">
                     <tr>
-                        <th style="width: 15%; padding: 12px;">Company</th>
-                        <th style="width: 20%; padding: 12px;">Position</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Expired Date</th>
-                        <th style="width: 25%; padding: 12px;">Description</th>
-                        <th style="width: 25%; padding: 12px; text-align: center;">Actions</th>
+                        <th style="width: 15%; padding: 12px;">Companía</th>
+                        <th style="width: 20%; padding: 12px;">Posición</th>
+                        <th style="width: 15%; padding: 12px; text-align: center;">Fecha de expiración</th>
+                        <th style="width: 25%; padding: 12px;">Descripción</th>
+                        <th style="width: 25%; padding: 12px; text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +58,7 @@ Utils::checkNav();
                                     <?php } ?>
                                     <strong style="color: #333;"><?php echo htmlspecialchars($jobOffer->getTitle()); ?></strong>
                                     <br>
-                                    <span class="badge badge-danger" style="font-size: 0.65rem;">CLOSED</span>
+                                    <span class="badge badge-danger" style="font-size: 0.65rem;">CERRADA</span>
                                 </td>
 
                                 <td style="vertical-align: middle; text-align: center; font-size: 0.85rem; color: #d9534f;">
@@ -76,12 +76,12 @@ Utils::checkNav();
                                     <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
                                         <a href="<?= FRONT_ROOT ?>AdminJobOffer/showApplicants/<?= $jobOffer->getJobOfferId(); ?>" 
                                            class="btn btn-warning btn-sm" style="font-size: 0.7rem; font-weight: bold;">
-                                            <i class="fas fa-users"></i> Applicants
+                                            <i class="fas fa-users"></i> Aplicantes
                                         </a>
 
                                         <a href="<?= FRONT_ROOT ?>AdminJobOffer/restoreJobOffer/<?= $jobOffer->getJobOfferId(); ?>/<?= $jobOffer->getCompanyId(); ?>" 
                                            class="btn btn-success btn-sm" style="font-size: 0.7rem; font-weight: bold;">
-                                            <i class="fas fa-undo"></i> Reactivate
+                                            <i class="fas fa-undo"></i> Reactivar
                                         </a>
                                     </div>
                                 </td>
@@ -91,7 +91,7 @@ Utils::checkNav();
                         <tr>
                             <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
                                 <i class="fas fa-archive fa-2x mb-3"></i><br>
-                                No expired or inactive job offers found.
+                                No se encontraron ofertas laborales expiradas o inactivas.
                             </td>
                         </tr>
                     <?php } ?>

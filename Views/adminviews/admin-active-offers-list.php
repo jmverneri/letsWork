@@ -9,7 +9,7 @@ Utils::checkNav();
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 style="color: #333; margin: 0;">
-                <i class="fas fa-globe"></i> Global Active Job Offers
+                <i class="fas fa-globe"></i> Ofertas Laborales Activas
             </h2>
             <div style="position: relative; width: 300px;">
                 <i class="fas fa-search" style="position: absolute; left: 10px; top: 10px; color: #aaa;"></i>
@@ -23,11 +23,11 @@ Utils::checkNav();
             <table class="table" id="offersTable" style="width: 100%; table-layout: fixed; margin-bottom: 0; border-collapse: collapse;">
                 <thead style="background: #212529; color: white;">
                     <tr>
-                        <th style="width: 15%; padding: 12px;">Company</th>
-                        <th style="width: 20%; padding: 12px;">Position</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Deadline</th>
-                        <th style="width: 25%; padding: 12px;">Description</th>
-                        <th style="width: 25%; padding: 12px; text-align: center;">Actions</th>
+                        <th style="width: 15%; padding: 12px;">Companía</th>
+                        <th style="width: 20%; padding: 12px;">Posición</th>
+                        <th style="width: 15%; padding: 12px; text-align: center;">Fecha de Expiración</th>
+                        <th style="width: 25%; padding: 12px;">Descripción</th>
+                        <th style="width: 25%; padding: 12px; text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +64,7 @@ Utils::checkNav();
                                 </td>
 
                                 <td style="vertical-align: middle; text-align: center; font-size: 0.85rem; color: #666;">
-                                    <strong>Ends on:</strong><br>
+                                    <strong>Termina:</strong><br>
                                     <?php echo $jobOffer->getDeadline(); ?>
                                 </td>
 
@@ -81,20 +81,20 @@ Utils::checkNav();
                                            class="btn btn-warning btn-sm" 
                                            title="View Applicants"
                                            style="font-size: 0.7rem; padding: 5px 10px; color: #212529; border-radius: 4px; text-decoration: none; font-weight: bold; border: 1px solid #e0a800;">
-                                            <i class="fas fa-users"></i> Applicants
+                                            <i class="fas fa-users"></i> Aplicantes
                                         </a>
 
                                         <a href="<?php echo FRONT_ROOT . "AdminJobOffer/showModifyJobOfferView/" . $jobOffer->getJobOfferId(); ?>" 
                                            class="btn btn-info btn-sm" 
                                            style="font-size: 0.7rem; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none;">
-                                            <i class="fas fa-edit"></i> Edit
+                                            <i class="fas fa-edit"></i> Editar
                                         </a>
 
                                         <a href="<?php echo FRONT_ROOT ?>AdminJobOffer/deleteJobOffer/<?php echo $jobOffer->getJobOfferId(); ?>/<?php echo $jobOffer->getCompanyId(); ?>" 
                                            class="btn btn-danger btn-sm" 
                                            style="font-size: 0.7rem; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none;"
                                            onclick="return confirm('Are you sure you want to close this offer?')">
-                                            <i class="fas fa-times"></i> Close
+                                            <i class="fas fa-times"></i> Cerrar
                                         </a>
 
                                     </div>
@@ -105,7 +105,7 @@ Utils::checkNav();
                         <tr>
                             <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
                                 <i class="fas fa-folder-open fa-2x mb-3"></i><br>
-                                No active job offers at the moment.
+                                No hay ofertas laborales activas en este moment.
                             </td>
                         </tr>
                     <?php } ?>
@@ -115,7 +115,7 @@ Utils::checkNav();
 
         <div class="mt-4">
             <a href="<?php echo FRONT_ROOT . "Admin/showDashboard" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
             </a>
         </div>
     </div>

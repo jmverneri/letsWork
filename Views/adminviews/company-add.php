@@ -6,7 +6,7 @@
 <main class="py-5">
      <section id="listado" class="mb-5">
           <div class="container">
-               <h2 class="mb-4">Add New Company</h2>
+               <h2 class="mb-4">Agregar Nueva Companía</h2>
 
                <?php if(isset($this->message) && $this->message != "") { ?>
                     <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -20,13 +20,13 @@
                <form action="<?php echo FRONT_ROOT ?>Company/AddCompany" method="POST" class="bg-light-alpha p-5">
                     <div class="row">
                          <div class="col-lg-6">
-                              <label for="email"><b>Company Email (Login)</b></label>
+                              <label for="email"><b>Email de Companía (Login)</b></label>
                               <input type="email" name="email" id="email" class="form-control" placeholder="admin@company.com" required>
                               <small class="text-muted">Este email se usará para iniciar sesión. La clave será el CUIT.</small>
                          </div>
 
                          <div class="col-lg-6">
-                              <label for="name"><b>Company Name</b></label>
+                              <label for="name"><b>Nombre de Companía</b></label>
                               <input type="text" name="name" id="name" class="form-control" placeholder="Company Name S.A." required>
                          </div>
 
@@ -46,7 +46,7 @@
                          <div class="col-lg-6 mt-3">
                               <label for="city"><b>City</b></label>
                               <select name="city" id="city" class="form-control" required>
-                                   <option value="" disabled selected>Select a city...</option>
+                                   <option value="" disabled selected>Seleccionar una ciudad...</option>
                                    <optgroup label="Buenos Aires">
                                         <option value="Mar del Plata">Mar del Plata</option>
                                         <option value="Bahía Blanca">Bahía Blanca</option>
@@ -60,12 +60,12 @@
                                         <option value="Mendoza">Mendoza</option>
                                         <option value="Tucumán">Tucumán</option>
                                    </optgroup>
-                                   <option value="Other">Other / International</option>
+                                   <option value="Other">Other / Internacional</option>
                               </select>
                               </div>
 
                          <div class="col-lg-6 mt-3">
-                              <label for="phoneNumber"><b>Phone Number</b></label>
+                              <label for="phoneNumber"><b>Número de teléfono</b></label>
                               <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="2235123456">
                          </div>
 
@@ -75,13 +75,13 @@
                          </div>
 
                          <div class="col-lg-12 mt-3">
-                              <label for="description"><b>Description</b></label>
+                              <label for="description"><b>Descripción</b></label>
                               <textarea name="description" id="description" class="form-control" rows="3" placeholder="Tell us about the company..."></textarea>
                          </div>
                     </div>
 
                     <div class="mt-4">
-                         <button type="submit" class="btn btn-primary btn-lg px-5">Add Company</button>
+                         <button type="submit" class="btn btn-primary btn-lg px-5">Agregar Companía</button>
                          <a href="<?php echo FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn btn-outline-secondary btn-lg px-5 ml-2">Cancel</a>
                     </div>
                </form>

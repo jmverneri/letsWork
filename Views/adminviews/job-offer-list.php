@@ -15,17 +15,17 @@ if (!empty($jobOfferList) && !empty($companiesList)) {
 
 <main class="py-5">
     <div class="container">
-        <h2 class="mb-4" style="color: #333;">Job Offers: <span style="color: #007bff;"><?php echo $companyName; ?></span></h2>           
+        <h2 class="mb-4" style="color: #333;">Ofertas Laborales: <span style="color: #007bff;"><?php echo $companyName; ?></span></h2>           
     
         <div class="shadow-sm" style="background: white; border-radius: 8px; border: 1px solid #dee2e6;">
             <table class="table" style="width: 100%; table-layout: fixed; margin-bottom: 0;">
                 <thead style="background: #343a40; color: white;">
                     <tr>
-                        <th style="width: 25%; padding: 12px;">Position</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Dates</th>
-                        <th style="width: 12%; padding: 12px; text-align: center;">Salary</th>
-                        <th style="width: 33%; padding: 12px;">Description</th>
-                        <th style="width: 15%; padding: 12px; text-align: center;">Actions</th>
+                        <th style="width: 25%; padding: 12px;">Posición</th>
+                        <th style="width: 15%; padding: 12px; text-align: center;">Fechas</th>
+                        <th style="width: 12%; padding: 12px; text-align: center;">Salario</th>
+                        <th style="width: 33%; padding: 12px;">Descripción</th>
+                        <th style="width: 15%; padding: 12px; text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,12 +36,12 @@ if (!empty($jobOfferList) && !empty($companiesList)) {
                                 <td style="vertical-align: middle; padding: 12px;">
                                     <strong><?php echo $jobOffer->getTitle(); ?></strong><br>
                                     <small style="padding: 2px 6px; border-radius: 4px; background: <?php echo $isActive ? '#28a745' : '#6c757d'; ?>; color: white;">
-                                        <?php echo $isActive ? 'Active' : 'Inactive'; ?>
+                                        <?php echo $isActive ? 'Activa' : 'Inactiva'; ?>
                                     </small>
                                 </td>
                                 <td style="vertical-align: middle; text-align: center; font-size: 0.85rem;">
-                                    Start: <?php echo $jobOffer->getStartDate(); ?><br>
-                                    End: <?php echo $jobOffer->getDeadline(); ?>
+                                    Comienzo: <?php echo $jobOffer->getStartDate(); ?><br>
+                                    Fin: <?php echo $jobOffer->getDeadline(); ?>
                                 </td>
                                 <td style="vertical-align: middle; text-align: center; color: #28a745; font-weight: bold;">
                                     $<?php echo number_format($jobOffer->getSalary(), 2); ?>
@@ -55,19 +55,19 @@ if (!empty($jobOfferList) && !empty($companiesList)) {
                                     <div style="display: flex; justify-content: center; gap: 5px;">
                                         <a href="<?php echo FRONT_ROOT . "AdminJobOffer/showModifyJobOfferView/" . $jobOffer->getJobOfferId(); ?>" 
                                            class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 5px 8px;">
-                                            Edit
+                                            Editar
                                         </a>
 
                                         <?php if ($isActive) { ?>
                                             <a href="<?php echo FRONT_ROOT ?>AdminJobOffer/deleteJobOffer/<?php echo $jobOffer->getJobOfferId(); ?>/<?php echo $jobOffer->getCompanyId(); ?>" 
                                                class="btn btn-danger btn-sm" style="font-size: 0.75rem; padding: 5px 8px;"
                                                onclick="return confirm('Deactivate?')">
-                                                Del
+                                                Borrar
                                             </a>
                                         <?php } else { ?>
                                             <a href="<?php echo FRONT_ROOT ?>AdminJobOffer/restoreJobOffer/<?php echo $jobOffer->getJobOfferId(); ?>/<?php echo $jobOffer->getCompanyId(); ?>" 
                                                class="btn btn-success btn-sm" style="font-size: 0.75rem; padding: 5px 8px;">
-                                                Res
+                                                Restaurar
                                             </a>
                                         <?php } ?>
                                     </div>
@@ -75,7 +75,7 @@ if (!empty($jobOfferList) && !empty($companiesList)) {
                             </tr>
                         <?php }
                     } else { ?>
-                        <tr><td colspan="5" style="text-align: center; padding: 30px;">No offers found.</td></tr>
+                        <tr><td colspan="5" style="text-align: center; padding: 30px;">Sin ofertas encontradas.</td></tr>
                     <?php } ?>
                 </tbody>
             </table>
@@ -83,7 +83,7 @@ if (!empty($jobOfferList) && !empty($companiesList)) {
 
         <div class="mt-4">
             <a href="<?php echo FRONT_ROOT . "AdminCompany/showCompaniesViews" ?>" class="btn btn-secondary">
-                Back to Companies
+                Volver a Companías
             </a>
         </div>
     </div>

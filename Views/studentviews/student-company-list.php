@@ -7,11 +7,11 @@ Utils::checkNav();
     <section id="listado" class="mb-5">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="text-dark">Companies List</h2>
+                <h2 class="text-dark">Lista de Companías</h2>
                 <div style="position: relative; width: 300px;">
                     <i class="fas fa-search" style="position: absolute; left: 10px; top: 12px; color: #aaa;"></i>
                     <input type="text" id="companySearch" class="form-control" 
-                           placeholder="Search by name..." 
+                           placeholder="Buscar por nombre..." 
                            style="padding-left: 35px; border-radius: 20px;">
                 </div>
             </div>
@@ -20,10 +20,10 @@ Utils::checkNav();
                 <table class="table table-hover bg-light shadow-sm">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>City</th>
+                            <th>Nombre</th>
+                            <th>Ciudad</th>
                             <th>Email</th>
-                            <th>Actions</th> </tr>
+                            <th>Acciones</th> </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($companiesWithEmail)): ?>
@@ -38,19 +38,19 @@ Utils::checkNav();
                                     <td>
                                         <a href="<?= FRONT_ROOT ?>StudentCompany/showCompanyDetails/<?= $company->getCompanyId(); ?>"
                                            class="btn btn-info btn-sm">
-                                            <i class="fas fa-info-circle"></i> Details
+                                            <i class="fas fa-info-circle"></i> Detalles
                                         </a>
                                         
                                         <a href="<?= FRONT_ROOT ?>StudentJobOffer/showOffersByCompany/<?= $company->getCompanyId(); ?>"
                                            class="btn btn-secondary btn-sm">
-                                            Job Offers
+                                            Ofertas Laborales
                                         </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4" class="text-center py-4">No companies found</td>
+                                <td colspan="4" class="text-center py-4">No se encontraron companías</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -58,7 +58,7 @@ Utils::checkNav();
             </div>
             <div class="mt-4">
                 <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
                 </a>
             </div>
         </div>
