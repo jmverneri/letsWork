@@ -60,7 +60,7 @@ Utils::checkNav();
             </div>
 
             <button type="submit" class="btn btn-primary">Guardar Oferta</button>
-            <a href="<?php echo FRONT_ROOT . "CompanyJobOffer/listMyOffers" ?>" class="btn btn-secondary">Cancel</a>
+            <a href="<?php echo FRONT_ROOT . "CompanyJobOffer/listMyOffers" ?>" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </main>

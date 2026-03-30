@@ -38,9 +38,4 @@ Utils::checkNav();
             Para dudas sobre estos términos, contacte a <a href="<?= FRONT_ROOT ?>Home/Support">Soporte Técnico</a>.
         </div>
     </div>
-    <div class="mt-5 text-center">
-        <a href="<?php echo FRONT_ROOT ?>Home/Index" class="btn btn-outline-dark px-4" style="border-radius: 8px;">
-            <i class="bi bi-arrow-left me-2"></i> Volver al Inicio
-        </a>
-    </div>
 </div>

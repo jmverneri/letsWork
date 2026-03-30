@@ -5,16 +5,19 @@
     use DAO\StudentDAOApi;
     use DAO\StudentDAOMySQL;
     use Models\Student;
+    use Models\User;
 
     class StudentRepository {
         private $api;
         private $db;
         private $userDAO;
+        private $user;
 
         public function __construct() {
             $this->api = new StudentDAOApi();
             $this->db = new StudentDAOMySQL();
             $this->userDAO = new UserDAO();
+            $this->user = new User();
         }
 
         public function getAndSyncByEmail($email) {
@@ -83,4 +86,50 @@
 
             return $apiData;
         }
+
+        public function getAndSyncByDni($dni) {
+            // 1. Buscamos primero en nuestra DB local (usando el DAO de MySQL)
+            $student = $this->db->getByDni($dni);
+
+            if (!$student) {
+                // 2. Si no existe, lo buscamos en la API
+                $data = $this->api->getByDni($dni);
+
+                if ($data) {
+                    // --- REUTILIZAMOS TU LÓGICA DE REGISTRO ---
+                    
+                    // Creamos el User (para el login)
+                    $user = new User();
+                    $user->setEmail($data['email']);
+                    $user->setPassword(password_hash($data['dni'], PASSWORD_DEFAULT));
+                    $user->setRole("student");
+                    $user->setActive(true);
+                    
+                    $userId = $this->userDAO->add($user); 
+
+                    // Creamos el Student local
+                    $newStudent = new Student();
+                    $newStudent->setUserId($userId);
+                    $newStudent->setFirstName($data['firstName']);
+                    $newStudent->setLastName($data['lastName']);
+                    $newStudent->setDni($data['dni']);
+                    $newStudent->setFileNumber($data['fileNumber']);
+                    $newStudent->setGender($data['gender']);
+                    $newStudent->setBirthDate($data['birthDate']);
+                    $newStudent->setPhoneNumber($data['phoneNumber']);
+                    $newStudent->setCareerId($data['careerId']);
+                    $newStudent->setActive(true);
+
+                    $this->db->add($newStudent);
+                    
+                    // Retornamos el objeto recién creado (que ahora ya tiene su ID de MySQL)
+                    $student = $this->db->getByDni($dni);
+                }
+            }
+            return $student;
+        }
+        // En StudentRepository.php
+    public function GetById($id) {
+        return $this->db->getById($id);
     }
+}

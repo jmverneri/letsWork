@@ -9,7 +9,7 @@ Utils::checkNav();
     <div class="container">
         <div class="mb-4 d-flex justify-content-between align-items-center">
             <h2 style="color: #333;">
-                <i class="fas fa-users-cog"></i> Applicants for: 
+                <i class="fas fa-users-cog"></i> Aplicantes para: 
                 <span class="text-primary"><?php echo $jobOffer->getTitle(); ?></span>
             </h2>
             <span class="badge badge-info" style="font-size: 1rem; padding: 10px;">
@@ -20,7 +20,7 @@ Utils::checkNav();
         <div class="mb-3">
             <a href="<?= FRONT_ROOT ?>AdminJobOffer/generateApplicantsPDF/<?= $jobOffer->getJobOfferId() ?>" 
             class="btn btn-danger" target="_blank">
-                <i class="fas fa-file-pdf"></i> Download PDF List
+                <i class="fas fa-file-pdf"></i> Descargar la lista en PDF
             </a>
         </div>
         
@@ -28,11 +28,11 @@ Utils::checkNav();
             <table class="table table-hover" style="margin-bottom: 0; border-collapse: collapse;">
                 <thead style="background: #212529; color: white;">
                     <tr>
-                        <th style="padding: 12px;">Full Name</th>
+                        <th style="padding: 12px;">Nombre Completo</th>
                         <th style="padding: 12px;">Email</th>
-                        <th style="padding: 12px; text-align: center;">Date Applied</th>
+                        <th style="padding: 12px; text-align: center;">Fecha de Aplicación</th>
                         <th style="padding: 12px; text-align: center;">Status</th>
-                        <th style="padding: 12px; text-align: center;">Actions</th>
+                        <th style="padding: 12px; text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,9 +56,9 @@ Utils::checkNav();
 
                                 <td style="vertical-align: middle; text-align: center; padding: 12px;">
                                     <?php if(!$isDeclined) { ?>
-                                        <span class="badge badge-success" style="padding: 5px 10px;">ACTIVE</span>
+                                        <span class="badge badge-success" style="padding: 5px 10px;">ACTIVA</span>
                                     <?php } else { ?>
-                                        <span class="badge badge-secondary" style="padding: 5px 10px;">DECLINED</span>
+                                        <span class="badge badge-secondary" style="padding: 5px 10px;">DECLINADA</span>
                                     <?php } ?>
                                 </td>
 
@@ -68,11 +68,11 @@ Utils::checkNav();
                                            class="btn btn-outline-danger btn-sm" 
                                            onclick="return confirm('Are you sure you want to decline this application?')"
                                            style="text-decoration: none; font-weight: bold;">
-                                           <i class="fas fa-user-slash"></i> Decline
+                                           <i class="fas fa-user-slash"></i> Declinada
                                         </a>
                                     <?php } else { ?>
                                         <button class="btn btn-sm btn-light" disabled>
-                                            <i class="fas fa-ban"></i> Processed
+                                            <i class="fas fa-ban"></i> Procesada
                                         </button>
                                     <?php } ?>
                                 </td>
@@ -82,7 +82,7 @@ Utils::checkNav();
                         <tr>
                             <td colspan="5" class="text-center" style="padding: 50px; color: #999;">
                                 <i class="fas fa-user-clock fa-3x mb-3"></i><br>
-                                No students have applied for this position yet.
+                                No hay estudiantes aplicados por el momento para esta posición.
                             </td>
                         </tr>
                     <?php } ?>
@@ -92,7 +92,7 @@ Utils::checkNav();
         
         <div class="mt-4">
             <a href="<?php echo FRONT_ROOT; ?>AdminJobOffer/showActiveJobOffers" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Job Offers
+                <i class="fas fa-arrow-left"></i> Volver a las Ofertas Laborales
             </a>
         </div>
     </div>

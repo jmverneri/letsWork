@@ -56,7 +56,7 @@ Utils::checkNav();
 
             <a class="btn btn-secondary"
                href="<?= FRONT_ROOT ?>Company/dashboard">
-                BVolver al Dashboard
+                Volver al Dashboard
             </a>
         </div>
 

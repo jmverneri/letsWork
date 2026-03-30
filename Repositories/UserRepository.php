@@ -31,4 +31,8 @@ class UserRepository {
             throw $ex;
         }
     }
+
+    public function GetById(int $userId): ?User {
+        return $this->dao->getById($userId);
+    }
 }

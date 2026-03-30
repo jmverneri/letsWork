@@ -14,9 +14,4 @@ Utils::checkNav();
         <p class="text-muted">Si tienes problemas con tu cuenta de alumno o empresa, contacta a nuestro administrador.</p>
         <a href="mailto:admin@letsjob.com" class="btn btn-dark mt-3 px-4">Enviar Email</a>
     </div>
-    <div class="mt-5 text-center">
-        <a href="<?php echo FRONT_ROOT ?>Home/Index" class="btn btn-outline-dark px-4" style="border-radius: 8px;">
-            <i class="bi bi-arrow-left me-2"></i> Volver al Inicio
-        </a>
-    </div>
 </div>

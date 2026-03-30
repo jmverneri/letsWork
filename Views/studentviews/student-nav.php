@@ -2,38 +2,38 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="<?php echo FRONT_ROOT ?>Home/menuStudent">
             <img src="<?= IMG_PATH ?>Lets.png" width="30" height="30" class="d-inline-block align-top" alt="">
-            LETS WORK <span class="badge badge-warning ml-2" style="font-size: 0.7rem;">ESTUDIANTE</span>
+            LETS WORK <span class="badge bg-warning text-dark ms-2" style="font-size: 0.7rem;">ESTUDIANTE</span>
         </a>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navStudent" aria-controls="navStudent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navStudent" aria-controls="navStudent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navStudent">
-            <ul class="navbar-nav ml-auto align-items-center">
+            <ul class="navbar-nav ms-auto align-items-center">
                 
                 <li class="nav-item dropdown">
-                    <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link position-relative px-3" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span style="font-size: 1.1rem;">🔔</span>
-                        <?php if($cantNotif > 0) { ?>
+                        <?php if(isset($cantNotif) && $cantNotif > 0) { ?>
                             <span class="position-absolute badge rounded-pill bg-danger" 
-                                  style="top: 2px; right: -5px; font-size: 0.65rem; padding: 0.2em 0.45em;">
+                                  style="top: 5px; right: 5px; font-size: 0.65rem; padding: 0.25em 0.5em;">
                                 <?php echo $cantNotif; ?>
                             </span>
                         <?php } ?>
                     </a>
                     
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown" style="min-width: 280px;">
-                        <li><h6 class="dropdown-header">Notificaciones Recientes</h6></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="notificationDropdown" style="min-width: 280px; border-radius: 10px;">
+                        <li><h6 class="dropdown-header fw-bold text-dark">Notificaciones Recientes</h6></li>
                         
                         <?php if(!empty($notifications)) { ?>
                             <?php foreach($notifications as $notif) { ?>
                                 <li>
-                                    <a class="dropdown-item border-bottom <?php echo $notif->getIsRead() ? '' : 'bg-light'; ?>" 
+                                    <a class="dropdown-item border-bottom py-2 <?php echo $notif->getIsRead() ? '' : 'bg-light'; ?>" 
                                        href="<?php echo FRONT_ROOT ?>StudentJobOffer/showOfferDetails/<?php echo $notif->getJobOfferId(); ?>">
                                         <div class="d-flex flex-column">
-                                            <span class="small text-primary"><strong>Nueva Oferta</strong></span>
-                                            <span class="text-wrap small text-dark" style="max-width: 230px;">
+                                            <span class="small text-primary fw-bold">Nueva Oferta</span>
+                                            <span class="text-wrap small text-dark" style="max-width: 230px; line-height: 1.2;">
                                                 <?php echo $notif->getMessage(); ?>
                                             </span>
                                         </div>
@@ -44,7 +44,7 @@
                             <li><span class="dropdown-item text-muted text-center py-3">No hay notificaciones nuevas</span></li>
                         <?php } ?>
 
-                        <li><a class="dropdown-item text-center small text-primary fw-bold" href="<?php echo FRONT_ROOT ?>Notification/showListView">Ver todas</a></li>
+                        <li><a class="dropdown-item text-center small text-primary fw-bold pt-2" href="<?php echo FRONT_ROOT ?>Notification/showListView">Ver todas</a></li>
                     </ul>
                 </li>
 
@@ -55,18 +55,19 @@
                     <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentJobOffer/showActiveJobOffers">Buscar Trabajos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentCompany/showCompaniesViews">Companías</a>
+                    <a class="nav-link" href="<?php echo FRONT_ROOT ?>StudentCompany/showCompaniesViews">Compañías</a>
                 </li>
-                <li class="nav-item border-left ml-lg-3 pl-lg-3">
-                    <a class="nav-link font-weight-bold text-white" href="<?php echo FRONT_ROOT ?>Student/showStudentProfile">
+
+                <li class="nav-item border-start border-secondary ms-lg-3 ps-lg-3">
+                    <a class="nav-link fw-bold text-white" href="<?php echo FRONT_ROOT ?>Student/showStudentProfile">
                         Mi Perfil
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="btn btn-outline-light btn-sm ml-lg-3 px-3" href="<?php echo FRONT_ROOT ?>Home/logout">Cerrar cesión</a>
+                
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-outline-light btn-sm px-3 ms-lg-2" href="<?php echo FRONT_ROOT ?>Home/logout">Cerrar Sesión</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -177,4 +177,38 @@
 
             return $student;
         }
+
+        public function getByDni($dni)
+        {
+            try {
+                $query = "SELECT * FROM " . $this->tableName . " WHERE dni = :dni";
+                $parameters["dni"] = $dni;
+
+                $this->connection = Connection::GetInstance();
+                $resultSet = $this->connection->Execute($query, $parameters);
+
+                if (!empty($resultSet)) {
+                    $row = $resultSet[0];
+                    $student = new Student();
+                    
+                    // Seteamos los datos del alumno
+                    $student->setStudentId($row["studentId"]);
+                    $student->setUserId($row["userId"]);
+                    $student->setFirstName($row["firstName"]);
+                    $student->setLastName($row["lastName"]);
+                    $student->setDni($row["dni"]);
+                    $student->setFileNumber($row["fileNumber"]);
+                    $student->setGender($row["gender"]);
+                    $student->setBirthDate($row["birthDate"]);
+                    $student->setPhoneNumber($row["phoneNumber"]);
+                    $student->setCareerId($row["careerId"]);
+                    $student->setActive($row["active"]);
+
+                    return $student;
+                }
+                return null;
+            } catch (\Exception $ex) {
+                throw $ex;
+            }
+        }
     }

@@ -32,6 +32,23 @@ class StudentDAOApi implements IStudentDAO {
         return array();
     }
 
+    public function getByDni($dni)
+    {
+        // Traemos a todos los estudiantes de la API
+        $studentList = $this->getAll();
+
+        // Buscamos en el array el que coincida con el DNI
+        foreach($studentList as $studentData)
+        {
+            if($studentData['dni'] == $dni)
+            {
+                return $studentData;
+            }
+        }
+
+        return null;
+    }
+
                    
     public function getById($id) { return null; }
     public function add(Student $student) { return 0; }

@@ -5,6 +5,19 @@
 
 <main class="py-5">
     <div class="container">
+        <?php if (isset($message) && !empty($message)): ?>
+            <?php 
+                // Si el mensaje contiene "correctamente" o "éxito", usamos verde, sino rojo.
+                $alertType = (strpos(strtolower($message), 'correctamente') !== false || strpos(strtolower($message), 'éxito') !== false) 
+                            ? 'alert-success' 
+                            : 'alert-danger';
+            ?>
+            <div class="alert <?= $alertType ?> alert-dismissible fade show shadow-sm border-0" role="alert" style="border-radius: 15px;">
+                <i class="fas <?= ($alertType == 'alert-success') ? 'fa-check-circle' : 'fa-exclamation-circle' ?> me-2"></i>
+                <?php echo $message; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
         <h2 class="mb-4" style="color: #333;">
             <i class="fas fa-user-graduate"></i> Directorio de Estudiantes
         </h2>
@@ -20,10 +33,9 @@
                         <tr>
                             <th style="padding: 15px;">Nombre completo</th>
                             <th>Matrícula</th>
-                            <th>Email (API)</th>
                             <th>DNI</th>
                             <th class="text-center">System Status</th>
-                        </tr>
+                            <th class="text-center">Acciones</th> </tr>
                     </thead>
                     <tbody id="studentTableBody">
                         <?php 
@@ -35,12 +47,9 @@
                                     <strong><?php echo $student['lastName'] . ", " . $student['firstName']; ?></strong>
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    <span class="badge badge-light" style="border: 1px solid #ddd;">
+                                    <span class="badge rounded-pill bg-light text-dark border shadow-sm px-3 py-2" style="font-weight: 600; font-family: monospace;">
                                         <?php echo $student['fileNumber']; ?>
                                     </span>
-                                </td>
-                                <td style="vertical-align: middle; color: #666;">
-                                    <?php echo $student['email']; ?>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     <?php echo $student['dni']; ?>
@@ -56,12 +65,18 @@
                                         </span>
                                     <?php } ?>
                                 </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <a href="<?= FRONT_ROOT ?>Admin/showStudentAcademicView/<?= $student['dni']; ?>" 
+                                        class="btn btn-primary btn-sm shadow-sm text-white fw-bold">
+                                            <i class="fas fa-book-open me-1"></i> Académico
+                                        </a>
+                                </td>
                             </tr>
                         <?php 
                             } 
                         } else { ?>
                             <tr>
-                                <td colspan="5" class="text-center py-4">No students found in the API.</td>
+                                <td colspan="5" class="text-center py-4">No se encontraron estudiantes.</td>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -71,7 +86,7 @@
 
         <div class="mt-4">
             <a href="<?php echo FRONT_ROOT ?>Admin/ShowDashboard" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
             </a>
         </div>
     </div>
@@ -83,12 +98,8 @@
         let rows = document.querySelectorAll('.student-row');
 
         rows.forEach(row => {
-            // Obtenemos el texto del apellido
             let fullName = row.querySelector('.last-name-cell').textContent.trim().toLowerCase();
-            
-            // Si el nombre completo EMPIEZA con el filtro, lo mostramos
-            // (Usamos trim para limpiar espacios accidentales)
-            if (fullName.startsWith(filter)) {
+            if (fullName.includes(filter)) { // Cambiado a includes para búsqueda más flexible
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -96,9 +107,3 @@
         });
     });
 </script>
-
-<style>
-    .table thead th { border: none; }
-    .student-row:hover { background-color: #f8f9fa; }
-    .badge { font-weight: 500; letter-spacing: 0.5px; }
-</style>

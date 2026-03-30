@@ -15,8 +15,3 @@ Utils::checkNav();
     <h3>2. Uso de la Información</h3>
     <p>Tus datos no serán compartidos con terceros ajenos al proceso de selección de las empresas registradas.</p>
 </div>
-<div class="mt-5 text-center">
-    <a href="<?php echo FRONT_ROOT ?>Home/Index" class="btn btn-outline-dark px-4" style="border-radius: 8px;">
-        <i class="bi bi-arrow-left me-2"></i> Volver al Inicio
-    </a>
-</div>

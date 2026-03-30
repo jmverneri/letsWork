@@ -67,6 +67,51 @@ $user = $_SESSION['loggedUser'];
                     </tr>
                 </tbody>
             </table>
+            <h3 class="mt-5 mb-4">Materias Aprobadas</h3>
+            <div class="table-responsive">
+                <table class="table bg-light-alpha table-hover">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Descripción</th>
+                            <th class="text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (isset($approvedSubjects) && !empty($approvedSubjects)) : ?>
+                            <?php foreach ($approvedSubjects as $subject) : ?>
+                                <tr>
+                                    <td><strong><?= htmlspecialchars($subject->getAsignatura()) ?></strong></td>
+                                    <td><?= htmlspecialchars($subject->getCursado() ?? 'Sin descripción disponible') ?></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success text-white" style="padding: 0.5em 1em;">
+                                            <i class="fas fa-check-circle me-1"></i> Aprobada
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    No se registran materias aprobadas para este perfil.
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card border-0 shadow-sm mt-4" style="border-radius: 15px;">
+    <div class="card-body d-flex align-items-center justify-content-between p-4">
+        <div>
+            <h5 class="fw-bold mb-1">¿Necesitás tu CV actualizado?</h5>
+            <p class="text-muted small mb-0">Generá un PDF con tu información académica y de contacto.</p>
+        </div>
+                <a href="<?= FRONT_ROOT ?>Student/generateCV/<?= $student->getStudentId(); ?>" 
+                class="btn btn-danger btn-lg px-4 shadow-sm" target="_blank">
+                    <i class="fas fa-file-pdf me-2"></i> Generar CV
+                </a>
+            </div>
+        </div>
             <div class="mt-4">
                 <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
                     <i class="fas fa-arrow-left"></i> Volver al Dashboard

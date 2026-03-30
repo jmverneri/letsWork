@@ -62,9 +62,15 @@
             }
 
             // 4. FILTRADO: Aplicamos la lógica de negocio
+           
             $jobOfferList = array_filter($allOffers, function($offer) use ($studentCareerId, $positionsMap) {
+                $today = date("Y-m-d");    
                 // Primero: La oferta debe estar activa
                 if (!$offer->getActive()) {
+                    return false;
+                }
+
+                if ($offer->getDeadline() < $today) {
                     return false;
                 }
 
