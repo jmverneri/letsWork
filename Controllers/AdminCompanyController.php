@@ -200,59 +200,6 @@ class AdminCompanyController
         }
     }
 
-    public function getAll(): array
-    {
-        try {
-            $companyList = array();
-            // Traemos todo de companies (c.*) y solo el email de users (u.email)
-            $query = "SELECT c.*, u.email 
-                    FROM " . $this->tableName . " c
-                    INNER JOIN users u ON c.userId = u.userId
-                    WHERE c.active = 1;"; // Opcional: solo traer las activas
-
-            $this->connection = Connection::GetInstance();
-            $resultSet = $this->connection->Execute($query);
-
-            foreach ($resultSet as $row) {
-                $companyList[] = $this->map($row);
-            }
-
-            return $companyList;
-        } catch (Exception $ex) {
-            throw $ex;
-        }
-    }
-
-    /**
-     * Mapeo ajustado para incluir el email que viene del JOIN
-     */
-    private function map($row)
-    {
-        $company = new Company();
-        $company->setCompanyId($row["companyId"]);
-        $company->setName($row["name"]);
-        $company->setCuit($row["cuit"]);
-        $company->setCity($row["city"]);
-        $company->setDescription($row["description"]);
-        $company->setPhoneNumber($row["phoneNumber"]);
-        $company->setActive((bool)$row["active"]);
-        $company->setUserId($row["userId"]);
-        
-        // Si tu modelo Company tiene setEmail, lo cargamos acá
-        if(isset($row["email"])) {
-            $company->setEmail($row["email"]);
-        }
-
-        return $company;
-    }
-
-    // CompanyRepository.php
-
-    public function getUserById($userId) 
-    {
-        return $this->userRepo->getById($userId); 
-    }
-
     public function reactiveCompany($companyId)
     {
         try {

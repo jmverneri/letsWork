@@ -27,7 +27,6 @@
             Utils::checkStudentSession();
             $this->jobOfferRepo = new JobOfferRepository();
             $this->companyRepo = new CompanyRepository();
-            $this->companyRepo = new CompanyRepository();
             $this->studentRepo = new StudentRepository();
             $this->jobPositionRepo = new JobPositionRepository();
             $this->applicationDAO = new ApplicationDAO();

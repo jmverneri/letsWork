@@ -128,8 +128,8 @@
             }
             return $student;
         }
-        // En StudentRepository.php
-    public function GetById($id) {
-        return $this->db->getById($id);
+
+        public function GetById($id) {
+            return $this->db->getById($id);
+        }
     }
-}

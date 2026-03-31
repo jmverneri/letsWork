@@ -24,10 +24,26 @@ Utils::checkNav();
         <input type="hidden" name="cuit" value="<?= $company->getCuit() ?>">
     </div>
 
-    <div class="mb-3">
-        <label class="font-weight-bold">City</label>
-        <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($company->getCity() ?? '') ?>">
-    </div>
+    <div class="col-lg-6 mt-3">
+        <label for="city"><b>Ciudad</b></label>
+            <select name="city" id="city" class="form-control" required>
+                <option value="" disabled selected>Seleccionar una ciudad...</option>
+                    <optgroup label="Buenos Aires">
+                        <option value="Mar del Plata">Mar del Plata</option>
+                        <option value="Bahía Blanca">Bahía Blanca</option>
+                        <option value="La Plata">La Plata</option>
+                        <option value="Tandil">Tandil</option>
+                        <option value="CABA">CABA</option>
+                    </optgroup>
+                <optgroup label="Interior">
+                    <option value="Córdoba">Córdoba</option>
+                        <option value="Rosario">Rosario</option>
+                        <option value="Mendoza">Mendoza</option>
+                        <option value="Tucumán">Tucumán</option>
+                    </optgroup>
+                <option value="Other">Other / Internacional</option>
+            </select>
+        </div>
 
     <div class="mb-3">
         <label class="font-weight-bold">Número de teléfono</label>

@@ -189,7 +189,7 @@ class CompanyJobOfferController
     public function delete($jobOfferId)
     {
         try {
-            $this->jobOfferRepo->delete($jobOfferId);
+            $this->jobOfferRepo->deleteOffer($jobOfferId);
             header("Location: " . FRONT_ROOT . "CompanyJobOffer/listMyOffers");
         } catch (Exception $ex) {
             $message = $ex->getMessage();

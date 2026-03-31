@@ -8,13 +8,10 @@
     use Models\Career;
 
     // Cambiamos los nombres para que coincidan con tus archivos reales
-    use DAO\IStudentDAO;
-    use DAO\ICareerDAO;
-    use DAO\IUserDAO;
-    use DAO\UserDAOMySQL as UserDAO;
     use DAO\StudentDAOMySQL as StudentDAO;
     use DAO\NotificationDAO;
-    use Repositories\CompanyRepository as CompanyRepository;
+    use Repositories\UserRepository;
+    use Repositories\CompanyRepository;
     use Repositories\StudentRepository;
 
     use Config\DAOFactory;
@@ -22,11 +19,9 @@
 
     class HomeController
     {
-        private IStudentDAO $studentDAO;
-        private ICareerDAO $careerDAO;
-        private IUserDAO $userDAO;
         private CompanyRepository $companyRepo;
-        private $studentRepo;
+        private StudentRepository $studentRepo;
+        private UserRepository $userRepo;
         private $studentDAOMySQL;
         private NotificationDAO $notificationDAO;
 
@@ -34,13 +29,9 @@
         {
             // 🔑 REPOS Y DATOS REALES
             $this->studentRepo = new StudentRepository();
-            
-            $this->userDAO = new UserDAO(); 
-            
+            $this->userRepo = new UserRepository(); 
             $this->studentDAOMySQL = new StudentDAO();
-
             $this->companyRepo = new CompanyRepository();
-
             $this->notificationDAO = new NotificationDAO();
         }
 
@@ -120,7 +111,7 @@
 
             // 1. Buscamos PRIMERO en nuestra tabla de Users (MySQL local)
             // Esto permite que Admins y Companies entren aunque la API de alumnos esté caída.
-            $user = $this->userDAO->getByEmail($email);
+            $user = $this->userRepo->getByEmail($email);
 
             // 2. Si NO existe en nuestra DB local, podría ser un Alumno nuevo de la API
             if (!$user) {
@@ -129,7 +120,7 @@
                     $student = $this->studentRepo->getAndSyncByEmail($email);
                     if ($student) {
                         // Si el Repo lo encontró y lo guardó, ahora sí debería estar en nuestra DB local
-                        $user = $this->userDAO->getByEmail($email);
+                        $user = $this->userRepo->getByEmail($email);
                     }
                 } catch (\Exception $ex) {
                     // Si la API falla, logueamos el error pero permitimos que el código siga

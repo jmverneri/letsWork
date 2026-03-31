@@ -50,15 +50,15 @@
 
         public function showStudentProfileByMail($email)
         {
-            $this->getStudentByMail($email);
+            $this->studentRepo->getAndSyncByEmail($email);
         }
 
         public function showListView()
         {
             Utils::checkSession();
 
-            $students = $this->studentDAO->getAll();
-            $careers  = $this->careerDAO->getAll();
+            $students = $this->studentRepo->getAll();
+            $careers  = $this->careerRepo->getAll();
 
             /**
              * Armamos un mapa careerId => description
@@ -75,7 +75,7 @@
             $studentsView = [];
 
             foreach ($students as $student) {
-                $user = $this->userDAO->getById($student->getUserId());
+                $user = $this->userRepo->getById($student->getUserId());
 
                 $studentsView[] = [
                     'fileNumber' => $student->getFileNumber(),
@@ -126,7 +126,7 @@
 
         public function studentValidation($email)
         {
-            $student = $this->studentRepo->getStudentByMail($email);
+            $student = $this->studentRepo->getAndSyncByEmail($email);
 
             if ($student !== null) {
                 require_once(VIEWS_PATH . "student-registration.php");
@@ -317,8 +317,8 @@
 
                 // 5. Lanzar al navegador
                 $dompdf->stream("CV_" . $student->getLastName() . ".pdf", ["Attachment" => false]);
-                } catch (\Exception $ex) {
-                     echo "Error al generar PDF: " . $ex->getMessage();
-                }   
-            }
+            } catch (\Exception $ex) {
+                echo "Error al generar PDF: " . $ex->getMessage();
+            }   
+        }
     }

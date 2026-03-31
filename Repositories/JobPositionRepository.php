@@ -13,6 +13,10 @@ class JobPositionRepository {
         $this->jobPositionList = array();
     }
 
+    public function add(JobPosition $jobPosition) {
+        return $this->jobPositionDAO->add($jobPosition);
+    }
+
     /**
      * Trae todas las posiciones desde la base de datos
      */
@@ -36,5 +40,17 @@ class JobPositionRepository {
             }
         }
         return null;
+    }
+
+    public function update(JobPosition $jobPosition) {
+        $this->jobPositionDAO->update($jobPosition);
+    }
+
+    public function delete($id) {
+        $this->jobPositionDAO->delete($id);
+    }
+
+    public function searchJobPositionByCareerId($careerId) {
+        $this->jobPositionDAO->getByCareerId($careerId);
     }
 }

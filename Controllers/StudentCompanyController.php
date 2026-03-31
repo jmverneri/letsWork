@@ -1,24 +1,26 @@
 <?php
 namespace Controllers;
 
-use Services\CompanyService;
 use Utils\Utils;
-
 use Repositories\CompanyRepository;
+use Repositories\StudentRepository;
+use Repositories\JobOfferRepository;
 use Models\Company;
 
 class StudentCompanyController
 {
     private $companyRepo;
+    private $studentRepo;
+    private $jobOfferRepo;
     public $message;
     public $company;
 
     public function __construct()
     {
-        // Solo verificamos que haya una sesión activa (Alumno o cualquier rol logueado)
         Utils::checkSession();
         $this->companyRepo = new CompanyRepository();
-        
+        $this->studentRepo = new StudentRepository();
+        $this->jobOfferRepo = new JobOfferRepository();
     }
 
     /**
@@ -30,7 +32,7 @@ class StudentCompanyController
         $search = "";
         if (is_array($data) && isset($data['search'])) {
             $search = $data['search'];
-        } elseif (isset($_GET['search'])) { // Por si acaso queda algún link GET
+        } elseif (isset($_GET['search'])) {
             $search = $_GET['search'];
         }
 
@@ -63,47 +65,20 @@ class StudentCompanyController
         require_once(STUDENT_VIEWS . "student-company-list.php");
     }
     
-
     /**
      * Muestra el detalle completo de una sola empresa
      */
     public function showDetail($companyId)
     {
-        $company = $this->companyService->getById($companyId);
+        $company = $this->companyRepo->getById($companyId);
 
         if (!$company) {
             // Podrías redirigir a una página 404 o mostrar un mensaje
-            $this->showListView();
+            $this->showCompaniesViews();
             return;
         }
 
         require_once(VIEWS_PATH . "student-company-detail.php");
-    }
-
-    // Controllers/StudentJobOfferController.php
-    public function addStudentToAJobOffer($jobOfferId) 
-    {
-        Utils::checkSession();
-        $studentId = $_SESSION["loggedUser"];
-
-        $student = $this->studentService->getByUserId($user->getUserId());
-
-        if (!$student) {
-            throw new Exception("Student profile not found.");
-        }
-
-        $studentId = $student->getStudentId();
-
-        try {
-            // Ahora el método ya existe en el Service
-            $this->jobOfferService->addStudentToJobOffer($jobOfferId, $studentId);
-            $message = "Application successful!";
-        } catch (Exception $e) {
-            $message = "Error: " . $e->getMessage();
-        }
-        
-        // Redirigir o mostrar vista
-        $this->showListView($message);
     }
 
     public function showCompanyDetails($companyId)
@@ -120,7 +95,7 @@ class StudentCompanyController
             require_once(STUDENT_VIEWS . "company-details.php");
         } else {
             // Manejo de error si no existe
-            echo "Company not found.";
+            echo "Compañía no encontrada.";
         }
     }
 }

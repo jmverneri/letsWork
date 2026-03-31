@@ -14,90 +14,166 @@ class UserController {
     }
 
     public function ShowForgotPasswordView($message = "", $type = "") {
-        require_once(VIEWS_PATH . "forgot-password.php");
+        require_once(VIEWS_PATH . "forgot-password-nueva.php");
     }
 
-    // Procesa el envío del mail de recuperación
-    public function SendResetPasswordEmail($emailPost) {
+    // Muestra la vista con el formulario
+    public function ShowChangePasswordView($message = "") {
+        require_once(VIEWS_PATH . "change-password-forced.php");
+    }
 
-        $email = (is_array($emailPost)) ? $emailPost["email"] : $emailPost;
+    // Procesa el cambio
+    public function UpdatePasswordFromForce($params) {
+        $newPassword = $params["newPassword"] ?? '';
+        $confirmPassword = $params["confirmPassword"] ?? '';    
+
+        if ($newPassword !== $confirmPassword) {
+                return $this->ShowChangePasswordView("Las contraseñas no coinciden.");
+            }
+
+            $user = $_SESSION['loggedUser'];
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            try {
+                // 1. Actualizamos en BD: Nueva pass Y seteamos mustChangePassword = 0
+                $this->userRepo->UpdatePasswordAndClearFlag($user->getEmail(), $hashedPassword);
+                
+                // 2. Actualizamos el objeto en la Sesión para que el login lo deje pasar ahora
+                $user->setMustChangePassword(false);
+                $_SESSION['loggedUser'] = $user;
+
+                // 3. Ahora sí, lo mandamos a su menú correspondiente
+                header("Location: " . FRONT_ROOT . "Home/Index"); 
+            } catch (Exception $ex) {
+                $this->ShowChangePasswordView("Error al actualizar: " . $ex->getMessage());
+            }
+        }
+        
+        public function sendResetPasswordEmail($params) {
         try {
-            $user = $this->userRepo->GetByEmail($email);
+            $email = (is_array($params)) ? $params["email"] : $params;
+            $user = $this->userRepo->getByEmail($email);
+            
+            if ($user && $user->getActive()) {
+                // 1. Generamos el token y la expiración
+                $token = bin2hex(random_bytes(32)); 
+                $expires = date("Y-m-d H:i:s", strtotime("+1 hour")); 
 
-            if ($user) {
-                $passwordProvisoria = substr(bin2hex(random_bytes(4)), 0, 8);
-    
-            // 2. La guardamos en la BD (Hasheada si es que usas password_hash en tu login)
-            // Suponiendo que tenés un método UpdatePassword en tu Repo:
-            $hash = password_hash($passwordProvisoria, PASSWORD_DEFAULT);
-            $this->userRepo->UpdatePassword($user->getEmail(), $hash);
+                // 2. Guardamos en la BD
+                $this->userRepo->setResetToken($email, $token, $expires);
 
-            $subject = "Nueva contraseña temporal - Let's Job";
-            $message = "
-                <html>
-                <head>
-                    <meta charset='UTF-8'>
-                </head>
-                <body style='font-family: sans-serif; color: #37352f;'>
-                    <h2>Hola, " . $user->getEmail() . "</h2>
-                    <p>Has solicitado recuperar tu acceso a <strong>Let's Job</strong>.</p>
-                    <p>Hemos generado una clave temporal para ti:</p>
-                    <p style='background: #f4f4f4; padding: 15px; display: inline-block; font-size: 1.5rem; font-weight: bold; border-radius: 8px;'>
-                        " . $passwordProvisoria . "
-                    </p>
-                    <p><strong>Importante:</strong> Por seguridad, cambia esta contraseña apenas ingreses al sistema.</p>
-                    <br>
-                    <p>Saludos,<br>El equipo de Let's Job.</p>
-                </body>
-                </html>";
+                // 3. Preparamos el Mail
+                $subject = "Recuperar contraseña - Let's Work";
+                
+                $resetLink = BASE_URL . "index.php?url=User/showNewPasswordForm&token=" . $token;
 
-                // Usamos el MailService que ya tenemos configurado con Mailtrap
+                $message = "
+                    <html>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6;'>
+                        <h2>Solicitud de restablecimiento de contraseña</h2>
+                        <p>Hola,</p>
+                        <p>Has solicitado restablecer tu contraseña en <strong>Let's Work</strong>. Para continuar, haz clic en el siguiente botón:</p>
+                        <p style='text-align: center;'>
+                            <a href='$resetLink' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>
+                                Restablecer Contraseña
+                            </a>
+                        </p>
+                        <p>Este enlace expirará en 1 hora.</p>
+                        <p>Si no solicitaste esto, puedes ignorar este correo.</p>
+                        <br>
+                        <p>Saludos,<br>El equipo de Let's Work.</p>
+                    </body>
+                    </html>";
+
+                // 4. Enviamos usando tu MailService
                 MailService::send($email, $subject, $message);
 
-                //$this->ShowForgotPasswordView("¡Listo! Revisa tu casilla de correo.", "success");
-                $messageSuccess = "¡Listo! Revisa tu correo e ingresa con la nueva clave.";
-            require_once(VIEWS_PATH . "login.php"); 
-            // O si tu Router permite redirección: 
-            // header("location: " . FRONT_ROOT . "Home/Index?message=" . $messageSuccess);
+                $messageSuccess = "¡Listo! Enviamos un link de recuperación a tu correo.";
+                require_once(VIEWS_PATH . "login.php");
+            } elseif ($user && !$user->getActive()) {
+                // Caso: El usuario existe pero está inhabilitado
+                $message = "Tu cuenta se encuentra inactiva. Por favor, contacta a Bedelía.";
+                $type = "warning";
+                require_once(VIEWS_PATH . "forgot-password.php");
+
             } else {
-                $this->ShowForgotPasswordView("El email ingresado no coincide con ningún usuario registrado.", "danger");
+                // Caso: El usuario no existe (mensaje genérico por seguridad)
+                $message = "Si el correo es válido, recibirás un link de recuperación.";
+                $type = "info";
+                require_once(VIEWS_PATH . "forgot-password-nueva.php");
             }
         } catch (Exception $ex) {
-            $this->ShowForgotPasswordView("Error al procesar la solicitud: " . $ex->getMessage(), "danger");
+            $message = "Error al procesar la solicitud: " . $ex->getMessage();
+            require_once(VIEWS_PATH . "forgot-password.php");
         }
     }
 
-    // En UserController.php
+        public function showNewPasswordForm($params = null) {
+            try {
+                // 1. Limpieza del parámetro que viene del Router
+                // Si el Router manda ['token' => 'abc...'], extraemos solo 'abc...'
+                $token = (is_array($params)) ? ($params["token"] ?? null) : $params;
 
-// Muestra la vista con el formulario
-public function ShowChangePasswordView($message = "") {
-    require_once(VIEWS_PATH . "change-password-forced.php");
-}
+                if (!$token) {
+                    $message = "Token no proporcionado.";
+                    return require_once(VIEWS_PATH . "forgot-password.php");
+                }
 
-// Procesa el cambio
-public function UpdatePasswordFromForce($params) {
-    $newPassword = $params["newPassword"] ?? '';
-    $confirmPassword = $params["confirmPassword"] ?? '';    
+                // 2. Ahora sí, mandamos un STRING al repo
+                $user = $this->userRepo->getUserByToken($token);
 
-    if ($newPassword !== $confirmPassword) {
-            return $this->ShowChangePasswordView("Las contraseñas no coinciden.");
+                if ($user) {
+                    // El token es válido, mostramos la vista
+                    // IMPORTANTE: Pasamos el $token a la vista para el input hidden
+                    require_once(VIEWS_PATH . "new-password.php");
+                } else {
+                    $message = "El link ha expirado o es inválido. Por favor, solicita uno nuevo.";
+                    $type = "danger";
+                    require_once(VIEWS_PATH . "forgot-password.php");
+                }
+            } catch (Exception $ex) {
+                $message = "Error al validar el acceso: " . $ex->getMessage();
+                require_once(VIEWS_PATH . "forgot-password.php");
+            }
         }
 
-        $user = $_SESSION['loggedUser'];
-        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        public function ResetPassword($params) {
+            // 1. Extraemos los datos del array que mandó el Formulario
+            $token = $params["token"] ?? null;
+            $newPassword = $params["newPassword"] ?? '';
+            $confirmPassword = $params["confirmPassword"] ?? '';
 
-        try {
-            // 1. Actualizamos en BD: Nueva pass Y seteamos mustChangePassword = 0
-            $this->userRepo->UpdatePasswordAndClearFlag($user->getEmail(), $hashedPassword);
-            
-            // 2. Actualizamos el objeto en la Sesión para que el login lo deje pasar ahora
-            $user->setMustChangePassword(false);
-            $_SESSION['loggedUser'] = $user;
+            // 2. Validaciones básicas
+            if ($newPassword !== $confirmPassword) {
+                $message = "Las contraseñas no coinciden.";
+                $type = "danger";
+                // IMPORTANTE: Para que la vista no explote, necesitamos que el $token siga existiendo
+                return require_once(VIEWS_PATH . "new-password.php");
+            }
 
-            // 3. Ahora sí, lo mandamos a su menú correspondiente
-            header("Location: " . FRONT_ROOT . "Home/Index"); 
-        } catch (Exception $ex) {
-            $this->ShowChangePasswordView("Error al actualizar: " . $ex->getMessage());
+            try {
+                // 3. Buscamos al usuario por el token (usando el string limpio)
+                $user = $this->userRepo->getUserByToken($token);
+
+                if ($user) {
+                    // 4. Hasheamos la nueva password
+                    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                    
+                    // 5. Actualizamos y LIMPIAMOS el token en la BD (el método que agregamos al DAO)
+                    $this->userRepo->updatePasswordAndResetToken($user->getUserId(), $hashedPassword);
+                    
+                    $message = "¡Contraseña actualizada! Ya puedes ingresar con tu nueva clave.";
+                    $type = "success";
+                    require_once(VIEWS_PATH . "login.php");
+                } else {
+                    $message = "El token es inválido o ya fue utilizado.";
+                    $type = "danger";
+                    require_once(VIEWS_PATH . "forgot-password.php");
+                }
+            } catch (Exception $ex) {
+                $message = "Error técnico: " . $ex->getMessage();
+                $type = "danger";
+                require_once(VIEWS_PATH . "forgot-password.php");
+            }
         }
-    }
 }

@@ -2,17 +2,19 @@
 
 namespace Controllers;
 
+use Repositories\CareerRepository;
 use Repositories\JobOfferRepository;
 use Utils\Utils;
 
 class JobOfferController
 {
     private JobOfferRepository $jobOfferRepo;
-    private $careerDAO;
+    private CareerRepository $careerRepo;
 
     public function __construct()
     {
         $this->jobOfferRepo = new JobOfferRepository();
+        $this->careerRepo = new CareerRepository();
     }
 
     /**
@@ -22,7 +24,7 @@ class JobOfferController
     {
         Utils::checkSession();
 
-        $career = $this->careerDAO->getById($careerId);
+        $career = $this->careerRepo->getById($careerId);
         
         if (!$career) {
             $message = "Carrera no encontrada";
@@ -30,7 +32,7 @@ class JobOfferController
             return;
         }
 
-        $jobOfferList = $this->jobOfferService->getByCareer($careerId);
+        $jobOfferList = $this->jobOfferRepo->getByCareer($careerId);
 
         require_once(STUDENT_VIEWS . "student-job-offers-by-career.php");
     }

@@ -44,7 +44,7 @@
                          </div>
 
                          <div class="col-lg-6 mt-3">
-                              <label for="city"><b>City</b></label>
+                              <label for="city"><b>Ciudad</b></label>
                               <select name="city" id="city" class="form-control" required>
                                    <option value="" disabled selected>Seleccionar una ciudad...</option>
                                    <optgroup label="Buenos Aires">

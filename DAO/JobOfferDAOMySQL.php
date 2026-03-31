@@ -10,7 +10,7 @@ class JobOfferDAOMySQL
     private $connection;
     private $tableName = "job_offers";
 
-    public function Add(JobOffer $jobOffer)
+    public function add(JobOffer $jobOffer)
     {
         try {
             $query = "INSERT INTO job_offers (title, description, salary, startDate, deadline, active, companyId, jobPositionId, flyer_image_path) 
@@ -289,6 +289,52 @@ class JobOfferDAOMySQL
 
             $this->connection = Connection::GetInstance();
             return $this->connection->Execute($query);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * Retorna las ofertas de trabajo filtradas por el ID de carrera
+     */
+    public function GetByCareer($careerId)
+    {
+        try {
+            $jobOfferList = array();
+
+            // SQL con JOIN triple: JobOffer -> JobPosition -> Career
+            $query = "SELECT jo.*, c.name as companyName, jp.description as jobPositionDescription
+                      FROM " . $this->tableName . " jo
+                      INNER JOIN companies c ON jo.companyId = c.companyId
+                      INNER JOIN job_positions jp ON jo.jobPositionId = jp.jobPositionId
+                      WHERE jp.careerId = :careerId AND jo.active = 1 AND jo.deadline >= CURDATE()";
+
+            $parameters["careerId"] = $careerId;
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query, $parameters);
+
+            foreach ($resultSet as $row) {
+                $jobOffer = new JobOffer();
+                $jobOffer->setJobOfferId($row["jobOfferId"]);
+                $jobOffer->setTitle($row["title"]);
+                $jobOffer->setDescription($row["description"]);
+                $jobOffer->setSalary($row["salary"]);
+                $jobOffer->setStartDate($row["startDate"]);
+                $jobOffer->setDeadline($row["deadline"]);
+                $jobOffer->setActive($row["active"]);
+                $jobOffer->setCompanyId($row["companyId"]);
+                $jobOffer->setJobPositionId($row["jobPositionId"]);
+                $jobOffer->setFlyerImagePath($row["flyer_image_path"] ?? null);
+                
+                // Nombres de los JOINs
+                $jobOffer->setCompanyName($row["companyName"]);
+                $jobOffer->setJobPositionDescription($row["jobPositionDescription"]);
+
+                array_push($jobOfferList, $jobOffer);
+            }
+
+            return $jobOfferList;
         } catch (Exception $ex) {
             throw $ex;
         }

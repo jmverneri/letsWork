@@ -2,11 +2,10 @@
 namespace DAO;
 
 use \Exception;
-use DAO\IUserDAO as IUserDAO;
 use Models\User as User;
 use DAO\Connection as Connection;
 
-class UserDAOMySQL implements IUserDAO
+class UserDAOMySQL
 {
     private $connection;
     private $tableName = "users";
@@ -223,6 +222,62 @@ class UserDAOMySQL implements IUserDAO
         $parameters["email"] = $email;
 
         try {
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function setResetToken($email, $token, $expires)
+    {
+        try {
+            $query = "UPDATE users SET reset_token = :token, token_expires = :expires WHERE email = :email";
+            
+            $parameters["token"] = $token;
+            $parameters["expires"] = $expires;
+            $parameters["email"] = $email;
+
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function getUserByToken($token)
+    {
+        try {
+            // Buscamos el usuario donde el token coincida Y la fecha actual sea menor a la de expiración
+            $query = "SELECT * FROM users WHERE reset_token = :token AND token_expires > NOW()";
+            $parameters["token"] = $token;
+
+            $this->connection = Connection::GetInstance();
+            $resultSet = $this->connection->Execute($query, $parameters);
+
+            if (!empty($resultSet)) {
+                // Mapeás el resultado a tu objeto User (como ya hacés en el Login)
+                return $this->map($resultSet[0]); 
+            }
+            return null;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function updatePasswordAndResetToken($userId, $password)
+    {
+        try {
+            // Actualizamos la pass y limpiamos el token de una sola vez
+            $query = "UPDATE " . $this->tableName . " 
+                      SET password = :password, 
+                          reset_token = NULL, 
+                          token_expires = NULL 
+                      WHERE userId = :userId";
+
+            $parameters["password"] = $password;
+            $parameters["userId"] = $userId;
+
             $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {

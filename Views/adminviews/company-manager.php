@@ -7,7 +7,7 @@ Utils::checkNav();
     <section id="listado" class="mb-5">
         <div class="container-fluid px-4"> 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="text-dark m-0">Administración de Companías</h2>
+                <h2 class="text-dark m-0">Administración de Compañías</h2>
                 <div style="position: relative; width: 300px;">
                     <i class="fas fa-search" style="position: absolute; left: 10px; top: 12px; color: #aaa;"></i>
                     <input type="text" id="companySearch" class="form-control" 

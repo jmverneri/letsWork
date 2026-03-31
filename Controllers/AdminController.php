@@ -36,18 +36,18 @@
         }
 
         public function showStudentList($message = "")
-    {
-        Utils::checkNav();
+        {
+            Utils::checkNav();
 
-        // 1. El Repo ahora devuelve un Array de Arrays (API + flag isRegistered)
-        $studentList = $this->studentRepo->getAll(); 
+            // 1. El Repo ahora devuelve un Array de Arrays (API + flag isRegistered)
+            $studentList = $this->studentRepo->getAll(); 
 
-        $registeredIds = array_map(function($student) {
-            return $student['studentId']; 
-        }, $studentList);
+            $registeredIds = array_map(function($student) {
+                return $student['studentId']; 
+            }, $studentList);
 
-        require_once(ADMIN_VIEWS . "student-list.php");
-    }
+            require_once(ADMIN_VIEWS . "student-list.php");
+        }
 
         public function updateCareers() 
         {
@@ -60,8 +60,8 @@
             header("Location: " . FRONT_ROOT . "Home/menuAdmin");
             exit();
         }
-
-        public function updateCompanies() 
+        //REVISAR
+        /*public function updateCompanies() 
         {
             Utils::checkAdminSession();
             
@@ -70,7 +70,7 @@
             $_SESSION['message'] = "Empresas sincronizadas correctamente.";
             header("Location: " . FRONT_ROOT . "Home/menuAdmin");
             exit();
-        }
+        }*/
 
         public function showDashboard()
         {
@@ -81,7 +81,7 @@
 
         public function addAdmin()
         {
-            Utils::checkNav(); // Solo un admin puede crear otro admin
+            Utils::checkNav();
 
             $user = new User();
             $user->setEmail($_POST["email"]);
@@ -118,12 +118,12 @@
                 // 3. Pasamos el ID limpio al DAO
                 if($userId > 0) {
                     $this->userDAO->delete($userId);
-                    $this->showCreateUserForm("Administrator removed successfully.");
+                    $this->showCreateUserForm("Administrator removido satisfactoriamente.");
                 } else {
-                    $this->showCreateUserForm("Invalid Admin ID.");
+                    $this->showCreateUserForm("Admin ID Invalido.");
                 }
             } catch (\Exception $ex) {
-                $this->showCreateUserForm("Error removing admin.");
+                $this->showCreateUserForm("Error removiendo admin.");
             }
         }
 
@@ -134,221 +134,220 @@
 
             try {
                 $this->userDAO->activate($userId);
-                $this->showCreateUserForm("Administrator restored successfully.");
+                $this->showCreateUserForm("Administrator restaurado satisfactoriamente.");
             } catch (\Exception $ex) {
-                $this->showCreateUserForm("Error restoring admin.");
+                $this->showCreateUserForm("Error restaurando admin.");
             }
         }
 
-    public function showCreateUserForm($message = "")
-    {
-        Utils::checkNav();
-        $this->viewMessage = $message;
-        
-        $allUsers = $this->userDAO->getAll();
-        
-        // Filtramos los activos para la tabla principal
-        $adminList = array_filter($allUsers, function($user) {
-            return $user->getRole() === "admin" && $user->getActive() == true;
-        });
-
-        // Filtramos los inactivos para una sección de "Papelera" o "Historial"
-        $inactiveAdmins = array_filter($allUsers, function($user) {
-            return $user->getRole() === "admin" && $user->getActive() == false;
-        });
-
-        require_once(ADMIN_VIEWS . "add-admin.php");
-    }
-
-    // Método para mostrar el formulario de asignación
-    public function showAddSubjectToStudent($studentId) {
-        Utils::checkAdminSession();
-        
-        // 1. Buscamos los datos del alumno para saber su carrera
-        $student = $this->studentDAO->getById($studentId);
-        
-        // 2. Traemos SOLO las materias que pertenecen a la carrera de ese alumno
-        $subjectDAO = new \DAO\SubjectDAO();
-        $subjectList = $subjectDAO->getByCareer($student->getCareerId());
-
-        require_once(ADMIN_VIEWS . "add-subject-to-student.php");
-    }
-
-    // Método para guardar en la base de datos
-    public function addSubjectToStudent($formData) {
-        Utils::checkAdminSession();
-        
-        // Extraemos los IDs del array que manda el Router
-        $studentId = $formData['studentId'];
-        $subjectId = $formData['subjectId'];
-
-        try {
-            $this->subjectDAO->addApprovedSubject($studentId, $subjectId);
+        public function showCreateUserForm($message = "")
+        {
+            Utils::checkNav();
+            $this->viewMessage = $message;
             
-            $message = "Materia asignada correctamente.";
-            $this->showStudentList($message); 
-        } catch (\Exception $ex) {
-            $errorMessage = "Error: El alumno ya tiene esta materia aprobada o hubo un problema técnico.";
-            $this->showAddSubjectToStudent($studentId, $errorMessage);
-        }
-    }
-
-    public function showAddSubjectView($message = "") {
-        Utils::checkAdminSession();
-        
-        // Traemos todas las carreras para el <select>
-        $careerList = $this->careerRepo->getAll(); 
-        
-        require_once(ADMIN_VIEWS . "add-subject.php");
-    }
-
-    public function addSubject($formData) {
-        Utils::checkAdminSession();
-        try {
-            $subject = new \Models\Subject();
-            $subject->setCareerId($formData['careerId']);
-            $subject->setAsignatura($formData['asignatura']); // <--- Nuevo nombre
-            $subject->setCursado($formData['cursado']);
-            $subject->setHsSemanales($formData['hsSemanales']);
-            $subject->setCargaHorariaTotal($formData['cargaHorariaTotal']);
-            $subject->setCreditos($formData['creditos']);
-
-            $this->subjectDAO->add($subject);
-            $this->showAddSubjectView("Asignatura creada con éxito.");
-        } catch (\Exception $ex) {
-            $this->showAddSubjectView("Error: " . $ex->getMessage());
-        }
-    }
-
-    public function showSubjectList($message = "") {
-        Utils::checkAdminSession();
-        $this->viewMessage = $message;
-
-        try {
-            // Traemos todas las materias sin filtro
-            $subjectList = $this->subjectDAO->getAll();
+            $allUsers = $this->userDAO->getAll();
             
-            // También traemos las carreras para poder mostrar el nombre de la carrera en la tabla
-            $careerList = $this->careerRepo->getAll();
-            
-            require_once(ADMIN_VIEWS . "subject-list.php");
-        } catch (\Exception $ex) {
-            $this->showDashboard(); // Si falla, volvemos al dashboard
-        }
-    }
-
-    public function showEditSubjectView($subjectId)
-    {
-        Utils::checkAdminSession();
-
-        try {
-            // 1. Buscamos la asignatura específica por su ID
-            $subject = $this->subjectDAO->getById($subjectId);
-
-            if ($subject) {
-                // 2. Necesitamos la lista de carreras para el <select> de la vista
-                $careerList = $this->careerRepo->getAll();
-                
-                // 3. Cargamos la vista de edición
-                require_once(ADMIN_VIEWS . "edit-subject.php");
-            } else {
-                $this->showSubjectList("La asignatura no existe o fue eliminada.");
-            }
-        } catch (\Exception $ex) {
-            $this->showSubjectList("Error al cargar la edición: " . $ex->getMessage());
-        }
-    }
-
-    public function editSubject($formData) {
-        Utils::checkAdminSession();
-        try {
-            $subject = new Subject();
-            $subject->setSubjectId($formData['subjectId']);
-            $subject->setCareerId($formData['careerId']);
-            $subject->setAsignatura($formData['asignatura']);
-            $subject->setCursado($formData['cursado']);
-            $subject->setHsSemanales($formData['hsSemanales']);
-            $subject->setCargaHorariaTotal($formData['cargaHorariaTotal']);
-            $subject->setCreditos($formData['creditos']);
-
-            $this->subjectDAO->update($subject); // <--- Necesitás crear este método en el DAO
-
-            $this->showSubjectList("Asignatura actualizada correctamente.");
-        } catch (\Exception $ex) {
-            $this->showSubjectList("Error al actualizar: " . $ex->getMessage());
-        }
-    }
-
-    public function removeSubject($subjectId) {
-        Utils::checkAdminSession();
-        
-        try {
-            // Llamamos al método que ahora hace el borrado lógico
-            $this->subjectDAO->delete($subjectId);
-            
-            $message = "Asignatura desactivada correctamente (Borrado lógico).";
-            $this->showSubjectList($message);
-        } catch (\Exception $ex) {
-            $this->showSubjectList("Error al intentar dar de baja la asignatura.");
-        }
-    }
-
-    // 1. Vista de selección de carrera
-    public function showCareerSelection() {
-        Utils::checkAdminSession();
-        $careerList = $this->careerRepo->getAll(); // Traemos todas las carreras
-        require_once(ADMIN_VIEWS . "career-selection-subjects.php");
-    }
-
-    // 2. Vista de materias filtradas por carrera
-    public function showSubjectListByCareer($careerId) {
-        Utils::checkAdminSession();
-        
-        $subjectList = $this->subjectDAO->getByCareer($careerId);
-        $career = $this->careerRepo->getById($careerId); // Para poner el título "Materias de X"
-
-        require_once(ADMIN_VIEWS . "subject-list.php");
-    }
-
-    public function restoreSubject($subjectId) {
-        Utils::checkAdminSession();
-        try {
-            $this->subjectDAO->restore($subjectId);
-            
-            $message = "Asignatura restaurada con éxito.";
-            $this->showSubjectList($message);
-        } catch (\Exception $ex) {
-            $this->showSubjectList("Error al restaurar la asignatura.");
-        }
-    }
-
-    public function showStudentAcademicView($dni) {
-        Utils::checkAdminSession();
-        
-        // 1. Obtenemos el objeto estudiante 
-        $student = $this->studentRepo->getAndSyncByDni($dni);
-
-        if ($student) {
-            // Al ser un objeto de nuestra DB, getStudentId() devuelve nuestro ID local
-            $studentId = $student->getStudentId(); 
-            
-            $approvedSubjects = $this->subjectDAO->getApprovedByStudent($studentId);
-            $allCareerSubjects = $this->subjectDAO->getByCareer($student->getCareerId());
-            
-            // 4. Filtramos las disponibles
-            $availableSubjects = array_filter($allCareerSubjects, function($subject) use ($approvedSubjects) {
-                foreach($approvedSubjects as $approved) {
-                    if($subject->getSubjectId() == $approved->getSubjectId()) return false;
-                }
-                return true;
+            // Filtramos los activos para la tabla principal
+            $adminList = array_filter($allUsers, function($user) {
+                return $user->getRole() === "admin" && $user->getActive() == true;
             });
 
-            $career = $this->careerRepo->getById($student->getCareerId());
-            $careerName = ($career) ? $career->getDescription() : "Carrera no especificada";
+            // Filtramos los inactivos para una sección de "Papelera" o "Historial"
+            $inactiveAdmins = array_filter($allUsers, function($user) {
+                return $user->getRole() === "admin" && $user->getActive() == false;
+            });
 
-            require_once(ADMIN_VIEWS . "student-academic.php");
-            } else {
-            $this->showStudentList("No se pudo encontrar al estudiante con DNI: $dni");
+            require_once(ADMIN_VIEWS . "add-admin.php");
+        }
+
+        // Método para mostrar el formulario de asignación
+        public function showAddSubjectToStudent($studentId, $errorMessage) {
+            Utils::checkAdminSession();
+            
+            // 1. Buscamos los datos del alumno para saber su carrera
+            $student = $this->studentDAO->getById($studentId);
+            
+            // 2. Traemos SOLO las materias que pertenecen a la carrera de ese alumno
+            $subjectDAO = new \DAO\SubjectDAO();
+            $subjectList = $subjectDAO->getByCareer($student->getCareerId());
+
+            require_once(ADMIN_VIEWS . "add-subject-to-student.php");
+        }
+
+        // Método para guardar en la base de datos
+        public function addSubjectToStudent($formData) {
+            Utils::checkAdminSession();
+            
+            // Extraemos los IDs del array que manda el Router
+            $studentId = $formData['studentId'];
+            $subjectId = $formData['subjectId'];
+
+            try {
+                $this->subjectDAO->addApprovedSubject($studentId, $subjectId);
+                
+                $message = "Materia asignada correctamente.";
+                $this->showStudentList($message); 
+            } catch (\Exception $ex) {
+                $errorMessage = "Error: El alumno ya tiene esta materia aprobada o hubo un problema técnico.";
+                $this->showAddSubjectToStudent($studentId, $errorMessage);
             }
         }
-}
+
+        public function showAddSubjectView($message = "") {
+            Utils::checkAdminSession();
+            
+            // Traemos todas las carreras para el <select>
+            $careerList = $this->careerRepo->getAll(); 
+            
+            require_once(ADMIN_VIEWS . "add-subject.php");
+        }
+
+        public function addSubject($formData) {
+            Utils::checkAdminSession();
+            try {
+                $subject = new \Models\Subject();
+                $subject->setCareerId($formData['careerId']);
+                $subject->setAsignatura($formData['asignatura']);
+                $subject->setCursado($formData['cursado']);
+                $subject->setHsSemanales($formData['hsSemanales']);
+                $subject->setCargaHorariaTotal($formData['cargaHorariaTotal']);
+                $subject->setCreditos($formData['creditos']);
+
+                $this->subjectDAO->add($subject);
+                $this->showAddSubjectView("Asignatura creada con éxito.");
+            } catch (\Exception $ex) {
+                $this->showAddSubjectView("Error: " . $ex->getMessage());
+            }
+        }
+
+        public function showSubjectList($message = "") {
+            Utils::checkAdminSession();
+            $this->viewMessage = $message;
+
+            try {
+                // Traemos todas las materias sin filtro
+                $subjectList = $this->subjectDAO->getAll();
+                
+                // También traemos las carreras para poder mostrar el nombre de la carrera en la tabla
+                $careerList = $this->careerRepo->getAll();
+                
+                require_once(ADMIN_VIEWS . "subject-list.php");
+            } catch (\Exception $ex) {
+                $this->showDashboard(); // Si falla, volvemos al dashboard
+            }
+        }
+
+        public function showEditSubjectView($subjectId)
+        {
+            Utils::checkAdminSession();
+
+            try {
+                // 1. Buscamos la asignatura específica por su ID
+                $subject = $this->subjectDAO->getById($subjectId);
+
+                if ($subject) {
+                    // 2. Necesitamos la lista de carreras para el <select> de la vista
+                    $careerList = $this->careerRepo->getAll();
+                    
+                    // 3. Cargamos la vista de edición
+                    require_once(ADMIN_VIEWS . "edit-subject.php");
+                } else {
+                    $this->showSubjectList("La asignatura no existe o fue eliminada.");
+                }
+            } catch (\Exception $ex) {
+                $this->showSubjectList("Error al cargar la edición: " . $ex->getMessage());
+            }
+        }
+
+        public function editSubject($formData) {
+            Utils::checkAdminSession();
+            try {
+                $subject = new Subject();
+                $subject->setSubjectId($formData['subjectId']);
+                $subject->setCareerId($formData['careerId']);
+                $subject->setAsignatura($formData['asignatura']);
+                $subject->setCursado($formData['cursado']);
+                $subject->setHsSemanales($formData['hsSemanales']);
+                $subject->setCargaHorariaTotal($formData['cargaHorariaTotal']);
+                $subject->setCreditos($formData['creditos']);
+
+                $this->subjectDAO->update($subject);
+
+                $this->showSubjectList("Asignatura actualizada correctamente.");
+            } catch (\Exception $ex) {
+                $this->showSubjectList("Error al actualizar: " . $ex->getMessage());
+            }
+        }
+
+        public function removeSubject($subjectId) {
+            Utils::checkAdminSession();
+            
+            try {
+                $this->subjectDAO->delete($subjectId);
+                
+                $message = "Asignatura desactivada correctamente (Borrado lógico).";
+                $this->showSubjectList($message);
+            } catch (\Exception $ex) {
+                $this->showSubjectList("Error al intentar dar de baja la asignatura.");
+            }
+        }
+
+        // 1. Vista de selección de carrera
+        public function showCareerSelection() {
+            Utils::checkAdminSession();
+            $careerList = $this->careerRepo->getAll(); // Traemos todas las carreras
+            require_once(ADMIN_VIEWS . "career-selection-subjects.php");
+        }
+
+        // 2. Vista de materias filtradas por carrera
+        public function showSubjectListByCareer($careerId) {
+            Utils::checkAdminSession();
+            
+            $subjectList = $this->subjectDAO->getByCareer($careerId);
+            $career = $this->careerRepo->getById($careerId); // Para poner el título "Materias de X"
+
+            require_once(ADMIN_VIEWS . "subject-list.php");
+        }
+
+        public function restoreSubject($subjectId) {
+            Utils::checkAdminSession();
+            try {
+                $this->subjectDAO->restore($subjectId);
+                
+                $message = "Asignatura restaurada con éxito.";
+                $this->showSubjectList($message);
+            } catch (\Exception $ex) {
+                $this->showSubjectList("Error al restaurar la asignatura.");
+            }
+        }
+
+        public function showStudentAcademicView($dni) {
+            Utils::checkAdminSession();
+            
+            // 1. Obtenemos el objeto estudiante 
+            $student = $this->studentRepo->getAndSyncByDni($dni);
+
+            if ($student) {
+                // Al ser un objeto de nuestra DB, getStudentId() devuelve nuestro ID local
+                $studentId = $student->getStudentId(); 
+                
+                $approvedSubjects = $this->subjectDAO->getApprovedByStudent($studentId);
+                $allCareerSubjects = $this->subjectDAO->getByCareer($student->getCareerId());
+                
+                // 4. Filtramos las disponibles
+                $availableSubjects = array_filter($allCareerSubjects, function($subject) use ($approvedSubjects) {
+                    foreach($approvedSubjects as $approved) {
+                        if($subject->getSubjectId() == $approved->getSubjectId()) return false;
+                    }
+                    return true;
+                });
+
+                $career = $this->careerRepo->getById($student->getCareerId());
+                $careerName = ($career) ? $career->getDescription() : "Carrera no especificada";
+
+                require_once(ADMIN_VIEWS . "student-academic.php");
+            } else {
+                $this->showStudentList("No se pudo encontrar al estudiante con DNI: $dni");
+            }
+        }
+    }

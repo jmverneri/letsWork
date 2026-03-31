@@ -16,7 +16,6 @@ use Utils\MailService as MailService;
 
 class AdminJobOfferController
 {
-    /** @var \DAO\JobOfferDAOMySQL */
     private $jobOfferRepo;
     private $companyRepo;
     private $studentRepo;
@@ -107,10 +106,6 @@ class AdminJobOfferController
                 $jobOffer->setFlyerImagePath($flyerPath);
 
                 // 3. Guardar en BD
-                $this->jobOfferRepo->add($jobOffer);
-
-                $this->notifyInterestedStudents($jobOffer);
-
                 $newId = $this->jobOfferRepo->add($jobOffer);
 
                 if($newId > 0) {
@@ -127,7 +122,7 @@ class AdminJobOfferController
             // Si no hay companyId en el POST, intentamos mandarlo a una vista general o mostrar el error
             $companyId = isset($_POST["companyId"]) ? $_POST["companyId"] : null;
             $this->showAddView($companyId, "Error: " . $ex->getMessage());
-        }
+            }
         }
     }
 
@@ -209,7 +204,7 @@ class AdminJobOfferController
     public function deleteJobOffer($jobOfferId, $companyId)
     {
         try {
-            $this->jobOfferRepo->delete($jobOfferId);
+            $this->jobOfferRepo->deleteOffer($jobOfferId);
             
             // Redirigimos al listado de la empresa para ver los cambios
             header("Location: " . FRONT_ROOT . "AdminJobOffer/showListView/" . $companyId);

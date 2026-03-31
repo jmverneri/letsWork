@@ -31,7 +31,7 @@ class JobOfferRepository
         return $this->jobOfferDAO->getById($id);
     }
 
-    public function delete($id)
+    public function deleteOffer($id)
     {
         // Borrado lógico
         $this->jobOfferDAO->updateActiveStatus($id, false);
@@ -87,5 +87,10 @@ class JobOfferRepository
     {
         // El DAO ya trae el TOP 5 con el JOIN de posiciones
         return $this->jobOfferDAO->GetTopPositions();
+    }
+
+    public function GetByCareer($careerId)
+    {
+        return $this->jobOfferDAO->GetByCareer($careerId);
     }
 }

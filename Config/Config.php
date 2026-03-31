@@ -5,6 +5,8 @@ define("ROOT", dirname(__DIR__) . "/");
 //Path to your project's root folder
 define('BASE_FOLDER', 'TPLab4');
 define("FRONT_ROOT", "/index.php?url=");
+define("BASE_URL", "http://localhost:8001/TPLab4/");
+
 define('DEBUG', true); // Cambiar a false en producción
 
 // 1. Agregamos ROOT solo a las rutas de PHP (esto arregla tu error actual)
