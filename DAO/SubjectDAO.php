@@ -10,10 +10,10 @@ class SubjectDAO
     private $connection;
     private $tableName = "subjects";
 
-    /**
-     * Trae todas las materias de una carrera específica.
-     * Ideal para mostrar en el perfil del alumno o detalles de carrera.
-     */
+    public function __construct($connection = null) {
+            $this->connection = $connection ?? Connection::GetInstance();
+        }
+
     public function getByCareer($careerId)
     {
         try {
@@ -21,7 +21,6 @@ class SubjectDAO
             $query = "SELECT * FROM " . $this->tableName . " WHERE careerId = :careerId";
             $parameters["careerId"] = $careerId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if (!empty($resultSet)) {
@@ -49,7 +48,6 @@ class SubjectDAO
         try {
             $subjectList = array();
             $query = "SELECT * FROM " . $this->tableName;
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {
@@ -70,7 +68,8 @@ class SubjectDAO
 
     public function add(Subject $subject) {
         try {
-            $query = "INSERT INTO " . $this->tableName . " (careerId, asignatura, cursado, hsSemanales, cargaHorariaTotal, creditos) 
+            // Corregido: Agregamos 'active' a la lista de columnas
+            $query = "INSERT INTO " . $this->tableName . " (careerId, asignatura, cursado, hsSemanales, cargaHorariaTotal, creditos, active) 
                     VALUES (:careerId, :asignatura, :cursado, :hsSemanales, :cargaHorariaTotal, :creditos, :active);";
 
             $parameters["careerId"] = $subject->getCareerId();
@@ -79,9 +78,8 @@ class SubjectDAO
             $parameters["hsSemanales"] = $subject->getHsSemanales();
             $parameters["cargaHorariaTotal"] = $subject->getCargaHorariaTotal();
             $parameters["creditos"] = $subject->getCreditos();
-            $parameters["active"] = $subject->getActive();
+            $parameters["active"] = $subject->getActive() ? 1 : 0; // Casteo a int para la DB
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (\Exception $ex) { throw $ex; }
     }
@@ -96,7 +94,6 @@ class SubjectDAO
             
             $parameters["studentId"] = $studentId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             foreach ($resultSet as $row) {
@@ -125,7 +122,6 @@ class SubjectDAO
             $parameters["studentId"] = $studentId;
             $parameters["subjectId"] = $subjectId;
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (\Exception $ex) {
             throw $ex; // El Controller atrapará si el alumno ya tiene esa materia (Duplicate entry)
@@ -138,7 +134,6 @@ class SubjectDAO
             $query = "SELECT * FROM " . $this->tableName . " WHERE subjectId = :subjectId";
             $parameters["subjectId"] = $subjectId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if (!empty($resultSet)) {
@@ -180,7 +175,6 @@ class SubjectDAO
             $parameters["creditos"] = $subject->getCreditos();
             $parameters["subjectId"] = $subject->getSubjectId();
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (\Exception $ex) { throw $ex; }
     }
@@ -192,7 +186,6 @@ class SubjectDAO
             
             $parameters["subjectId"] = $subjectId;
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (\Exception $ex) {
             throw $ex;
@@ -204,7 +197,6 @@ class SubjectDAO
             $query = "UPDATE " . $this->tableName . " SET active = 1 WHERE subjectId = :subjectId";
             $parameters["subjectId"] = $subjectId;
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (\Exception $ex) {
             throw $ex;

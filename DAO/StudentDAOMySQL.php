@@ -11,6 +11,10 @@
         private $connection;
         private $tableName = "students";
 
+        public function __construct($connection = null) {
+            $this->connection = $connection ?? Connection::GetInstance();
+        }
+
         public function add(Student $student)
         {
             try {
@@ -29,8 +33,6 @@
                 $parameters["active"] = $student->isActive() ? 1 : 0;
                 $parameters["userId"] = $student->getUserId();
 
-                $this->connection = Connection::GetInstance();
-
                 return $this->connection->ExecuteNonQuery($query, $parameters);
             } catch (Exception $ex) {
                 throw $ex;
@@ -43,7 +45,6 @@
                 $studentList = array();
                 $query = "SELECT * FROM " . $this->tableName;
 
-                $this->connection = Connection::GetInstance();
                 $resultSet = $this->connection->Execute($query);
 
                 foreach ($resultSet as $row) {
@@ -62,7 +63,6 @@
                 $query = "SELECT * FROM " . $this->tableName . " WHERE studentId = :studentId";
                 $parameters["studentId"] = $id;
 
-                $this->connection = Connection::GetInstance();
                 $resultSet = $this->connection->Execute($query, $parameters);
 
                 return (!empty($resultSet)) ? $this->map($resultSet[0]) : null;
@@ -77,7 +77,6 @@
                 $query = "SELECT * FROM " . $this->tableName . " WHERE email = :email";
                 $parameters["email"] = $email;
 
-                $this->connection = Connection::GetInstance();
                 $resultSet = $this->connection->Execute($query, $parameters);
 
                 return (!empty($resultSet)) ? $this->map($resultSet[0]) : null;
@@ -97,7 +96,6 @@
 
                 $parameters["userId"] = $userId;
 
-                $this->connection = Connection::GetInstance();
                 $resultSet = $this->connection->Execute($query, $parameters);
 
                 foreach ($resultSet as $row) {
@@ -147,13 +145,11 @@
                 $parameters["fileNumber"] = $student->getFileNumber();
                 $parameters["gender"] = $student->getGender();
                 $parameters["birthDate"] = $student->getBirthDate();
-                $parameters["email"] = $student->getEmail();
                 $parameters["phoneNumber"] = $student->getPhoneNumber();
-                $parameters["active"] = $student->getActive() ? 1 : 0;
+                $parameters["active"] = $student->isActive() ? 1 : 0;
                 $parameters["userId"] = $student->getUserId();
                 $parameters["studentId"] = $student->getStudentId();
 
-                $this->connection = Connection::GetInstance();
                 return $this->connection->ExecuteNonQuery($query, $parameters);
             } catch (Exception $ex) {
                 throw $ex;
@@ -184,7 +180,6 @@
                 $query = "SELECT * FROM " . $this->tableName . " WHERE dni = :dni";
                 $parameters["dni"] = $dni;
 
-                $this->connection = Connection::GetInstance();
                 $resultSet = $this->connection->Execute($query, $parameters);
 
                 if (!empty($resultSet)) {

@@ -10,6 +10,10 @@ class JobOfferDAOMySQL
     private $connection;
     private $tableName = "job_offers";
 
+    public function __construct($connection = null) {
+        $this->connection = $connection ?? Connection::GetInstance();
+    }
+
     public function add(JobOffer $jobOffer)
     {
         try {
@@ -26,7 +30,6 @@ class JobOfferDAOMySQL
             $parameters["jobPositionId"] = $jobOffer->getJobPositionId();
             $parameters["flyer_image_path"]  = $jobOffer->getFlyerImagePath();
 
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
 
             return $this->connection->lastInsertId();
@@ -40,13 +43,11 @@ class JobOfferDAOMySQL
         try {
             $jobOfferList = array();
 
-            // SQL con JOINs para traer los nombres de empresa y posición de una sola vez
             $query = "SELECT jo.*, c.name as companyName, jp.description as jobPositionDescription
                       FROM " . $this->tableName . " jo
                       INNER JOIN companies c ON jo.companyId = c.companyId
                       INNER JOIN job_positions jp ON jo.jobPositionId = jp.jobPositionId";
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {
@@ -83,7 +84,6 @@ class JobOfferDAOMySQL
             $parameters["id"] = $id;
             $parameters["status"] = ($status) ? 1 : 0;
 
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
@@ -116,7 +116,6 @@ class JobOfferDAOMySQL
             $parameters["flyer_image_path"] = $jobOffer->getFlyerImagePath(); // Incluido en el UPDATE
             $parameters["jobOfferId"] = $jobOffer->getJobOfferId();
 
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
@@ -129,7 +128,6 @@ class JobOfferDAOMySQL
             $query = "SELECT * FROM " . $this->tableName . " WHERE jobOfferId = :id";
             $parameters["id"] = $id;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if (!empty($resultSet)) {
@@ -166,7 +164,6 @@ class JobOfferDAOMySQL
                     INNER JOIN job_positions jp ON jo.jobPositionId = jp.jobPositionId
                     WHERE jo.active = 1 AND jo.deadline >= CURDATE()";
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {
@@ -203,7 +200,6 @@ class JobOfferDAOMySQL
                 AND notified = 0";
 
         try {
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {
@@ -230,7 +226,6 @@ class JobOfferDAOMySQL
         $parameters["jobOfferId"] = $jobOfferId;
 
         try {
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
@@ -245,7 +240,6 @@ class JobOfferDAOMySQL
         $parameters["jobOfferId"] = $jobOfferId;
 
         try {
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
@@ -265,7 +259,6 @@ class JobOfferDAOMySQL
                         COUNT(*) as total_count
                       FROM " . $this->tableName;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             return (!empty($resultSet)) ? $resultSet[0] : null;
@@ -287,7 +280,6 @@ class JobOfferDAOMySQL
                       ORDER BY count DESC
                       LIMIT 5";
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->Execute($query);
         } catch (Exception $ex) {
             throw $ex;
@@ -311,7 +303,6 @@ class JobOfferDAOMySQL
 
             $parameters["careerId"] = $careerId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             foreach ($resultSet as $row) {

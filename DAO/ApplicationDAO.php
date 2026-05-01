@@ -8,9 +8,10 @@ class ApplicationDAO {
     private $connection;
     private $tableName = "applications";
 
-    /**
-     * Registra una nueva postulación
-     */
+    public function __construct($connection = null) {
+        $this->connection = $connection ?? Connection::GetInstance();
+    }
+
     public function add($studentId, $jobOfferId, $date) {
         try {
             $query = "INSERT INTO " . $this->tableName . " (studentId, jobOfferId, applicationDate) 
@@ -20,7 +21,6 @@ class ApplicationDAO {
             $parameters["jobOfferId"] = $jobOfferId;
             $parameters["applicationDate"] = $date;
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
@@ -39,7 +39,6 @@ class ApplicationDAO {
             $parameters["studentId"] = $studentId;
             $parameters["jobOfferId"] = $jobOfferId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             return !empty($resultSet); // Si el resultado no está vacío, es que ya aplicó
@@ -56,10 +55,8 @@ class ApplicationDAO {
             $query = "SELECT jobOfferId FROM " . $this->tableName . " WHERE studentId = :studentId";
             $parameters["studentId"] = $studentId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
-            // Devolvemos solo un array simple con los IDs para facilitar la búsqueda después
             return array_column($resultSet, 'jobOfferId');
         } catch (Exception $ex) {
             throw $ex;
@@ -68,7 +65,6 @@ class ApplicationDAO {
 
     public function getApplicantsByOffer($jobOfferId) {
         try {
-            // El a.* trae el 'status' de la tabla applications
             $query = "SELECT s.*, u.email, a.applicationDate, a.status 
                     FROM applications a
                     INNER JOIN students s ON a.studentId = s.studentId
@@ -77,7 +73,7 @@ class ApplicationDAO {
                     ORDER BY s.lastName ASC";
 
             $parameters["jobOfferId"] = $jobOfferId;
-            $this->connection = Connection::GetInstance();
+           
             $resultSet = $this->connection->Execute($query, $parameters);
 
             return $resultSet; 
@@ -97,7 +93,6 @@ class ApplicationDAO {
             $parameters["studentId"] = $studentId;
             $parameters["jobOfferId"] = $jobOfferId;
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) {
             throw $ex;
@@ -119,7 +114,6 @@ class ApplicationDAO {
             $parameters["studentId"] = $studentId;
             $parameters["jobOfferId"] = $jobOfferId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             // Si hay resultado, devolvemos solo la primera fila (el array asociativo)
@@ -133,7 +127,6 @@ class ApplicationDAO {
         $query = "SELECT COUNT(*) as total FROM applications WHERE jobOfferId = :jobOfferId";
         $parameters["jobOfferId"] = $jobOfferId;
 
-        $this->connection = Connection::GetInstance();
         $result = $this->connection->Execute($query, $parameters);
 
         return ($result) ? $result[0]["total"] : 0;
@@ -149,7 +142,6 @@ class ApplicationDAO {
         $parameters["location_or_link"] = $location;
         $parameters["status"] = 'scheduled';
 
-        $this->connection = Connection::GetInstance();
         return $this->connection->ExecuteNonQuery($query, $parameters);
     }
 
@@ -178,7 +170,6 @@ class ApplicationDAO {
                     WHERE a.studentId = :studentId
                     ORDER BY a.applicationDate DESC";
 
-            $this->connection = Connection::GetInstance();
             return $this->connection->Execute($query, ["studentId" => $studentId]);
         } catch (Exception $ex) { 
             throw $ex; 

@@ -10,13 +10,16 @@ class JobPositionDAOMySQL
     private $connection;
     private $tableName = "job_positions";
 
+    public function __construct($connection = null) {
+        $this->connection = $connection ?? Connection::GetInstance();
+    }
+
     public function getAll()
     {
         try {
             $jobPositionList = array();
             $query = "SELECT * FROM " . $this->tableName;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {
@@ -40,7 +43,6 @@ class JobPositionDAOMySQL
             $query = "SELECT * FROM " . $this->tableName . " WHERE jobPositionId = :id";
             $parameters["id"] = $id;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if (!empty($resultSet)) {
@@ -66,7 +68,6 @@ class JobPositionDAOMySQL
             $parameters["careerId"] = $jobPosition->getCareerId();
             $parameters["description"] = $jobPosition->getDescription();
 
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
 
             // Retornamos el ID por si lo necesitás para algo después de insertar
@@ -90,8 +91,6 @@ class JobPositionDAOMySQL
             $parameters["careerId"] = $jobPosition->getCareerId();
             $parameters["description"] = $jobPosition->getDescription();
             $parameters["jobPositionId"] = $jobPosition->getJobPositionId();
-
-            $this->connection = Connection::GetInstance();
             
             // Ejecutamos la sentencia (ExecuteNonQuery para UPDATE/INSERT/DELETE)
             $this->connection->ExecuteNonQuery($query, $parameters);
@@ -111,7 +110,6 @@ class JobPositionDAOMySQL
             
             $parameters["id"] = $id;
 
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
             
         } catch (Exception $ex) {
@@ -133,7 +131,6 @@ class JobPositionDAOMySQL
 
             $parameters["careerId"] = $careerId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             foreach ($resultSet as $row) {

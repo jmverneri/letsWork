@@ -3,15 +3,16 @@
 
     use Models\Company;
     use \Exception as Exception;
+    use DAO\Connection as Connection;
 
     class CompanyDAOMySQL implements ICompanyDAO
     {
         private Connection $connection;
         private string $tableName = "companies";
 
-        public function __construct()
+        public function __construct($connection = null)
         {
-            $this->connection = Connection::GetInstance();
+            $this->connection = $connection ?? Connection::GetInstance();
         }
 
         /**
@@ -115,8 +116,6 @@
                 $parameters["phoneNumber"] = $company->getPhoneNumber();
                 $parameters["active"] = $company->isActive() ? 1 : 0;
                 $parameters["companyId"] = $company->getCompanyId();
-
-                $this->connection = Connection::GetInstance();
                 
                 // Ejecutamos, pero no retornamos el valor para cumplir con el ": void"
                 $this->connection->ExecuteNonQuery($query, $parameters);

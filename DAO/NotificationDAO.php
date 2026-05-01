@@ -8,19 +8,21 @@ class NotificationDAO {
     private $connection;
     private $tableName = "notifications";
 
+    public function __construct($connection = null) {
+        $this->connection = $connection ?? Connection::GetInstance();
+    }
+
     public function create($studentId, $jobOfferId, $message) {
         $query = "INSERT INTO notifications (studentId, jobOfferId, message) VALUES (:studentId, :jobOfferId, :message)";
         $parameters["studentId"] = $studentId;
         $parameters["jobOfferId"] = $jobOfferId;
         $parameters["message"] = $message;
-        $this->connection = Connection::GetInstance();
         $this->connection->ExecuteNonQuery($query, $parameters);
     }
 
     public function getByStudent($studentId) {
         $query = "SELECT * FROM notifications WHERE studentId = :studentId ORDER BY created_at DESC";
         $parameters["studentId"] = $studentId;
-        $this->connection = Connection::GetInstance();
         return $this->connection->Execute($query, $parameters);
     }
 
@@ -34,7 +36,6 @@ class NotificationDAO {
 
             $parameters["studentId"] = $studentId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if(!empty($resultSet) && is_array($resultSet)) {
@@ -67,7 +68,6 @@ class NotificationDAO {
             $parameters["studentId"] = $studentId;
             $parameters["jobOfferId"] = $jobOfferId;
 
-            $this->connection = Connection::GetInstance();
             $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (\Exception $ex) {
             throw $ex;
@@ -83,7 +83,6 @@ class NotificationDAO {
                     ORDER BY notificationId DESC"; 
 
             $parameters["studentId"] = $studentId;
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if(!empty($resultSet)) {

@@ -9,13 +9,16 @@ class CareerDAOMySQL {
     private $connection;
     private $tableName = "careers";
 
+    public function __construct($connection = null) {
+        $this->connection = $connection ?? Connection::GetInstance();
+    }
+
     // Busca una carrera específica en la BD Local (para el perfil del alumno)
     public function getById($careerId) {
         try {
             $query = "SELECT * FROM " . $this->tableName . " WHERE careerId = :careerId";
             $parameters["careerId"] = $careerId;
 
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query, $parameters);
 
             if($resultSet) {
@@ -55,8 +58,7 @@ class CareerDAOMySQL {
             $parameters["description"] = $data->getDescription();
             $parameters["active"] = $data->getActive() ? 1 : 0;
 
-            $this->connection = Connection::GetInstance();
-            $this->connection->ExecuteNonQuery($query, $parameters);
+            return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) { throw $ex; }
     }
 
@@ -66,7 +68,6 @@ class CareerDAOMySQL {
         $query = "SELECT * FROM " . $this->tableName . " ORDER BY description ASC";
 
         try {
-            $this->connection = Connection::GetInstance();
             $resultSet = $this->connection->Execute($query);
 
             foreach ($resultSet as $row) {

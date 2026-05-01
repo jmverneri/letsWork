@@ -1,12 +1,12 @@
 <?php
     namespace DAO;
 
-    use Models\Administrator as Administrator;
+    use Models\Admin as Admin;
 
     interface IAdministratorDAO
     {
-        function AddAdministrator(Administrator $administrator);
-        function update(Administrator $administrator);
+        function AddAdministrator(Admin $administrator);
+        function update(Admin $administrator);
         public function GetAll();
 
     }
