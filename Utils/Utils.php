@@ -43,7 +43,7 @@ class Utils
         return true;
     }
 
-    public static function checkNav($notifications = [], $cantNotif = 0)
+    public static function checkNav()
     {
         if (isset($_SESSION['loggedUser'])) {
             if ($_SESSION['loggedUser']->isAdmin()) {

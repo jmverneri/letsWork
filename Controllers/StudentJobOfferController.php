@@ -205,6 +205,10 @@
 
                 $this->notificationDAO->markAsRead($student->getStudentId(), $jobOfferId);
 
+                $unreadList = $this->notificationDAO->getUnreadByStudent($student->getStudentId());
+        
+                $_SESSION['unreadNotifications'] = $unreadList;
+                $_SESSION['cantNotif'] = count($unreadList);
                 // 1. Obtenemos la oferta específica
                 $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
 

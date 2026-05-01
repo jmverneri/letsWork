@@ -56,7 +56,7 @@ Utils::checkNav();
     </div>
 
     <div class="d-flex justify-content-between mt-4">
-        <a href="<?= FRONT_ROOT ?>Company/profile" class="btn btn-secondary">Cancel</a>
+        <a href="<?= FRONT_ROOT ?>Company/profile" class="btn btn-secondary">Cancelar</a>
         <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
     </div>
 </form>

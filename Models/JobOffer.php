@@ -13,6 +13,7 @@ class JobOffer
     private $companyId;
     private $jobPositionId;
     private $flyerImagePath;   
+    private $applicantCount = 0;
 
     // Atributos "Virtuales" para facilitar la lectura en las vistas (llenados vía JOIN en el DAO)
     private ?string $careerName = null;
@@ -127,5 +128,13 @@ class JobOffer
     public function setFlyerImagePath($flyerImagePath) {
         $this->flyerImagePath = $flyerImagePath;
         return $this;
+    }
+
+    public function getApplicantCount() {
+        return $this->applicantCount;
+    }
+
+    public function setApplicantCount($applicantCount) {
+        $this->applicantCount = $applicantCount;
     }
 }

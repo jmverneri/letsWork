@@ -226,7 +226,7 @@ class AdminJobOfferController
     }
 
     public function showActiveJobOffers() {
-        
+        $_SESSION['last_job_offer_list'] = 'showActiveJobOffers';
         $this->processExpiredOffers();   
         
         $jobOfferList = $this->jobOfferRepo->getOpenOffers();
@@ -237,7 +237,7 @@ class AdminJobOfferController
     }
 
     public function showExpiredJobOffers() {
-        
+        $_SESSION['last_job_offer_list'] = 'showExpiredJobOffers';
         $allOffers = $this->jobOfferRepo->getAll();
         $today = date("Y-m-d");
 
@@ -276,42 +276,45 @@ class AdminJobOfferController
         }
     }
 
-    public function declineApplicant($studentId, $jobOfferId) {
+   public function declineApplicant($studentId, $jobOfferId) {
         try {
-            // 1. Cambiamos el estado en la BD (Update normal)
+            // 1. Ejecutar el cambio de estado
             $this->applicationDAO->updateStatus($studentId, $jobOfferId, 'declined');
 
-            // 2. Traemos TODOS los postulantes de esa oferta 
-            // (Este es el método que ya tenés y que debería tener el JOIN con la tabla Users)
-            $applicants = $this->applicationDAO->getApplicantsByOffer($jobOfferId);
+            // 2. Traer SOLO al alumno afectado (Eficiencia pura)
+            $applicationData = $this->applicationDAO->getSpecificApplicant($studentId, $jobOfferId);
 
-            // 3. Buscamos al alumno específico dentro de esa lista para sacarle el mail
-            $targetApplicant = null;
-            foreach ($applicants as $app) {
-                if ($app['studentId'] == $studentId) {
-                    $targetApplicant = $app;
-                    break;
-                }
-            }
-
-            // 4. Si lo encontramos, mandamos el mail
-            if ($targetApplicant) {
+            if ($applicationData) {
                 $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
                 
-                $to = $targetApplicant['email']; // El mail que viene del JOIN con Users
-                $subject = "Application Update: " . $jobOffer->getTitle();
-                $message = "<h2>Hello " . $targetApplicant['firstName'] . "</h2>" .
-                        "<p>We are sorry to inform you that your application for <strong>" . 
-                        $jobOffer->getTitle() . "</strong> has been declined.</p>";
-
-                MailService::send($to, $subject, $message);
+                // 3. Delegar el armado del mail a un método privado o Service
+                $this->sendDeclineEmail($applicationData, $jobOffer);
             }
 
-            $this->showApplicants($jobOfferId);
+            // 4. Redirigir con un mensaje de éxito
+            $this->showApplicants($jobOfferId, "Postulante declinado y notificado correctamente.", "success");
 
         } catch (Exception $ex) {
-            $this->showApplicants($jobOfferId, "Error: " . $ex->getMessage());
+            $this->showApplicants($jobOfferId, "Error al procesar la baja: " . $ex->getMessage(), "danger");
         }
+    }
+
+    // Método privado para no ensuciar la lógica principal
+    private function sendDeclineEmail($userData, $jobOffer) {
+        $subject = "Actualización de Postulación: " . $jobOffer->getTitle();
+        
+        // Un toque más "Pro" en el diseño del mail
+        $message = "
+            <div style='font-family: Arial, sans-serif; border: 1px solid #eee; padding: 20px;'>
+                <h2 style='color: #d9534f;'>Hola " . $userData['firstName'] . "</h2>
+                <p>Lamentamos informarte que tu postulación para la oferta 
+                <strong>" . $jobOffer->getTitle() . "</strong> ha sido declinada.</p>
+                <p>Te agradecemos por el interés y te invitamos a seguir aplicando a otras búsquedas en <strong>Let's Work</strong>.</p>
+                <hr>
+                <small>Este es un mensaje automático, por favor no lo respondas.</small>
+            </div>";
+
+        MailService::send($userData['email'], $subject, $message);
     }
 
     public function generateApplicantsPDF($jobOfferId) 

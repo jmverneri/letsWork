@@ -45,7 +45,7 @@ Utils::checkNav();
     </div>
 
     <div class="d-flex justify-content-end">
-        <a href="<?= FRONT_ROOT ?>CompanyJobOffer/listMyOffers" class="btn btn-secondary mr-2">Cancel</a>
+        <a href="<?= FRONT_ROOT ?>CompanyJobOffer/listMyOffers" class="btn btn-secondary mr-2">Cancelar</a>
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </div>
 </form>

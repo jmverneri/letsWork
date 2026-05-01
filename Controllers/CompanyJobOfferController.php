@@ -8,9 +8,12 @@ use Repositories\JobOfferRepository;
 use Repositories\JobPositionRepository;  
 use DAO\NotificationDAO as NotificationDAO;
 use DAO\StudentPreferenceDAO;
+use DAO\ApplicationDAO;
+use DAO\InterviewDAO;
 use Models\JobOffer;
 use Utils\Utils;
 use Exception;
+use Utils\MailService as MailService;
 
 class CompanyJobOfferController
 {
@@ -20,6 +23,8 @@ class CompanyJobOfferController
     private JobPositionRepository $jobPositionRepo;  
     private StudentPreferenceDAO $studentPreferenceDAO;
     private NotificationDAO $notificationDAO;
+    private ApplicationDAO $applicationDAO;
+    private InterviewDAO $interviewDAO;
 
     public function __construct()
     {
@@ -30,6 +35,8 @@ class CompanyJobOfferController
         $this->careerRepo = new CareerRepository();
         $this->studentPreferenceDAO = new StudentPreferenceDAO();
         $this->notificationDAO = new NotificationDAO();
+        $this->applicationDAO = new ApplicationDAO();
+        $this->interviewDAO = new InterviewDAO();
     }
 
     /**
@@ -43,6 +50,11 @@ class CompanyJobOfferController
             
             $jobOffers = $this->jobOfferRepo->getByCompanyId($company->getCompanyId());
             
+            foreach($jobOffers as $offer) {
+                // Usamos el ApplicationDAO para contar
+                $count = $this->applicationDAO->countApplicantsByOffer($offer->getJobOfferId());
+                $offer->setApplicantCount($count);
+            }
             // Traemos todas las carreras para el mapeo de nombres
             $careers = $this->careerRepo->getAll();
             $careerMap = [];
@@ -92,6 +104,18 @@ class CompanyJobOfferController
 
             if (!$company) {
                 throw new Exception("No se encontró la empresa asociada a este usuario.");
+            }
+
+            $startDate = $request["startDate"];
+            $deadline = $request["deadline"];
+
+            if (strtotime($deadline) < strtotime($startDate)) {
+                throw new Exception("La fecha de cierre (deadline) no puede ser anterior a la fecha de inicio.");
+            }
+
+            // (Opcional) Validar que el deadline no sea en el pasado
+            if (strtotime($deadline) < strtotime(date('Y-m-d'))) {
+                throw new Exception("La fecha de cierre no puede ser una fecha pasada.");
             }
 
             // 2. Crear y popular el modelo
@@ -169,11 +193,8 @@ class CompanyJobOfferController
     public function viewApplicants($jobOfferId)
     {
         try {
-            // Podrías validar aquí que la oferta pertenezca a la empresa logueada
             $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
             
-            // Usamos el Service para obtener la data procesada
-            // (Asegúrate de que tu DAO devuelva info útil del estudiante)
             $applicants = $this->jobOfferRepo->getApplicantsByOffer($jobOfferId);
 
             require_once(COMPANY_VIEWS . "joboffer-applicants.php");
@@ -284,9 +305,6 @@ class CompanyJobOfferController
             $jobOffer->setStartDate($request["startDate"]);
             $jobOffer->setDeadline($request["deadline"]);
             $jobOffer->setJobPositionId($request["jobPositionId"]);
-            
-            // ¡OJO! No tocamos $jobOffer->setActive() ni ->setCompanyId() 
-            // porque ya los trae del objeto original que recuperamos en el paso 1.
 
             // 3. Persistimos el objeto completo
             $this->jobOfferRepo->update($jobOffer);
@@ -296,6 +314,20 @@ class CompanyJobOfferController
         } catch (Exception $ex) {
             $errorMessage = $ex->getMessage();
             $this->showEditForm($request["jobOfferId"]);
+        }
+    }
+
+    public function showApplicants($jobOfferId, $message = "", $messageType = "info")
+    {
+        try {
+            $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+            
+            $applicantList = $this->applicationDAO->getApplicantsByOffer($jobOfferId);
+
+            require_once(COMPANY_VIEWS . "job-offer-applicants.php");
+            
+        } catch (Exception $ex) {
+            echo "Error al cargar aplicantes: " . $ex->getMessage();
         }
     }
 
@@ -310,5 +342,113 @@ class CompanyJobOfferController
                 $this->notificationDAO->create($row['studentId'], $jobOffer->getJobOfferId(), $message);
             }
         }
+    }
+
+    public function setInterviewStatus() 
+    {
+        try {
+            if($_POST) {
+                $studentId = $_POST['studentId'];
+                $jobOfferId = $_POST['jobOfferId'];
+                $dateTime = $_POST['date_time'];
+                $location = $_POST['location'];
+
+                $dateTime = $_POST['date_time'];
+                $now = date('Y-m-d H:i:s');
+
+                // Comparamos los strings de fecha (o convertirlos a timestamp)
+                if(strtotime($dateTime) < strtotime($now)) {
+                    // Si la fecha elegida es menor a ahora, mandamos error y volvemos
+                    $this->showApplicants($_POST['jobOfferId'], "No podés programar una entrevista para el pasado.", "danger");
+                    return;
+                }
+                
+                // 1. Persistencia
+                $this->applicationDAO->updateStatus($studentId, $jobOfferId, 'interview');
+
+                $this->interviewDAO->add($studentId, $jobOfferId, $dateTime, $location);
+                
+                // 2. Obtención de datos
+                $applicant = $this->applicationDAO->getSpecificApplicant($studentId, $jobOfferId);
+                $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+
+                // 3. Notificación
+                if ($applicant && $jobOffer) {
+                    $this->sendInterviewEmail($applicant, $jobOffer, $dateTime, $location);
+                }
+
+                // 4. Feedback al usuario
+                $this->showApplicants($jobOfferId, "Estado actualizado a 'Entrevista'.", "success");
+            }
+        } catch (Exception $ex) {
+            $this->showApplicants($jobOfferId, "Error: " . $ex->getMessage(), "danger");
+        }
+    }
+
+    private function sendInterviewEmail($userData, $jobOffer, $dateTime, $location) 
+    {
+        $subject = "Invitación a Entrevista: " . $jobOffer->getTitle();
+        $fechaFormateada = date('d/m/Y H:i', strtotime($dateTime));
+        
+        $message = "
+            <div style='font-family: Arial; border: 1px solid #eee; padding: 20px;'>
+                <h2 style='color: #28a745;'>¡Hola " . $userData['firstName'] . "!</h2>
+                <p>La empresa ha revisado tu perfil para el puesto de <strong>" . $jobOffer->getTitle() . "</strong> y quiere entrevistarte.</p>
+                <hr>
+                <p><strong>📅 Fecha y Hora:</strong> " . $fechaFormateada . " hs</p>
+                <p><strong>📍 Lugar/Link:</strong> <a href='" . $location . "'>" . $location . "</a></p>
+                <hr>
+                <p>Por favor, confirma tu asistencia respondiendo a este correo.</p>
+            </div>";
+
+        MailService::send($userData['email'], $subject, $message);
+    }
+
+    public function showInterviews() {
+        try {
+            $user = $_SESSION['loggedUser'];
+            $company = $this->companyRepo->getByUserId($user->getUserId());
+            
+            $interviewList = $this->interviewDAO->getInterviewsByCompany($company->getCompanyId());
+
+            require_once(COMPANY_VIEWS . "company-interviews.php");
+        } catch (Exception $ex) {
+            $this->listMyOffers();
+        }
+    }
+
+    public function changeInterviewStatus($interviewId, $newStatus) {
+        try {
+            $interview = $this->interviewDAO->getById($interviewId); 
+            if (!$interview) throw new Exception("Entrevista no encontrada.");
+
+            $studentId = $interview->getStudentId();
+            $jobOfferId = $interview->getJobOfferId();
+
+            // 1. Actualizamos SOLAMENTE esta entrevista en la BD
+            $this->interviewDAO->updateStatus($interviewId, $newStatus);
+
+            if($newStatus === 'completed') {
+                // Aquí sí usamos student y jobOffer porque la POSTULACIÓN es una sola
+                $this->applicationDAO->updateStatus($studentId, $jobOfferId, 'completed'); 
+            } elseif($newStatus === 'cancelled') {
+                $this->applicationDAO->updateStatus($studentId, $jobOfferId, 'active');
+                
+                $applicant = $this->applicationDAO->getSpecificApplicant($studentId, $jobOfferId);
+                $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+                $this->sendCancellationEmail($applicant, $jobOffer);
+            }
+
+            $this->showInterviews();
+            
+        } catch (Exception $ex) {
+            $this->showInterviews();
+        }
+    }
+
+    private function sendCancellationEmail($userData, $jobOffer) {
+        $subject = "Cancelación de Entrevista - " . $jobOffer->getTitle();
+        $message = "Hola " . $userData['firstName'] . ", te informamos que la entrevista para el puesto " . $jobOffer->getTitle() . " ha sido cancelada por la empresa.";
+        MailService::send($userData['email'], $subject, $message);
     }
 }

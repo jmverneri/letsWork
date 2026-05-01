@@ -64,7 +64,6 @@
             $student = $this->studentDAOMySQL->getByUserId($user->getUserId());
 
             if (!$student) {
-                // En lugar de morir, limpiamos la sesión y volvemos al login con error
                 session_destroy();
                 $message = "Error: No se encontraron datos de perfil para el alumno con ID " . $user->getUserId() . ". Contacte al administrador.";
                 require_once(VIEWS_PATH . "login.php");
@@ -150,8 +149,21 @@
                     break;
 
                 case User::ROLE_STUDENT:
-                    // Obtenemos los datos específicos del alumno para la sesión
-                    $_SESSION['student'] = $this->studentDAOMySQL->getByUserId($user->getUserId());
+                    $student = $this->studentDAOMySQL->getByUserId($user->getUserId());
+
+                    if ($student) {
+                        // 2. Guardamos el studentId a mano para tenerlo siempre a tiro
+                        $_SESSION['student'] = $student;
+                        $_SESSION['studentId'] = $student->getStudentId();
+                        
+                        // Cargamos las notificaciones una sola vez
+                        $notifDAO = new NotificationDAO();
+                        $unreadList = $notifDAO->getUnreadByStudent($student->getStudentId());
+                        
+                        // GUARDAMOS EN SESIÓN
+                        $_SESSION['unreadNotifications'] = $unreadList;
+                        $_SESSION['cantNotif'] = count($unreadList);
+                    }
                     header("Location: " . FRONT_ROOT . "Home/menuStudent");
                     break;
 

@@ -6,7 +6,7 @@ Utils::checkNav();
 <main class="py-5">
      <section id="listado" class="mb-5">
           <div class="container">
-               <h2 class="mb-4 text-dark">Agregar Nueva Oferta Lanoral</h2>
+               <h2 class="mb-4 text-dark">Agregar Nueva Oferta Laboral</h2>
                
                <form action="<?php echo FRONT_ROOT . "AdminJobOffer/add" ?>" method="POST" enctype="multipart/form-data" class="bg-light-custom p-5 shadow-sm rounded">
                     <div class="row">                         
@@ -103,7 +103,7 @@ Utils::checkNav();
                               <i class="fas fa-arrow-left"></i> Cancel
                          </button>
                          <button type="submit" class="btn btn-primary shadow-sm px-5">
-                              <i class="fas fa-check"></i> Creaar Oferta Laboral
+                              <i class="fas fa-check"></i> Crear Oferta Laboral
                          </button>
                     </div>
                </form>

@@ -15,10 +15,12 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link position-relative px-3" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span style="font-size: 1.1rem;">🔔</span>
-                        <?php if(isset($cantNotif) && $cantNotif > 0) { ?>
+                        <?php 
+                        $displayCant = $_SESSION['cantNotif'] ?? 0;
+                        if($displayCant > 0) { ?>
                             <span class="position-absolute badge rounded-pill bg-danger" 
                                   style="top: 5px; right: 5px; font-size: 0.65rem; padding: 0.25em 0.5em;">
-                                <?php echo $cantNotif; ?>
+                                <?php echo $displayCant; ?>
                             </span>
                         <?php } ?>
                     </a>
@@ -26,10 +28,13 @@
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="notificationDropdown" style="min-width: 280px; border-radius: 10px;">
                         <li><h6 class="dropdown-header fw-bold text-dark">Notificaciones Recientes</h6></li>
                         
-                        <?php if(!empty($notifications)) { ?>
-                            <?php foreach($notifications as $notif) { ?>
+                        <?php 
+                        // Recuperamos la lista de la sesión
+                        $notifList = $_SESSION['unreadNotifications'] ?? [];
+                        if(!empty($notifList)) { 
+                            foreach($notifList as $notif) { ?>
                                 <li>
-                                    <a class="dropdown-item border-bottom py-2 <?php echo $notif->getIsRead() ? '' : 'bg-light'; ?>" 
+                                    <a class="dropdown-item border-bottom py-2" 
                                        href="<?php echo FRONT_ROOT ?>StudentJobOffer/showOfferDetails/<?php echo $notif->getJobOfferId(); ?>">
                                         <div class="d-flex flex-column">
                                             <span class="small text-primary fw-bold">Nueva Oferta</span>
@@ -39,12 +44,13 @@
                                         </div>
                                     </a>
                                 </li>
-                            <?php } ?>
-                        <?php } else { ?>
+                            <?php } 
+                        } else { ?>
                             <li><span class="dropdown-item text-muted text-center py-3">No hay notificaciones nuevas</span></li>
                         <?php } ?>
 
-                        <li><a class="dropdown-item text-center small text-primary fw-bold pt-2" href="<?php echo FRONT_ROOT ?>Notification/showListView">Ver todas</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center small text-primary fw-bold" href="<?php echo FRONT_ROOT ?>Notification/showListView">Ver todas</a></li>
                     </ul>
                 </li>
 

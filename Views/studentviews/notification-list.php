@@ -1,3 +1,7 @@
+<?php
+use Utils\Utils;
+Utils::checkNav();
+?>
 <main class="py-5">
     <div class="container">
         <h2 class="mb-4">Historial de Notificaciones</h2>

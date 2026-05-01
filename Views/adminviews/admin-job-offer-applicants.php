@@ -68,7 +68,7 @@ Utils::checkNav();
                                            class="btn btn-outline-danger btn-sm" 
                                            onclick="return confirm('Are you sure you want to decline this application?')"
                                            style="text-decoration: none; font-weight: bold;">
-                                           <i class="fas fa-user-slash"></i> Declinada
+                                           <i class="fas fa-user-slash"></i> Declinar
                                         </a>
                                     <?php } else { ?>
                                         <button class="btn btn-sm btn-light" disabled>
@@ -91,8 +91,12 @@ Utils::checkNav();
         </div>
         
         <div class="mt-4">
-            <a href="<?php echo FRONT_ROOT; ?>AdminJobOffer/showActiveJobOffers" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver a las Ofertas Laborales
+            <?php 
+                // Recuperamos de la sesión o vamos a las activas por default
+                $lastList = $_SESSION['last_job_offer_list'] ?? 'showActiveJobOffers';
+            ?>
+            <a href="<?php echo FRONT_ROOT . "AdminJobOffer/" . $lastList; ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a las Ofertas
             </a>
         </div>
     </div>

@@ -17,6 +17,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link px-3" href="<?php echo FRONT_ROOT ?>CompanyJobOffer/showInterviews">
+                        <i class="fas fa-list-ul me-1 small"></i> Mis Entrevistas
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link px-3" href="<?php echo FRONT_ROOT ?>Company/profile">
                         <i class="fas fa-building me-1 small"></i> Perfil
                     </a>
