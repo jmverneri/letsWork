@@ -13,7 +13,7 @@
     opacity: 1 !important;
 }
 
-.badge-active { background-color: #17a2b8 !important; }
+/* .badge-active { background-color: #17a2b8 !important; } */
 .badge-interview { background-color: #007bff !important; }
 .badge-declined { background-color: #6c757d !important; }
 .badge-unknown { background-color: #343a40 !important; }

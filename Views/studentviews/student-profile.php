@@ -1,112 +1,101 @@
 <?php
 use Utils\Utils;
-
 Utils::checkNav();
-
 $user = $_SESSION['loggedUser'];
 ?>
-<main class="py-5">
-    <section id="listado" class="mb-5">
-        <div class="container">
-            <h2 class="mb-4">Perfil del Estudiante</h2>
-            <?php if (isset($message) && !empty($message)): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    <?php echo $message; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
 
-            <?php if (isset($errorMessage) && !empty($errorMessage)): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <?php echo $errorMessage; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
+<main class="page-root">
 
-            <table class="table bg-light-alpha">
-                <thead>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>DNI</th>
-                        <th>Fecha de nacimiento</th>
-                        <th>Email</th>
-                        <th>Número de teléfono</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (isset($student)) : ?>
-                        <tr>
-                            <td><?= htmlspecialchars($student->getFileNumber()?? '') ?></td>
-                            <td><?= htmlspecialchars($student->getFirstName()) ?></td>
-                            <td><?= htmlspecialchars($student->getLastName()) ?></td>
-                            <td><?= htmlspecialchars($student->getDni()) ?></td>
-                            <td><?= htmlspecialchars($student->getBirthDate()?? '') ?></td>
-                            <td><?= htmlspecialchars($user->getEmail()) ?></td>
-                            <td><?= htmlspecialchars($student->getPhoneNumber()?? '') ?></td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Perfil del estudiante</h1>
+    </div>
+  </div>
 
-            <h3 class="mb-4">Status Académico</h3>
-            <table class="table bg-light-alpha">
-                <thead>
-                    <tr>
-                        <th>Carrera</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <?= $career ? htmlspecialchars($career->getDescription()) : 'No career assigned' ?>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3 class="mt-5 mb-4">Materias Aprobadas</h3>
-            <div class="table-responsive">
-                <table class="table bg-light-alpha table-hover">
-                    <thead>
-                        <tr>
-                            <th>Materia</th>
-                            <th>Descripción</th>
-                            <th class="text-center">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (isset($approvedSubjects) && !empty($approvedSubjects)) : ?>
-                            <?php foreach ($approvedSubjects as $subject) : ?>
-                                <tr>
-                                    <td><strong><?= htmlspecialchars($subject->getAsignatura()) ?></strong></td>
-                                    <td><?= htmlspecialchars($subject->getCursado() ?? 'Sin descripción disponible') ?></td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success text-white" style="padding: 0.5em 1em;">
-                                            <i class="fas fa-check-circle me-1"></i> Aprobada
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else : ?>
-                            <tr>
-                                <td colspan="3" class="text-center text-muted py-4">
-                                    No se registran materias aprobadas para este perfil.
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card border-0 shadow-sm mt-4" style="border-radius: 15px;">
+  <?php if (isset($message) && !empty($message)): ?>
+    <div class="alert alert-success" role="alert"><?php echo $message; ?></div>
+  <?php endif; ?>
 
-            <div class="mt-4">
-                <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; color: white; background: #6c757d; display: inline-block;">
-                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
-                </a>
-            </div>
-        </div>
-    </section>
+  <?php if (isset($errorMessage) && !empty($errorMessage)): ?>
+    <div class="alert alert-danger" role="alert"><?php echo $errorMessage; ?></div>
+  <?php endif; ?>
+
+  <!-- Datos personales -->
+  <div class="table-wrap" style="margin-bottom:2rem;">
+    <table>
+      <thead>
+        <tr>
+          <th>Matrícula</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Fecha de nacimiento</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (isset($student)): ?>
+          <tr>
+            <td><span class="badge-pill" style="font-family:monospace;"><?= htmlspecialchars($student->getFileNumber() ?? '') ?></span></td>
+            <td style="font-weight:500;"><?= htmlspecialchars($student->getFirstName()) ?></td>
+            <td style="font-weight:500;"><?= htmlspecialchars($student->getLastName()) ?></td>
+            <td class="text-muted"><?= htmlspecialchars($student->getDni()) ?></td>
+            <td class="text-muted"><?= htmlspecialchars($student->getBirthDate() ?? '') ?></td>
+            <td class="text-muted"><?= htmlspecialchars($user->getEmail()) ?></td>
+            <td class="text-muted"><?= htmlspecialchars($student->getPhoneNumber() ?? '') ?></td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Carrera -->
+  <p class="page-title" style="font-size:18px; margin-bottom:1rem;">Estado académico</p>
+  <div class="table-wrap" style="margin-bottom:2rem;">
+    <table>
+      <thead>
+        <tr>
+          <th>Carrera</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><?= $career ? htmlspecialchars($career->getDescription()) : '<span class="text-muted">Sin carrera asignada</span>' ?></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Materias aprobadas -->
+  <p class="page-title" style="font-size:18px; margin-bottom:1rem;">Materias aprobadas</p>
+  <div class="table-wrap" style="margin-bottom:2rem;">
+    <table>
+      <thead>
+        <tr>
+          <th>Materia</th>
+          <th>Cursado</th>
+          <th style="text-align:center">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (isset($approvedSubjects) && !empty($approvedSubjects)):
+          foreach ($approvedSubjects as $subject): ?>
+          <tr>
+            <td style="font-weight:500;"><?= htmlspecialchars($subject->getAsignatura()) ?></td>
+            <td class="text-muted"><?= htmlspecialchars($subject->getCursado() ?? '-') ?></td>
+            <td style="text-align:center"><span class="badge-active">Aprobada</span></td>
+          </tr>
+        <?php endforeach;
+        else: ?>
+          <tr>
+            <td colspan="3" class="table-empty">No se registran materias aprobadas para este perfil.</td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="<?php echo FRONT_ROOT . 'Home/menuStudent'; ?>" class="page-back">← Volver al dashboard</a>
+
 </main>

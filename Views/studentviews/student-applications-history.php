@@ -3,141 +3,125 @@ use Utils\Utils;
 Utils::checkNav();
 ?>
 
-<main class="py-5">
-    <div class="container">
-        <h2 class="mb-4" style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
-            <i class="fas fa-file-signature text-primary"></i> Mis Postulaciones
-        </h2>           
-    
-        <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0" style="vertical-align: middle;">
-                    <thead style="background: #2c3e50; color: white;">
-                        <tr class="text-center">
-                            <th class="text-start ps-4">Compañía</th>
-                            <th class="text-start">Posición</th>
-                            <th>Fecha Aplicación</th>
-                            <th>Estado Oferta</th>
-                            <th>Mi Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        if (!empty($applicationList)) {
-                            foreach ($applicationList as $app) { 
-                                $isOfferActuallyOpen = ($app['isRealActive'] == 1);
-                                $currentAppStatus = trim($app['appStatus']);
-                                ?>
-                                <tr class="text-center <?php echo ($currentAppStatus == 'declined') ? 'table-light' : ''; ?>">
-                                    
-                                    <td class="text-start ps-4">
-                                        <strong class="text-primary text-uppercase small">
-                                            <?php echo $app['companyName']; ?>
-                                        </strong>
-                                    </td>
+<main class="page-root">
 
-                                    <td class="text-start">
-                                        <span class="fw-bold"><?php echo $app['title']; ?></span>
-                                    </td>
-
-                                    <td>
-                                        <span class="text-muted small">
-                                            <i class="far fa-calendar-alt"></i> <?php echo date('d/m/Y', strtotime($app['applicationDate'])); ?>
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge <?php echo $isOfferActuallyOpen ? 'bg-success' : 'bg-secondary'; ?> shadow-sm">
-                                            <?php echo $isOfferActuallyOpen ? 'Abierta' : 'Cerrada'; ?>
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <?php 
-                                        echo match($currentAppStatus) {
-                                            'active' => '
-                                                <div class="text-info fw-bold small">
-                                                    <i class="fas fa-spinner fa-spin me-1"></i> En Revisión
-                                                </div>',
-                                                
-                                            'declined' => '
-                                                <div class="text-danger fw-bold small">
-                                                    <i class="fas fa-times-circle me-1"></i> Declinada
-                                                </div>',
-                                                
-                                            'interview' => "
-                                                <div class='d-flex flex-column align-items-center'>
-                                                    <div class='text-primary fw-bold small mb-1'>
-                                                        <i class='fas fa-calendar-check me-1'></i> ¡Entrevista!
-                                                    </div>
-                                                    <button class='btn btn-primary btn-sm py-0 px-2' 
-                                                            style='font-size: 0.65rem;'
-                                                            data-bs-toggle='modal' 
-                                                            data-bs-target='#detailModal{$app['studentId']}_{$app['jobOfferId']}'>
-                                                        Ver Detalles
-                                                    </button>
-                                                </div>
-                                                
-                                                <div class='modal fade' id='detailModal{$app['studentId']}_{$app['jobOfferId']}' tabindex='-1' aria-hidden='true'>
-                                                    <div class='modal-dialog modal-dialog-centered'>
-                                                        <div class='modal-content'>
-                                                            <div class='modal-header bg-primary text-white'>
-                                                                <h5 class='modal-title'><i class='fas fa-info-circle me-2'></i>Detalles de la Entrevista</h5>
-                                                                <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal' aria-label='Close'></button>
-                                                            </div>
-                                                            <div class='modal-body text-start'>
-                                                                <div class='mb-3'>
-                                                                    <label class='text-muted small d-block'>Empresa:</label>
-                                                                    <span class='fw-bold'>{$app['companyName']}</span>
-                                                                </div>
-                                                                <div class='mb-3'>
-                                                                    <label class='text-muted small d-block'>Fecha y Hora:</label>
-                                                                    <span class='fw-bold text-dark'><i class='far fa-clock me-1'></i> " . date('d/m/Y - H:i', strtotime($app['interviewDate'])) . " hs</span>
-                                                                </div>
-                                                                <div class='mb-3'>
-                                                                    <label class='text-muted small d-block'>Lugar o Link de Reunión:</label>
-                                                                    <div class='p-2 bg-light border rounded' style='word-break: break-all;'>
-                                                                        <i class='fas fa-link me-1'></i> <a href='{$app['interviewLocation']}' target='_blank'>{$app['interviewLocation']}</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class='alert alert-warning py-2 mb-0 mt-3 small text-center'>
-                                                                    <i class='fas fa-exclamation-triangle me-1'></i> Por favor, confirmá tu asistencia por mail.
-                                                                </div>
-                                                            </div>
-                                                            <div class='modal-footer'>
-                                                                <button type='button' class='btn btn-secondary btn-sm' data-bs-dismiss='modal'>Cerrar</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>",
-                                            'completed' => '
-                                                <div class="text-success fw-bold small">
-                                                    <i class="fas fa-check-double me-1"></i> Entrevista Realizada
-                                                </div>
-                                                <div class="text-muted" style="font-size: 0.7rem;">Esperando resolución</div>',    
-                                            default => '<span class="text-muted small">Estado desconocido</span>'
-                                        };
-                                        ?>
-                                    </td>
-                                </tr>
-                            <?php } 
-                        } else { ?>
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fas fa-folder-open fa-3x mb-3 text-light"></i>
-                                    <p>Aún no te has postulado a ninguna oferta de trabajo.</p>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <a href="<?php echo FRONT_ROOT . "Home/menuStudent" ?>" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Volver al Inicio
-            </a>
-        </div>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Mis postulaciones</h1>
     </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Compañía</th>
+          <th>Posición</th>
+          <th style="text-align:center">Fecha</th>
+          <th style="text-align:center">Estado oferta</th>
+          <th style="text-align:center">Mi estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($applicationList)):
+          foreach ($applicationList as $app):
+            $isOfferOpen = ($app['isRealActive'] == 1);
+            $status = trim($app['appStatus']);
+        ?>
+          <tr style="<?= $status === 'declined' ? 'opacity:0.55;' : '' ?>">
+
+            <td>
+              <span style="font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.04em;">
+                <?= htmlspecialchars($app['companyName']) ?>
+              </span>
+            </td>
+
+            <td style="font-weight:500; font-size:13px;"><?= htmlspecialchars($app['title']) ?></td>
+
+            <td style="text-align:center; font-size:12px;" class="text-muted">
+              <?= date('d/m/Y', strtotime($app['applicationDate'])) ?>
+            </td>
+
+            <td style="text-align:center">
+              <span class="<?= $isOfferOpen ? 'badge-active' : 'badge-inactive' ?>">
+                <?= $isOfferOpen ? 'Abierta' : 'Cerrada' ?>
+              </span>
+            </td>
+
+            <td style="text-align:center">
+              <?php if ($status === 'active'): ?>
+                <span class="badge-pill">En revisión</span>
+
+              <?php elseif ($status === 'declined'): ?>
+                <span class="badge-inactive">Declinada</span>
+
+              <?php elseif ($status === 'completed'): ?>
+                <div>
+                  <span class="badge-active">Entrevista realizada</span>
+                  <p class="text-muted" style="font-size:10px; margin:2px 0 0;">Esperando resolución</p>
+                </div>
+
+              <?php elseif ($status === 'interview'): ?>
+                <div>
+                  <span class="badge-active" style="margin-bottom:4px; display:inline-block;">¡Entrevista!</span><br>
+                  <button class="btn-sm" onclick="document.getElementById('modal-<?= $app['studentId'] ?>_<?= $app['jobOfferId'] ?>').style.display='flex'">
+                    Ver detalles
+                  </button>
+                </div>
+
+                <!-- Modal entrevista -->
+                <div id="modal-<?= $app['studentId'] ?>_<?= $app['jobOfferId'] ?>"
+                     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:999; align-items:center; justify-content:center;">
+                  <div class="card" style="max-width:440px; width:90%; position:relative;">
+                    <p class="page-title" style="font-size:16px; margin-bottom:1.25rem;">Detalles de la entrevista</p>
+
+                    <div class="form-field">
+                      <label>Empresa</label>
+                      <p style="font-size:14px; font-weight:500; margin:0;"><?= htmlspecialchars($app['companyName']) ?></p>
+                    </div>
+
+                    <div class="form-field">
+                      <label>Fecha y hora</label>
+                      <p style="font-size:14px; font-weight:500; margin:0;"><?= date('d/m/Y - H:i', strtotime($app['interviewDate'])) ?> hs</p>
+                    </div>
+
+                    <div class="form-field">
+                      <label>Lugar o link</label>
+                      <p style="font-size:13px; margin:0; word-break:break-all;">
+                        <a href="<?= htmlspecialchars($app['interviewLocation']) ?>" target="_blank" style="color:#37352f;">
+                          <?= htmlspecialchars($app['interviewLocation']) ?>
+                        </a>
+                      </p>
+                    </div>
+
+                    <div class="alert alert-warning" style="font-size:12px; text-align:center; margin-top:0.75rem;">
+                      Por favor, confirmá tu asistencia por mail.
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+                      <button class="btn-outline" onclick="document.getElementById('modal-<?= $app['studentId'] ?>_<?= $app['jobOfferId'] ?>').style.display='none'">
+                        Cerrar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              <?php else: ?>
+                <span class="text-muted" style="font-size:12px;">—</span>
+              <?php endif; ?>
+            </td>
+
+          </tr>
+        <?php endforeach;
+        else: ?>
+          <tr>
+            <td colspan="5" class="table-empty">Aún no te postulaste a ninguna oferta de trabajo.</td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="<?php echo FRONT_ROOT . 'Home/menuStudent'; ?>" class="page-back">← Volver al dashboard</a>
+
 </main>

@@ -595,7 +595,8 @@ footer {
 .navbar-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
+  padding-top: 12px;
   right: 0;
   background: #fff;
   border: 0.5px solid #e0ddd8;
@@ -687,6 +688,138 @@ footer {
   .navbar-dropdown.open .navbar-dropdown-menu { display: block; }
 }
 
+/* ─── Notification badge ─────────────────────────────── */
+
+.notif-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.notif-btn:hover {
+  background: #f7f6f3;
+}
+
+.notif-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #9a9790;
+}
+
+.notif-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #a03030;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 1px 4px;
+  line-height: 1.4;
+  min-width: 14px;
+  text-align: center;
+}
+
+.notif-dropdown {
+  position: relative;
+}
+
+.notif-dropdown:hover .notif-menu,
+.notif-dropdown.open .notif-menu {
+  display: block;
+}
+
+.notif-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  padding-top: 12px;
+  right: 0;
+  background: #fff;
+  border: 0.5px solid #e0ddd8;
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 260px;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.notif-header {
+  font-size: 11px;
+  font-weight: 500;
+  color: #9a9790;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 6px 10px 4px;
+}
+
+.notif-item {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s;
+  border-bottom: 0.5px solid #f0ede8;
+}
+
+.notif-item:last-of-type {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background: #f7f6f3;
+}
+
+.notif-item-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #9a9790;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.notif-item-text {
+  font-size: 12px;
+  color: #1c1b19;
+  line-height: 1.4;
+  display: block;
+}
+
+.notif-empty {
+  font-size: 12px;
+  color: #c5c3bd;
+  text-align: center;
+  padding: 1rem;
+}
+
+.notif-footer {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: #9a9790;
+  padding: 6px 10px;
+  text-decoration: none;
+  border-top: 0.5px solid #e0ddd8;
+  margin-top: 4px;
+  transition: color 0.15s;
+}
+
+.notif-footer:hover {
+  color: #37352f;
+}
+
 /* ─── Footer ─────────────────────────────────────────── */
 
 .footer-app {
@@ -752,4 +885,113 @@ footer {
     text-align: center;
     gap: 0.75rem;
   }
+}
+
+/* ─── Interview cards ────────────────────────────────── */
+
+.iv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.iv-card {
+  background: #fff;
+  border: 0.5px solid #e0ddd8;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.iv-card:hover {
+  transform: translateY(-3px);
+}
+
+.iv-card.past {
+  opacity: 0.6;
+}
+
+.iv-card-header {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.5px solid #e0ddd8;
+}
+
+.iv-date {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1c1b19;
+}
+
+.iv-body {
+  padding: 1rem 1.25rem;
+  flex: 1;
+}
+
+.iv-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1c1b19;
+  margin: 0 0 4px;
+}
+
+.iv-job {
+  font-size: 12px;
+  color: #9a9790;
+  margin: 0 0 6px;
+}
+
+.iv-email {
+  font-size: 12px;
+  color: #9a9790;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.iv-email:hover {
+  color: #37352f;
+}
+
+.iv-location {
+  background: #f7f6f3;
+  border: 0.5px solid #e0ddd8;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #9a9790;
+  margin-top: 10px;
+  word-break: break-all;
+}
+
+.iv-footer {
+  padding: 10px 14px;
+  border-top: 0.5px solid #f0ede8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ─── Override Bootstrap ─────────────────────────────── */
+
+.page-root {
+  max-width: 100% !important;
+  padding: 2rem 3rem !important;
+}
+
+.table-wrap {
+  width: 100% !important;
+}
+
+.table-wrap table {
+  width: 100% !important;
+  table-layout: auto !important;
+}
+
+.table-wrap table {
+  min-width: 100%;
+  width: 100%;
 }

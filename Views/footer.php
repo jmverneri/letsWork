@@ -1,10 +1,10 @@
 <footer class="footer-app">
   <div class="footer-inner">
 
-    <a href="<?= FRONT_ROOT ?>Home/Index" class="footer-brand">
+    <div class="footer-brand">
       <img src="<?php echo IMG_PATH ?>Lets.png" alt="LetsWork">
       Plataforma de empleos
-    </a>
+    </div>
 
     <div class="footer-links">
       <a href="<?= FRONT_ROOT ?>Home/Privacy" class="footer-link">Privacidad</a>

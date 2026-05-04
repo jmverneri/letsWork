@@ -1,64 +1,48 @@
 <?php
 use Utils\Utils;
-
 Utils::checkNav();
-
 /** @var Models\Company $company */
 ?>
 
-<main class="py-5">
-    <section class="container">
+<main class="page-root">
 
-        <h2 class="mb-4 text-primary text-center">Perfil de Compañía</h2>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Perfil de compañía</h1>
+    </div>
+  </div>
 
-        <?php if (!isset($company)) : ?>
-            <div class="alert alert-danger text-center">
-                Información de Compañía no encontrada.
-            </div>
-        <?php return; endif; ?>
+  <?php if (!isset($company)): ?>
+    <div class="alert alert-danger">Información de compañía no encontrada.</div>
+    <?php return; ?>
+  <?php endif; ?>
 
-        <table class="table table-bordered bg-light-alpha">
-            <tbody>
+  <div class="card" style="max-width:700px;">
 
-                <tr>
-                    <th style="width: 30%">Nombre de Compañía</th>
-                    <td><?= htmlspecialchars($company->getName()) ?></td>
-                </tr>
+    <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.75rem 1rem;">
 
-                <tr>
-                    <th>CUIT</th>
-                    <td><?= htmlspecialchars($company->getCuit() ?? '—') ?></td>
-                </tr>
-                
-                <tr>
-                    <th>Ciudad</th>
-                    <td><?= htmlspecialchars($company->getCity() ?? '—') ?></td>
-                </tr>
+      <span class="app-label" style="align-self:center;">Nombre</span>
+      <span style="font-size:13px; font-weight:500;"><?= htmlspecialchars($company->getName()) ?></span>
 
-                <tr>
-                    <th>Descripción</th>
-                    <td><?= nl2br(htmlspecialchars($company->getDescription() ?? '—')) ?></td>
-                </tr>
+      <span class="app-label" style="align-self:center;">CUIT</span>
+      <span style="font-size:13px; font-family:monospace;"><?= htmlspecialchars($company->getCuit() ?? '—') ?></span>
 
-                <tr>
-                    <th>Nûmero de Teléfono</th>
-                    <td><?= htmlspecialchars($company->getPhoneNumber() ?? '—') ?></td>
-                </tr>
+      <span class="app-label" style="align-self:center;">Ciudad</span>
+      <span style="font-size:13px;"><?= htmlspecialchars($company->getCity() ?? '—') ?></span>
 
-            </tbody>
-        </table>
+      <span class="app-label" style="align-self:center;">Teléfono</span>
+      <span style="font-size:13px;"><?= htmlspecialchars($company->getPhoneNumber() ?? '—') ?></span>
 
-        <div class="text-center mt-4">
-            <a class="btn btn-warning"
-               href="<?= FRONT_ROOT ?>Company/showEditView">
-                Editar Información de Compañía
-            </a>
+      <span class="app-label" style="align-self:flex-start; padding-top:2px;">Descripción</span>
+      <span style="font-size:13px; line-height:1.6;"><?= nl2br(htmlspecialchars($company->getDescription() ?? '—')) ?></span>
 
-            <a class="btn btn-secondary"
-               href="<?= FRONT_ROOT ?>Company/dashboard">
-                Volver al Dashboard
-            </a>
-        </div>
+    </div>
 
-    </section>
+    <div style="display:flex; gap:10px; margin-top:1.75rem;">
+      <a href="<?= FRONT_ROOT ?>Company/showEditView" class="btn-dark-primary">Editar información</a>
+      <a href="<?= FRONT_ROOT ?>Company/dashboard" class="btn-outline">Volver al dashboard</a>
+    </div>
+
+  </div>
+
 </main>

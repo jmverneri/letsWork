@@ -123,7 +123,6 @@ class CompanyController
                 $company->setDescription($_POST['description'] ?? null);
                 $company->setPhoneNumber($_POST['phoneNumber'] ?? null);
                 $company->setCuit($_POST['cuit'] ?? null);
-                $company->setActive(isset($_POST['active'])); 
 
                 // 4. Delegamos la actualización completa al repositorio.
                 // Pasamos el objeto $company modificado y el nuevo email recibido por POST.
