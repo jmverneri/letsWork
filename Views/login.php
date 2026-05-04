@@ -1,51 +1,51 @@
-<main class="d-flex align-items-center justify-content-center" style="min-height: 90vh; background-color: #fbfbfa;">
-    <section class="w-100" style="max-width: 400px; padding: 20px;">
-        
-        <div class="text-center mb-5">
-            <img src="<?php echo IMG_PATH ?>Lets.png" width="180" class="mb-4" alt="Logo" />
-            <h1 class="h3 mb-3 fw-bold" style="color: #37352f;">Iniciar sesión</h1>
-            <p class="text-muted">Ingresa tus credenciales para continuar.</p>
+<main class="auth-root">
+  <div class="auth-shell">
+
+    <div class="auth-brand">
+      <img src="<?php echo IMG_PATH ?>Lets.png" alt="LetsWork" class="app-logo">
+      <h1 class="page-title">Bienvenido de nuevo</h1>
+      <p class="page-subtitle">Ingresá tus credenciales para continuar.</p>
+    </div>
+
+    <div class="card">
+
+      <?php if (isset($error) && !empty($error)): ?>
+        <div class="alert alert-danger" role="alert">
+          <?php echo htmlspecialchars($error); ?>
         </div>
+      <?php endif; ?>
 
-        <?php if (isset($error) && !empty($error)): ?>
-            <div class="alert alert-danger py-2 text-center" role="alert" style="font-size: 0.9rem;">
-                <?php echo htmlspecialchars($error); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($messageSuccess) && !empty($messageSuccess)): ?>
-            <div class="alert alert-success py-2 text-center" role="alert" style="font-size: 0.9rem; border-radius: 8px;">
-                <?php echo htmlspecialchars($messageSuccess); ?>
-            </div>
-        <?php endif; ?>
-
-        <div class="card border-0 shadow-sm p-4" style="border-radius: 12px;">
-            <form action='index.php?url=Home/login' method="post">
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-muted">E-mail</label>
-                    <input type="email" name="email" class="form-control py-2" 
-                           placeholder="nombre@ejemplo.com" required style="border-radius: 8px;">
-                </div>
-                
-                <div class="mb-4">
-                    <label class="form-label small fw-bold text-muted">Contraseña</label>
-                    <input type="password" name="password" id="password" autocomplete="on" 
-                           class="form-control py-2" placeholder="••••••••" required style="border-radius: 8px;">
-                </div>
-                
-                <button class="btn btn-dark w-100 fw-bold py-2 mb-3" type="submit" 
-                        style="background-color: #37352f; border: none; border-radius: 8px;">
-                    Continuar
-                </button>
-            </form>
-
-            <hr class="my-4" style="opacity: 0.1;">
-
-            <div class="text-center mt-3">
-                <a href="<?= FRONT_ROOT ?>User/ShowForgotPasswordView" class="text-decoration-none text-muted small">
-                    ¿Olvidaste la contraseña?
-                </a>
-            </div>
+      <?php if (isset($messageSuccess) && !empty($messageSuccess)): ?>
+        <div class="alert alert-success" role="alert">
+          <?php echo htmlspecialchars($messageSuccess); ?>
         </div>
-    </section>
+      <?php endif; ?>
+
+      <form action="index.php?url=Home/login" method="post">
+        <div class="form-field">
+          <label class="form-label" for="email">E-mail</label>
+          <input class="form-control" type="email" id="email" name="email"
+            placeholder="nombre@universidad.edu" required>
+        </div>
+        <div class="form-field" style="margin-bottom: 1.4rem;">
+          <label class="form-label" for="password">Contraseña</label>
+          <input class="form-control" type="password" id="password" name="password"
+            autocomplete="current-password" placeholder="••••••••" required>
+        </div>
+        <button class="btn-dark-primary full" type="submit">Continuar</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <a href="<?= FRONT_ROOT ?>User/ShowForgotPasswordView" class="auth-link">
+        ¿Olvidaste tu contraseña?
+      </a>
+
+    </div>
+
+    <p class="text-muted" style="text-align:center; margin-top:1.5rem; font-size:12px;">
+      Portal académico y búsqueda laboral
+    </p>
+
+  </div>
 </main>

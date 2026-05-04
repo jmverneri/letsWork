@@ -1,90 +1,95 @@
 <?php
-    use Utils\Utils;
-    Utils::checkNav(); // O la validación de sesión de Admin que uses
+use Utils\Utils;
+Utils::checkNav();
 ?>
 
-<main class="py-5">
-     <section id="listado" class="mb-5">
-          <div class="container">
-               <h2 class="mb-4">Agregar Nueva Companía</h2>
+<main class="page-root">
 
-               <?php if(isset($this->message) && $this->message != "") { ?>
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <?php echo $this->message; ?>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-               <?php } ?>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Agregar nueva compañía</h1>
+      <p class="page-subtitle">Completá los datos para registrar una nueva compañía.</p>
+    </div>
+  </div>
 
-               <form action="<?php echo FRONT_ROOT ?>Company/AddCompany" method="POST" class="bg-light-alpha p-5">
-                    <div class="row">
-                         <div class="col-lg-6">
-                              <label for="email"><b>Email de Companía (Login)</b></label>
-                              <input type="email" name="email" id="email" class="form-control" placeholder="admin@company.com" required>
-                              <small class="text-muted">Este email se usará para iniciar sesión. La clave será el CUIT.</small>
-                         </div>
+  <?php if (isset($this->message) && $this->message != ""): ?>
+    <div class="alert alert-warning" role="alert">
+      <?php echo $this->message; ?>
+    </div>
+  <?php endif; ?>
 
-                         <div class="col-lg-6">
-                              <label for="name"><b>Nombre de Companía</b></label>
-                              <input type="text" name="name" id="name" class="form-control" placeholder="Company Name S.A." required>
-                         </div>
+  <div class="card" style="max-width: 800px;">
+    <form action="<?php echo FRONT_ROOT ?>Company/AddCompany" method="POST">
 
-                         <div class="col-lg-6 mt-3">
-                              <label for="cuit"><b>CUIT</b></label>
-                              <input type="text" 
-                                     name="cuit" 
-                                     id="cuit" 
-                                     class="form-control" 
-                                     placeholder="30123456789" 
-                                     pattern="^(30|33|34)\d{8}\d$" 
-                                     title="Debe empezar con 30, 33 o 34 y tener 11 dígitos sin guiones" 
-                                     required>
-                              <small class="text-muted">11 dígitos sin guiones (ej: 30123456789).</small>
-                         </div>
+      <div class="form-grid">
 
-                         <div class="col-lg-6 mt-3">
-                              <label for="city"><b>Ciudad</b></label>
-                              <select name="city" id="city" class="form-control" required>
-                                   <option value="" disabled selected>Seleccionar una ciudad...</option>
-                                   <optgroup label="Buenos Aires">
-                                        <option value="Mar del Plata">Mar del Plata</option>
-                                        <option value="Bahía Blanca">Bahía Blanca</option>
-                                        <option value="La Plata">La Plata</option>
-                                        <option value="Tandil">Tandil</option>
-                                        <option value="CABA">CABA</option>
-                                   </optgroup>
-                                   <optgroup label="Interior">
-                                        <option value="Córdoba">Córdoba</option>
-                                        <option value="Rosario">Rosario</option>
-                                        <option value="Mendoza">Mendoza</option>
-                                        <option value="Tucumán">Tucumán</option>
-                                   </optgroup>
-                                   <option value="Other">Other / Internacional</option>
-                              </select>
-                              </div>
+        <div class="form-field">
+          <label for="email">Email de compañía</label>
+          <input type="email" name="email" id="email" class="form-control" placeholder="admin@company.com" required>
+          <span class="form-hint">Se usará para iniciar sesión. La clave será el CUIT.</span>
+        </div>
 
-                         <div class="col-lg-6 mt-3">
-                              <label for="phoneNumber"><b>Número de teléfono</b></label>
-                              <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="2235123456">
-                         </div>
+        <div class="form-field">
+          <label for="name">Nombre de compañía</label>
+          <input type="text" name="name" id="name" class="form-control" placeholder="Company Name S.A." required>
+        </div>
 
-                         <div class="col-lg-6 mt-3">
-                              <label for="logo"><b>Logo URL</b></label>
-                              <input type="text" name="logo" id="logo" class="form-control" placeholder="http://example.com/logo.png">
-                         </div>
+        <div class="form-field">
+          <label for="cuit">CUIT</label>
+          <input type="text" name="cuit" id="cuit" class="form-control"
+            placeholder="30123456789"
+            pattern="^(30|33|34)\d{8}\d$"
+            title="Debe empezar con 30, 33 o 34 y tener 11 dígitos sin guiones"
+            required>
+          <span class="form-hint">11 dígitos sin guiones (ej: 30123456789).</span>
+        </div>
 
-                         <div class="col-lg-12 mt-3">
-                              <label for="description"><b>Descripción</b></label>
-                              <textarea name="description" id="description" class="form-control" rows="3" placeholder="Tell us about the company..."></textarea>
-                         </div>
-                    </div>
+        <div class="form-field">
+          <label for="city">Ciudad</label>
+          <select name="city" id="city" class="form-control" required>
+            <option value="" disabled selected>Seleccionar una ciudad...</option>
+            <optgroup label="Buenos Aires">
+              <option value="Mar del Plata">Mar del Plata</option>
+              <option value="Bahía Blanca">Bahía Blanca</option>
+              <option value="La Plata">La Plata</option>
+              <option value="Tandil">Tandil</option>
+              <option value="CABA">CABA</option>
+            </optgroup>
+            <optgroup label="Interior">
+              <option value="Córdoba">Córdoba</option>
+              <option value="Rosario">Rosario</option>
+              <option value="Mendoza">Mendoza</option>
+              <option value="Tucumán">Tucumán</option>
+            </optgroup>
+            <option value="Other">Other / Internacional</option>
+          </select>
+        </div>
 
-                    <div class="mt-4">
-                         <button type="submit" class="btn btn-primary btn-lg px-5">Agregar Companía</button>
-                         <a href="<?php echo FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn btn-outline-secondary btn-lg px-5 ml-2">Cancel</a>
-                    </div>
-               </form>
-          </div>
-     </section>
+        <div class="form-field">
+          <label for="phoneNumber">Teléfono</label>
+          <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="2235123456">
+        </div>
+
+        <div class="form-field">
+          <label for="logo">Logo URL</label>
+          <input type="text" name="logo" id="logo" class="form-control" placeholder="http://example.com/logo.png">
+        </div>
+
+        <div class="form-field full">
+          <label for="description">Descripción</label>
+          <textarea name="description" id="description" class="form-control" rows="3" placeholder="Contanos sobre la compañía..."></textarea>
+        </div>
+
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:1.5rem;">
+        <button type="submit" class="btn-dark-primary">Agregar compañía</button>
+        <a href="<?php echo FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn-outline">Cancelar</a>
+      </div>
+
+    </form>
+  </div>
+
+  <a href="<?php echo FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="page-back">← Volver a compañías</a>
+
 </main>

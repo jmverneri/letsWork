@@ -1,74 +1,87 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <?php
-    use Utils\Utils;
-    Utils::checkNav();
+use Utils\Utils;
+Utils::checkNav();
 ?>
-<main class="py-5">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Estadísticas de Plataforma</h2>
-            <a href="<?= FRONT_ROOT ?>Home/menuAdmin" class="btn btn-outline-secondary btn-sm">Volver al Menú</a>
-        </div>
 
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 mb-3" style="border-radius: 12px;">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted text-uppercase small fw-bold">Total de Ofertas</h6>
-                        <h2 class="display-5 fw-bold text-dark"><?= $offerStats['total_count'] ?></h2>
-                    </div>
-                </div>
-                
-                <div class="card border-0 shadow-sm p-4" style="border-radius: 12px;">
-                    <h6 class="fw-bold mb-3 text-center">Estado de Ofertas</h6>
-                    <canvas id="offersChart"></canvas>
-                </div>
-            </div>
+<main class="page-root">
 
-            <div class="col-md-8">
-                <div class="card border-0 shadow-sm p-4" style="border-radius: 12px; height: 100%;">
-                    <h6 class="fw-bold mb-4">Top 5 Posiciones con más Ofertas</h6>
-                    <canvas id="positionsChart"></canvas>
-                </div>
-            </div>
-        </div>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Estadísticas de plataforma</h1>
     </div>
+    <a href="<?= FRONT_ROOT ?>Home/menuAdmin" class="btn-outline">Volver al menú</a>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 2fr; gap:14px; align-items:start;">
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+
+      <div class="card" style="text-align:center;">
+        <p class="text-muted" style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 8px;">Total de ofertas</p>
+        <p style="font-family:'Lora',serif; font-size:48px; font-weight:500; color:#1c1b19; margin:0; line-height:1;"><?= $offerStats['total_count'] ?></p>
+      </div>
+
+      <div class="card">
+        <p style="font-size:13px; font-weight:500; color:#1c1b19; margin:0 0 1rem; text-align:center;">Estado de ofertas</p>
+        <canvas id="offersChart"></canvas>
+      </div>
+
+    </div>
+
+    <div class="card" style="height:100%;">
+      <p style="font-size:13px; font-weight:500; color:#1c1b19; margin:0 0 1.25rem;">Top 5 posiciones con más ofertas</p>
+      <canvas id="positionsChart"></canvas>
+    </div>
+
+  </div>
+
+  <a href="<?= FRONT_ROOT ?>Admin/showDashboard" class="page-back">← Volver al dashboard</a>
+
 </main>
 
 <script>
-    // Configuración Gráfico de Torta (Ofertas)
-    const ctxOffers = document.getElementById('offersChart').getContext('2d');
-    new Chart(ctxOffers, {
-        type: 'doughnut',
-        data: {
-            labels: ['Activas/Vigentes', 'Inactivas/Vencidas'],
-            datasets: [{
-                data: [<?= $offerStats['active_count'] ?>, <?= $offerStats['inactive_count'] ?>],
-                backgroundColor: ['#198754', '#dee2e6'],
-                borderWidth: 0
-            }]
-        },
-        options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
-    });
-
-    // Configuración Gráfico de Barras (Posiciones)
-    const ctxPos = document.getElementById('positionsChart').getContext('2d');
-    new Chart(ctxPos, {
-        type: 'bar',
-        data: {
-            labels: [<?php foreach($topPositions as $p) { echo '"' . $p['description'] . '",'; } ?>],
-            datasets: [{
-                label: 'Cantidad de Ofertas',
-                data: [<?php foreach($topPositions as $p) { echo $p['count'] . ','; } ?>],
-                backgroundColor: '#37352f',
-                borderRadius: 5
-            }]
-        },
-        options: {
-            indexAxis: 'y', // Barra horizontal para que se lean mejor los nombres largos
-            scales: { x: { beginAtZero: true } },
-            plugins: { legend: { display: false } }
+  const ctxOffers = document.getElementById('offersChart').getContext('2d');
+  new Chart(ctxOffers, {
+    type: 'doughnut',
+    data: {
+      labels: ['Activas', 'Inactivas'],
+      datasets: [{
+        data: [<?= $offerStats['active_count'] ?>, <?= $offerStats['inactive_count'] ?>],
+        backgroundColor: ['#37352f', '#e0ddd8'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { family: 'DM Sans', size: 12 }, color: '#9a9790' }
         }
-    });
+      }
+    }
+  });
+
+  const ctxPos = document.getElementById('positionsChart').getContext('2d');
+  new Chart(ctxPos, {
+    type: 'bar',
+    data: {
+      labels: [<?php foreach ($topPositions as $p) { echo '"' . $p['description'] . '",'; } ?>],
+      datasets: [{
+        label: 'Cantidad de ofertas',
+        data: [<?php foreach ($topPositions as $p) { echo $p['count'] . ','; } ?>],
+        backgroundColor: '#37352f',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      scales: {
+        x: { beginAtZero: true, grid: { color: '#f0ede8' }, ticks: { color: '#9a9790', font: { family: 'DM Sans' } } },
+        y: { grid: { display: false }, ticks: { color: '#1c1b19', font: { family: 'DM Sans' } } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
 </script>

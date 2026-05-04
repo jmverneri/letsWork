@@ -1,129 +1,118 @@
 <?php
-    use Utils\Utils;
-    // Asumimos que $notifications y $cantNotif vienen del Controller para el Nav
-    Utils::checkNav(); 
+use Utils\Utils;
+Utils::checkNav();
 ?>
 
-<main class="py-5" style="background-color: #fbfbfa; min-height: 100vh; position: relative;">
-    <div class="container">
-        
-        <div class="row mb-5 text-center text-md-left align-items-center">
-            <div class="col-md-8">
-                <h1 class="h3 fw-bold text-dark">Plataforma de Administración</h1>
-                <p class="text-muted mb-0">Supervisá y administrá el ecosistema entero.</p>
-            </div>
-            <div class="col-md-4 text-md-right mt-3 mt-md-0">
-                <span class="badge badge-light border p-2 text-muted">Server Status: Online</span>
-            </div>
-        </div>
+<main class="page-root">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Plataforma de administración</h1>
+      <p class="page-subtitle">Supervisá y administrá el ecosistema entero.</p>
+    </div>
+    <span class="badge-pill">Server: Online</span>
+  </div>
 
-        <div class="row">
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">🏢</div>   
-                        <h5 class="fw-bold">Compañías</h5>
-                        <p class="small text-muted mb-4">Administrá las compañías y sus detalles.</p>
-                        <a href="<?= FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn btn-outline-primary btn-sm btn-block mb-2">Ver Lista</a>
-                        <a href="<?= FRONT_ROOT ?>Company/redirectAddForm" class="btn btn-primary btn-sm btn-block">+ Agregar Nueva</a>
-                    </div>
-                </div>
-            </div>
+  <div class="dash-grid">
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">💼</div>
-                        <h5 class="fw-bold">Ofertas Laborales</h5>
-                        <p class="small text-muted mb-4">Controlá todos los puestos y sus expiraciones.</p>
-                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/showActiveJobOffers" class="btn btn-outline-primary btn-sm btn-block mb-2">Administrar Activas</a>
-                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/showExpiredJobOffers" class="btn btn-outline-warning btn-sm btn-block">Revisar Expiradas</a>
-                    </div>
-                </div>
-            </div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="24" height="18" rx="2"/>
+          <path d="M10 10V7a6 6 0 0 1 12 0v3"/>
+          <line x1="16" y1="17" x2="16" y2="21"/>
+          <circle cx="16" cy="17" r="1" fill="#37352f" stroke="none"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Compañías</p>
+      <p class="dash-card-desc">Administrá las compañías y sus detalles.</p>
+      <a href="<?= FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="btn-outline">Ver lista</a>
+      <a href="<?= FRONT_ROOT ?>Company/redirectAddForm" class="btn-dark-primary" style="margin-top:6px;">+ Agregar nueva</a>
+    </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">🎓</div>
-                        <h5 class="fw-bold">Estudiantes</h5>
-                        <p class="small text-muted mb-4">Monitoreá la actividad de los estudiantes y sus registros.</p>
-                        <a href="<?= FRONT_ROOT ?>Admin/showStudentList" class="btn btn-outline-info btn-sm btn-block">Lista de Estudiantes</a>
-                    </div>
-                </div>
-            </div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="13" width="26" height="16" rx="2"/>
+          <path d="M10 13v-2a6 6 0 0 1 12 0v2"/>
+          <line x1="3" y1="19" x2="29" y2="19"/>
+          <line x1="12" y1="19" x2="12" y2="29"/>
+          <line x1="20" y1="19" x2="20" y2="29"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Ofertas laborales</p>
+      <p class="dash-card-desc">Controlá todos los puestos y sus expiraciones.</p>
+      <a href="<?= FRONT_ROOT ?>AdminJobOffer/showActiveJobOffers" class="btn-outline">Administrar activas</a>
+      <a href="<?= FRONT_ROOT ?>AdminJobOffer/showExpiredJobOffers" class="btn-outline" style="margin-top:6px;">Revisar expiradas</a>
+    </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; border-top: 4px solid #198754;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">📚</div>
-                        <h5 class="fw-bold text-success">Gestión Académica</h5>
-                        <p class="small text-muted mb-4">Administrá el catálogo de materias por carrera.</p>
-                        <a href="<?= FRONT_ROOT ?>Admin/showAddSubjectView" class="btn btn-success btn-sm btn-block shadow-sm fw-bold">
-                           + Crear Materia
-                        </a>
-                        <a href="<?= FRONT_ROOT ?>Admin/showCareerSelection" class="btn btn-outline-success btn-sm btn-block mt-2">
-                           Ver Todas
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="16" cy="10" r="5"/>
+          <path d="M6 28c0-5.523 4.477-10 10-10s10 4.477 10 10"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Estudiantes</p>
+      <p class="dash-card-desc">Monitoreá la actividad y registros de estudiantes.</p>
+      <a href="<?= FRONT_ROOT ?>Admin/showStudentList" class="btn-outline">Lista de estudiantes</a>
+    </div>
 
-        <div class="row mt-2"> 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; border-top: 4px solid #ffc107;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">⚙️</div>
-                        <h5 class="fw-bold">Sincronización</h5>
-                        <p class="small text-muted mb-4">Actualizá datos de la carrera desde la API externa.</p>
-                        <a href="<?= FRONT_ROOT ?>Admin/updateCareers" class="btn btn-warning btn-sm btn-block text-white fw-bold shadow-sm">
-                           Actualizar Carreras
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h24v4L16 18 4 10V6z"/>
+          <path d="M4 10v16h24V10"/>
+          <line x1="12" y1="21" x2="20" y2="21"/>
+          <line x1="12" y1="25" x2="20" y2="25"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Gestión académica</p>
+      <p class="dash-card-desc">Administrá el catálogo de materias por carrera.</p>
+      <a href="<?= FRONT_ROOT ?>Admin/showAddSubjectView" class="btn-dark-primary">+ Crear materia</a>
+      <a href="<?= FRONT_ROOT ?>Admin/showCareerSelection" class="btn-outline" style="margin-top:6px;">Ver todas</a>
+    </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; border-top: 4px solid #0d6efd; background-color: #f8faff;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">📊</div>
-                        <h5 class="fw-bold text-primary">Analíticas</h5>
-                        <p class="small text-muted mb-4">Estadísticas de plataforma y actividad de ofertas.</p>
-                        <a href="<?= FRONT_ROOT ?>AdminJobOffer/ShowAnalytics" class="btn btn-primary btn-sm btn-block shadow-sm fw-bold">
-                        Ver Reportes
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="16" cy="16" r="3"/>
+          <path d="M16 4v3M16 25v3M4 16h3M25 16h3"/>
+          <path d="M7.8 7.8l2.1 2.1M22.1 22.1l2.1 2.1M7.8 24.2l2.1-2.1M22.1 9.9l2.1-2.1"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Sincronización</p>
+      <p class="dash-card-desc">Actualizá datos de carrera desde la API externa.</p>
+      <a href="<?= FRONT_ROOT ?>Admin/updateCareers" class="btn-outline">Actualizar carreras</a>
+    </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm transition-all" style="border-radius: 12px; border-left: 4px solid #6c757d;">
-                    <div class="card-body p-4">
-                        <div class="h1 mb-3">🔐</div>
-                        <h5 class="fw-bold text-secondary">Seguridad</h5>
-                        <p class="small text-muted mb-4">Administrá cuentas del sistema interno.</p>
-                        <a href="<?= FRONT_ROOT ?>Admin/showCreateUserForm" class="btn btn-secondary btn-sm btn-block">Agregar Usuario</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="28" x2="6" y2="18"/>
+          <line x1="13" y1="28" x2="13" y2="12"/>
+          <line x1="20" y1="28" x2="20" y2="16"/>
+          <line x1="27" y1="28" x2="27" y2="6"/>
+          <polyline points="3,18 6,15 9,20 13,12 17,16 20,13 24,8 27,6"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Analíticas</p>
+      <p class="dash-card-desc">Estadísticas de plataforma y actividad de ofertas.</p>
+      <a href="<?= FRONT_ROOT ?>AdminJobOffer/ShowAnalytics" class="btn-dark-primary">Ver reportes</a>
+    </div>
 
-        <div style="height: 100px; display: block; clear: both;"></div>
+    <div class="card card-hover">
+      <div class="dash-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#37352f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="11" width="22" height="17" rx="2"/>
+          <path d="M11 11V8a5 5 0 0 1 10 0v3"/>
+          <circle cx="16" cy="20" r="2"/>
+          <line x1="16" y1="22" x2="16" y2="25"/>
+        </svg>
+      </div>
+      <p class="dash-card-title">Seguridad</p>
+      <p class="dash-card-desc">Administrá cuentas del sistema interno.</p>
+      <a href="<?= FRONT_ROOT ?>Admin/showCreateUserForm" class="btn-outline">Agregar usuario</a>
+    </div>
 
-    </div> 
+  </div>
 </main>
-
-<style>
-    .transition-all {
-        transition: transform 0.3s ease, shadow 0.3s ease;
-    }
-    .transition-all:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
-    }
-    .btn-block {
-        display: block;
-        width: 100%;
-    }
-</style>

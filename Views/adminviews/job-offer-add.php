@@ -3,110 +3,98 @@ use Utils\Utils;
 Utils::checkNav();
 ?>
 
-<main class="py-5">
-     <section id="listado" class="mb-5">
-          <div class="container">
-               <h2 class="mb-4 text-dark">Agregar Nueva Oferta Laboral</h2>
-               
-               <form action="<?php echo FRONT_ROOT . "AdminJobOffer/add" ?>" method="POST" enctype="multipart/form-data" class="bg-light-custom p-5 shadow-sm rounded">
-                    <div class="row">                         
-                         
-                         <div class="col-lg-12">
-                              <div class="form-group">
-                                   <?php 
-                                   // SI EXISTE EL OBJETO EMPRESA (Viene de una empresa específica)
-                                   if (isset($company) && $company != null) { ?>
-                                        
-                                        <label>Target Company</label>
-                                        <input type="text" class="form-control fw-bold" style="background-color: #e9ecef;" 
-                                               value="<?php echo $company->getName(); ?>" readonly>
-                                        <input type="hidden" name="companyId" value="<?php echo $company->getCompanyId(); ?>">
-                                   
-                                   <?php 
-                                   // SI NO EXISTE EMPRESA PERO SÍ LA LISTA (Viene del Nav Global)
-                                   } else if (isset($companiesList) && !empty($companiesList)) { ?>
-                                        
-                                        <label class="text-primary font-weight-bold">Elegir Companía</label>
-                                        <select name="companyId" class="form-control" required>
-                                             <option value="" disabled selected>Elegí la compañía empleadora...</option>
-                                             <?php foreach($companiesList as $comp) { ?>
-                                                  <option value="<?php echo $comp->getCompanyId(); ?>">
-                                                       <?php echo $comp->getName(); ?>
-                                                  </option>
-                                             <?php } ?>
-                                        </select>
+<main class="page-root">
 
-                                   <?php } else { ?>
-                                        <div class="alert alert-danger">Error: No se encontraron companíass para asignar a esta oferta.</div>
-                                   <?php } ?>
-                              </div>
-                         </div>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Agregar nueva oferta laboral</h1>
+      <p class="page-subtitle">Completá los datos para publicar una nueva oferta.</p>
+    </div>
+  </div>
 
-                         <div class="col-lg-6">
-                              <div class="form-group">
-                                   <label>Título del Trabajo</label>
-                                   <input type="text" name="title" class="form-control" placeholder="e.g. Senior Web Developer" required>
-                              </div>
-                         </div>
+  <div class="card" style="max-width: 800px;">
+    <form action="<?php echo FRONT_ROOT . 'AdminJobOffer/add'; ?>" method="POST" enctype="multipart/form-data">
 
-                         <div class="col-lg-6">
-                              <div class="form-group">
-                                   <label>Posición de Trabajo</label>
-                                   <select name="jobPositionId" class="form-control" required>
-                                        <option value="" disabled selected>Elegí una posición...</option>
-                                        <?php if(isset($jobPositions)) { 
-                                             foreach($jobPositions as $position) { ?>
-                                                  <option value="<?php echo $position->getJobPositionId(); ?>">
-                                                       <?php echo $position->getDescription(); ?>
-                                                  </option>
-                                        <?php } } ?>
-                                   </select>
-                              </div>
-                         </div>
+      <div class="form-field">
+        <?php if (isset($company) && $company != null): ?>
+          <label>Compañía</label>
+          <input type="text" class="form-control" value="<?php echo htmlspecialchars($company->getName()); ?>" readonly style="opacity:0.6; cursor:not-allowed;">
+          <input type="hidden" name="companyId" value="<?php echo $company->getCompanyId(); ?>">
 
-                         <div class="col-lg-4">
-                              <div class="form-group">
-                                   <label>Salario Mensual</label>
-                                   <input type="number" name="salary" class="form-control" min="0" placeholder="0.00">
-                              </div>
-                         </div>
+        <?php elseif (isset($companiesList) && !empty($companiesList)): ?>
+          <label>Elegir compañía</label>
+          <select name="companyId" class="form-control" required>
+            <option value="" disabled selected>Elegí la compañía empleadora...</option>
+            <?php foreach ($companiesList as $comp): ?>
+              <option value="<?php echo $comp->getCompanyId(); ?>">
+                <?php echo htmlspecialchars($comp->getName()); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
 
-                         <div class="col-lg-4">
-                              <div class="form-group">
-                                   <label>Comienzo</label>
-                                   <input type="date" name="startDate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
-                              </div>
-                         </div>
+        <?php else: ?>
+          <div class="alert alert-danger">Error: No se encontraron compañías para asignar a esta oferta.</div>
+        <?php endif; ?>
+      </div>
 
-                         <div class="col-lg-4">
-                              <div class="form-group">
-                                   <label>Finalización</label>
-                                   <input type="date" name="deadline" class="form-control" required>
-                              </div>
-                         </div>
+      <div class="divider"></div>
 
-                         <div class="col-lg-12">
-                              <div class="form-group">
-                                   <label>Descripción / Requerimientos</label>
-                                   <textarea name="description" class="form-control" rows="4" required></textarea>
-                              </div>
-                         </div>
-                         <div class="form-group mt-3">
-                              <label for="flyer"><strong>Flyer de la Oferta (Imágen):</strong></label>
-                              <input type="file" name="flyer" class="form-control-file" accept="image/png, image/jpeg">
-                              <small class="form-text text-muted">Sólo .jpg or .png imágenes permitidas.</small>
-                         </div>
-                    </div>
+      <div class="form-grid">
 
-                    <div class="mt-4 d-flex justify-content-between">
-                         <button type="button" onclick="window.history.back();" class="btn btn-secondary shadow-sm">
-                              <i class="fas fa-arrow-left"></i> Cancel
-                         </button>
-                         <button type="submit" class="btn btn-primary shadow-sm px-5">
-                              <i class="fas fa-check"></i> Crear Oferta Laboral
-                         </button>
-                    </div>
-               </form>
-          </div>
-     </section>
+        <div class="form-field">
+          <label>Título del trabajo</label>
+          <input type="text" name="title" class="form-control" placeholder="Ej: Senior Web Developer" required>
+        </div>
+
+        <div class="form-field">
+          <label>Posición</label>
+          <select name="jobPositionId" class="form-control" required>
+            <option value="" disabled selected>Elegí una posición...</option>
+            <?php if (isset($jobPositions)):
+              foreach ($jobPositions as $position): ?>
+                <option value="<?php echo $position->getJobPositionId(); ?>">
+                  <?php echo htmlspecialchars($position->getDescription()); ?>
+                </option>
+            <?php endforeach; endif; ?>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Salario mensual</label>
+          <input type="number" name="salary" class="form-control" min="0" placeholder="0.00">
+        </div>
+
+        <div class="form-field">
+          <label>Fecha de inicio</label>
+          <input type="date" name="startDate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+        </div>
+
+        <div class="form-field">
+          <label>Fecha de cierre</label>
+          <input type="date" name="deadline" class="form-control" required>
+        </div>
+
+        <div class="form-field full">
+          <label>Descripción / Requerimientos</label>
+          <textarea name="description" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <div class="form-field full">
+          <label>Flyer de la oferta</label>
+          <input type="file" name="flyer" class="form-control" accept="image/png, image/jpeg">
+          <span class="form-hint">Solo imágenes .jpg o .png permitidas.</span>
+        </div>
+
+      </div>
+
+      <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+        <button type="button" onclick="window.history.back();" class="btn-outline">Cancelar</button>
+        <button type="submit" class="btn-dark-primary">Crear oferta laboral</button>
+      </div>
+
+    </form>
+  </div>
+
+  <a href="<?php echo FRONT_ROOT ?>Admin/showDashboard" class="page-back">← Volver al dashboard</a>
+
 </main>

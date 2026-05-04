@@ -3,101 +3,81 @@ use Utils\Utils;
 Utils::checkNav();
 ?>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<main class="page-root">
 
-<main class="py-5">
-    <div class="container">
-        <div class="mb-4 d-flex justify-content-between align-items-center">
-            <h2 style="color: #333;">
-                <i class="fas fa-users-cog"></i> Aplicantes para: 
-                <span class="text-primary"><?php echo $jobOffer->getTitle(); ?></span>
-            </h2>
-            <span class="badge badge-info" style="font-size: 1rem; padding: 10px;">
-                Total: <?php echo count($applicantList); ?>
-            </span>
-        </div>
-
-        <div class="mb-3">
-            <a href="<?= FRONT_ROOT ?>AdminJobOffer/generateApplicantsPDF/<?= $jobOffer->getJobOfferId() ?>" 
-            class="btn btn-danger" target="_blank">
-                <i class="fas fa-file-pdf"></i> Descargar la lista en PDF
-            </a>
-        </div>
-        
-        <div class="shadow-sm" style="background: white; border-radius: 8px; border: 1px solid #dee2e6; overflow: hidden;">
-            <table class="table table-hover" style="margin-bottom: 0; border-collapse: collapse;">
-                <thead style="background: #212529; color: white;">
-                    <tr>
-                        <th style="padding: 12px;">Nombre Completo</th>
-                        <th style="padding: 12px;">Email</th>
-                        <th style="padding: 12px; text-align: center;">Fecha de Aplicación</th>
-                        <th style="padding: 12px; text-align: center;">Status</th>
-                        <th style="padding: 12px; text-align: center;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if(!empty($applicantList)) {
-                        foreach($applicantList as $student) { 
-                            $isDeclined = ($student['status'] == 'declined');
-                            ?>
-                            <tr style="<?php echo $isDeclined ? 'background-color: #f8f9fa; color: #6c757d;' : ''; ?>">
-                                <td style="vertical-align: middle; padding: 12px;">
-                                    <strong><?php echo $student['firstName'] . " " . $student['lastName']; ?></strong>
-                                </td>
-                                
-                                <td style="vertical-align: middle; padding: 12px;">
-                                    <i class="fas fa-envelope-open-text text-muted mr-2"></i>
-                                    <?php echo $student['email']; ?>
-                                </td>
-                                
-                                <td style="vertical-align: middle; text-align: center; padding: 12px;">
-                                    <?php echo date('d/m/Y H:i', strtotime($student['applicationDate'])); ?>
-                                </td>
-
-                                <td style="vertical-align: middle; text-align: center; padding: 12px;">
-                                    <?php if(!$isDeclined) { ?>
-                                        <span class="badge badge-success" style="padding: 5px 10px;">ACTIVA</span>
-                                    <?php } else { ?>
-                                        <span class="badge badge-secondary" style="padding: 5px 10px;">DECLINADA</span>
-                                    <?php } ?>
-                                </td>
-
-                                <td style="vertical-align: middle; text-align: center; padding: 12px;">
-                                    <?php if(!$isDeclined) { ?>
-                                        <a href="<?php echo FRONT_ROOT; ?>AdminJobOffer/declineApplicant/<?php echo $student['studentId']; ?>/<?php echo $jobOffer->getJobOfferId(); ?>" 
-                                           class="btn btn-outline-danger btn-sm" 
-                                           onclick="return confirm('Are you sure you want to decline this application?')"
-                                           style="text-decoration: none; font-weight: bold;">
-                                           <i class="fas fa-user-slash"></i> Declinar
-                                        </a>
-                                    <?php } else { ?>
-                                        <button class="btn btn-sm btn-light" disabled>
-                                            <i class="fas fa-ban"></i> Procesada
-                                        </button>
-                                    <?php } ?>
-                                </td>
-                            </tr>
-                        <?php } 
-                    } else { ?>
-                        <tr>
-                            <td colspan="5" class="text-center" style="padding: 50px; color: #999;">
-                                <i class="fas fa-user-clock fa-3x mb-3"></i><br>
-                                No hay estudiantes aplicados por el momento para esta posición.
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="mt-4">
-            <?php 
-                // Recuperamos de la sesión o vamos a las activas por default
-                $lastList = $_SESSION['last_job_offer_list'] ?? 'showActiveJobOffers';
-            ?>
-            <a href="<?php echo FRONT_ROOT . "AdminJobOffer/" . $lastList; ?>" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver a las Ofertas
-            </a>
-        </div>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Aplicantes</h1>
+      <p class="page-subtitle"><?php echo htmlspecialchars($jobOffer->getTitle()); ?></p>
     </div>
+    <span class="badge-pill">Total: <?php echo count($applicantList); ?></span>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <a href="<?= FRONT_ROOT ?>AdminJobOffer/generateApplicantsPDF/<?= $jobOffer->getJobOfferId() ?>"
+       class="btn-dark-primary" target="_blank">Descargar PDF</a>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre completo</th>
+          <th>Email</th>
+          <th style="text-align:center">Fecha de aplicación</th>
+          <th style="text-align:center">Estado</th>
+          <th style="text-align:center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($applicantList)):
+          foreach ($applicantList as $student):
+            $isDeclined = ($student['status'] == 'declined');
+        ?>
+          <tr style="<?= $isDeclined ? 'opacity:0.55;' : '' ?>">
+
+            <td style="font-weight:500;">
+              <?php echo htmlspecialchars($student['firstName'] . ' ' . $student['lastName']); ?>
+            </td>
+
+            <td class="text-muted"><?php echo htmlspecialchars($student['email']); ?></td>
+
+            <td style="text-align:center; font-size:12px;" class="text-muted">
+              <?php echo date('d/m/Y H:i', strtotime($student['applicationDate'])); ?>
+            </td>
+
+            <td style="text-align:center">
+              <?php if (!$isDeclined): ?>
+                <span class="badge-active">Activa</span>
+              <?php else: ?>
+                <span class="badge-inactive">Declinada</span>
+              <?php endif; ?>
+            </td>
+
+            <td style="text-align:center">
+              <div class="table-actions">
+                <?php if (!$isDeclined): ?>
+                  <a href="<?= FRONT_ROOT ?>AdminJobOffer/declineApplicant/<?= $student['studentId']; ?>/<?= $jobOffer->getJobOfferId(); ?>"
+                     class="btn-sm btn-sm-danger"
+                     onclick="return confirm('¿Declinar esta postulación?')">Declinar</a>
+                <?php else: ?>
+                  <span class="btn-sm" style="opacity:0.5; cursor:default;">Procesada</span>
+                <?php endif; ?>
+              </div>
+            </td>
+
+          </tr>
+        <?php endforeach;
+        else: ?>
+          <tr>
+            <td colspan="5" class="table-empty">No hay estudiantes aplicados para esta posición.</td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <?php $lastList = $_SESSION['last_job_offer_list'] ?? 'showActiveJobOffers'; ?>
+  <a href="<?php echo FRONT_ROOT . 'AdminJobOffer/' . $lastList; ?>" class="page-back">← Volver a las ofertas</a>
+
 </main>

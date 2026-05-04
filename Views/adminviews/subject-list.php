@@ -1,97 +1,86 @@
-<?php use Utils\Utils; Utils::checkNav(); ?>
-<main class="py-5">
-    <section id="listado" class="mb-5">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="mb-0">Listado de Asignaturas</h2>
-                <a href="<?= FRONT_ROOT ?>Admin/showAddSubjectView" class="btn btn-success btn-sm shadow-sm">
-                    <i class="fas fa-plus me-1"></i> Nueva Asignatura
-                </a>
-            </div>
+<?php
+use Utils\Utils;
+Utils::checkNav();
+?>
 
-            <div class="table-responsive shadow-sm" style="border-radius: 10px;">
-                <table class="table bg-light-alpha table-hover mb-0">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th class="text-center">ID</th>
-                            <th>Asignatura</th>
-                            <th class="text-center">Estado</th> <th>Cursado</th>
-                            <th class="text-center">Hs Semanales</th>
-                            <th class="text-center">Carga Total</th>
-                            <th class="text-center">Créditos</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if(!empty($subjectList)) { 
-                            foreach($subjectList as $subject) { 
-                                // Evaluamos el estado para aplicar estilos
-                                $isActive = $subject->getActive(); 
-                                $rowStyle = !$isActive ? 'style="opacity: 0.6; background-color: #f8f9fa;"' : '';
-                            ?>
-                            <tr <?= $rowStyle ?>>
-                                <td class="text-center text-muted"><?php echo $subject->getSubjectId(); ?></td>
-                                <td>
-                                    <strong><?php echo htmlspecialchars($subject->getAsignatura()); ?></strong>
-                                </td>
-                                <td class="text-center">
-                                    <?php if($isActive): ?>
-                                        <span class="badge bg-success shadow-sm">Activa</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-secondary shadow-sm">Inactiva</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td><span class="badge badge-light border text-dark"><?php echo $subject->getCursado(); ?></span></td>
-                                <td class="text-center"><?php echo $subject->getHsSemanales(); ?></td>
-                                <td class="text-center"><?php echo $subject->getCargaHorariaTotal(); ?> hs</td>
-                                <td class="text-center">
-                                    <span class="badge bg-primary text-white" style="font-size: 0.9em;">
-                                        <?php echo $subject->getCreditos(); ?> pts
-                                    </span>
-                                </td>
-                                <td class="text-center" style="vertical-align: middle;">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="<?php echo FRONT_ROOT ?>Admin/showEditSubjectView/<?php echo $subject->getSubjectId(); ?>" 
-                                        class="btn btn-warning text-white shadow-sm d-inline-flex align-items-center" 
-                                        style="padding: 8px 12px; border-radius: 8px; font-weight: 500;"
-                                        title="Editar Asignatura">
-                                            <i class="fas fa-edit me-1"></i> <span class="d-none d-xl-inline">Editar</span>
-                                        </a>
+<main class="page-root">
 
-                                        <?php if($isActive): ?>
-                                            <a href="<?php echo FRONT_ROOT ?>Admin/removeSubject/<?php echo $subject->getSubjectId(); ?>" 
-                                            class="btn btn-danger shadow-sm d-inline-flex align-items-center" 
-                                            style="padding: 8px 12px; border-radius: 8px; font-weight: 500;"
-                                            onclick="return confirm('¿Estás seguro de dar de baja esta asignatura?')" 
-                                            title="Dar de baja">
-                                                <i class="fas fa-trash-alt me-1"></i> <span class="d-none d-xl-inline">Eliminar</span>
-                                            </a>
-                                        <?php else: ?>
-                                            <a href="<?php echo FRONT_ROOT ?>Admin/restoreSubject/<?php echo $subject->getSubjectId(); ?>" 
-                                            class="btn btn-success shadow-sm d-inline-flex align-items-center" 
-                                            style="padding: 8px 12px; border-radius: 8px; font-weight: 500;"
-                                            title="Restaurar Asignatura">
-                                                <i class="fas fa-undo me-1"></i> <span class="d-none d-xl-inline">Restaurar</span>
-                                            </a>
-                                        <?php endif; ?>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } 
-                        } else { ?>
-                            <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">No hay asignaturas cargadas en el sistema.</td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Listado de asignaturas</h1>
+    </div>
+    <a href="<?= FRONT_ROOT ?>Admin/showAddSubjectView" class="btn-dark-primary">+ Nueva asignatura</a>
+  </div>
 
-            <div class="mt-4 text-center">
-                <a href="<?php echo FRONT_ROOT ?>Admin/showDashboard" class="btn btn-secondary shadow-sm">
-                    <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
-                </a>
-            </div>
-        </div>
-    </section>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:center">ID</th>
+          <th>Asignatura</th>
+          <th style="text-align:center">Estado</th>
+          <th>Cursado</th>
+          <th style="text-align:center">Hs semanales</th>
+          <th style="text-align:center">Carga total</th>
+          <th style="text-align:center">Créditos</th>
+          <th style="text-align:center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($subjectList)):
+          foreach ($subjectList as $subject):
+            $isActive = $subject->getActive();
+        ?>
+          <tr style="<?= !$isActive ? 'opacity:0.55;' : '' ?>">
+
+            <td style="text-align:center" class="text-muted"><?= $subject->getSubjectId(); ?></td>
+
+            <td style="font-weight:500"><?= htmlspecialchars($subject->getAsignatura()); ?></td>
+
+            <td style="text-align:center">
+              <?php if ($isActive): ?>
+                <span class="badge-active">Activa</span>
+              <?php else: ?>
+                <span class="badge-inactive">Inactiva</span>
+              <?php endif; ?>
+            </td>
+
+            <td><span class="badge-pill"><?= $subject->getCursado(); ?></span></td>
+
+            <td style="text-align:center" class="text-muted"><?= $subject->getHsSemanales(); ?></td>
+
+            <td style="text-align:center" class="text-muted"><?= $subject->getCargaHorariaTotal(); ?> hs</td>
+
+            <td style="text-align:center">
+              <span class="badge-pill"><?= $subject->getCreditos(); ?> pts</span>
+            </td>
+
+            <td style="text-align:center">
+              <div class="table-actions">
+                <a href="<?= FRONT_ROOT ?>Admin/showEditSubjectView/<?= $subject->getSubjectId(); ?>" class="btn-sm">Editar</a>
+
+                <?php if ($isActive): ?>
+                  <a href="<?= FRONT_ROOT ?>Admin/removeSubject/<?= $subject->getSubjectId(); ?>"
+                     class="btn-sm btn-sm-danger"
+                     onclick="return confirm('¿Dar de baja esta asignatura?')">Eliminar</a>
+                <?php else: ?>
+                  <a href="<?= FRONT_ROOT ?>Admin/restoreSubject/<?= $subject->getSubjectId(); ?>"
+                     class="btn-sm btn-sm-success">Restaurar</a>
+                <?php endif; ?>
+              </div>
+            </td>
+
+          </tr>
+        <?php endforeach;
+        else: ?>
+          <tr>
+            <td colspan="8" class="table-empty">No hay asignaturas cargadas en el sistema.</td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="<?= FRONT_ROOT ?>Admin/showDashboard" class="page-back">← Volver al dashboard</a>
+
 </main>

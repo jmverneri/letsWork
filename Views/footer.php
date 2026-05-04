@@ -1,47 +1,20 @@
+<footer class="footer-app">
+  <div class="footer-inner">
 
-<footer class="bg-white pt-5 pb-4 mt-auto border-top">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
-                <span class="fw-bold" style="color: #37352f; letter-spacing: -0.5px;">
-                    <img src="<?php echo IMG_PATH ?>Lets.png" width="30" height="30" class="me-2" alt="Logo">
-                    Plataforma de Empleos
-                </span>
-            </div>
+    <a href="<?= FRONT_ROOT ?>Home/Index" class="footer-brand">
+      <img src="<?php echo IMG_PATH ?>Lets.png" alt="LetsWork">
+      Plataforma de empleos
+    </a>
 
-           <div class="col-md-4 text-center mb-3 mb-md-0">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <a href="<?= FRONT_ROOT ?>Home/Privacy" class="text-muted small text-decoration-none mx-2">Privacidad</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="<?= FRONT_ROOT ?>Home/Terms" class="text-muted small text-decoration-none mx-2">Términos</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="<?= FRONT_ROOT ?>Home/Support" class="text-muted small text-decoration-none mx-2">Soporte</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-md-4 text-center text-md-end">
-                <p class="text-muted small mb-0">
-                    &copy; <?php echo date('Y'); ?> Universidad Tecnológica Nacional.
-                </p>
-            </div>
-        </div>
+    <div class="footer-links">
+      <a href="<?= FRONT_ROOT ?>Home/Privacy" class="footer-link">Privacidad</a>
+      <a href="<?= FRONT_ROOT ?>Home/Terms" class="footer-link">Términos</a>
+      <a href="<?= FRONT_ROOT ?>Home/Support" class="footer-link">Soporte</a>
     </div>
-</footer>
 
-<style>
-    body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #fbfbfa; /* El mismo fondo que el login */
-    }
-    main {
-        flex: 1; /* Esto empuja al footer hacia abajo */
-    }
-</style>
+    <p class="footer-copy">&copy; <?php echo date('Y'); ?> Universidad Tecnológica Nacional.</p>
+
+  </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

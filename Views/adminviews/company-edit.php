@@ -3,72 +3,69 @@ use Utils\Utils;
 Utils::checkNav();
 ?>
 
-<main class="py-5">
-    <section id="listado" class="mb-5">
-        <div class="container">
-          <h2 class="mb-4 text-dark">
-               Editar Companía: <span class="text-primary"><?php echo $company->getName(); ?></span>
-          </h2>
-            
-            <form action="<?php echo FRONT_ROOT . "AdminCompany/update" ?>" method="POST" class="bg-light-alpha p-5 shadow">
-                <div class="row">                         
-                    <input type="hidden" name="companyId" value="<?php echo $company->getCompanyId(); ?>">
+<main class="page-root">
 
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="">Name</label>
-                            <input type="text" name="name" value="<?php echo $company->getName(); ?>" class="form-control" required>
-                        </div>
-                    </div>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Editar compañía</h1>
+      <p class="page-subtitle"><?php echo htmlspecialchars($company->getName()); ?></p>
+    </div>
+  </div>
 
-                    <div class="col-lg-4">
-                         <div class="form-group">
-                              <label for="">CUIT (No editable)</label>
-                              <input type="text" name="cuit" value="<?php echo $company->getCuit(); ?>" class="form-control" style="background-color: #e9ecef;" readonly>
-                         </div>
-                    </div>
+  <div class="card" style="max-width: 900px;">
+    <form action="<?php echo FRONT_ROOT . 'AdminCompany/update'; ?>" method="POST">
 
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="">Email (Usuario)</label>
-                            <input type="email" name="email" value="<?php echo $email; ?>" class="form-control" required>
-                        </div>
-                    </div>
+      <input type="hidden" name="companyId" value="<?php echo $company->getCompanyId(); ?>">
 
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="">Ciudad</label>
-                            <input type="text" name="city" value="<?php echo $company->getCity(); ?>" class="form-control">
-                        </div>
-                    </div>
+      <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
 
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="">Número de teléfono</label>
-                            <input type="text" name="phoneNumber" value="<?php echo $company->getPhoneNumber(); ?>" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="">Status</label>
-                            <select name="active" class="form-control">
-                                <option value="1" <?php echo ($company->isActive()) ? 'selected' : ''; ?>>Active</option>
-                                <option value="0" <?php echo (!$company->isActive()) ? 'selected' : ''; ?>>Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label for="">Descripciónn</label>
-                            <textarea name="description" class="form-control" rows="3"><?php echo $company->getDescription(); ?></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary ml-auto d-block">Guardar Cambios</button>
-            </form>
+        <div class="form-field">
+          <label>Nombre</label>
+          <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($company->getName()); ?>" required>
         </div>
-    </section>
+
+        <div class="form-field">
+          <label>CUIT <span class="text-muted" style="font-size:11px; text-transform:none;">(no editable)</span></label>
+          <input type="text" name="cuit" class="form-control" value="<?php echo $company->getCuit(); ?>" readonly style="opacity:0.6; cursor:not-allowed;">
+        </div>
+
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required>
+        </div>
+
+        <div class="form-field">
+          <label>Ciudad</label>
+          <input type="text" name="city" class="form-control" value="<?php echo htmlspecialchars($company->getCity()); ?>">
+        </div>
+
+        <div class="form-field">
+          <label>Teléfono</label>
+          <input type="text" name="phoneNumber" class="form-control" value="<?php echo htmlspecialchars($company->getPhoneNumber()); ?>">
+        </div>
+
+        <div class="form-field">
+          <label>Estado</label>
+          <select name="active" class="form-control">
+            <option value="1" <?php echo $company->isActive() ? 'selected' : ''; ?>>Activa</option>
+            <option value="0" <?php echo !$company->isActive() ? 'selected' : ''; ?>>Inactiva</option>
+          </select>
+        </div>
+
+        <div class="form-field full">
+          <label>Descripción</label>
+          <textarea name="description" class="form-control" rows="3"><?php echo htmlspecialchars($company->getDescription()); ?></textarea>
+        </div>
+
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
+        <button type="submit" class="btn-dark-primary">Guardar cambios</button>
+      </div>
+
+    </form>
+  </div>
+
+  <a href="<?php echo FRONT_ROOT ?>AdminCompany/showCompaniesViews" class="page-back">← Volver a compañías</a>
+
 </main>
