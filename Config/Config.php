@@ -29,7 +29,7 @@ define("API_URL", 'http://127.0.0.1:8000/');
 define("DB_HOST", "letswork_db");
 define("DB_NAME", "letswork");
 define("DB_USER", "root");
-define("DB_PASS", "");
+define("DB_PASS", "root");
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 ?>
