@@ -26,7 +26,7 @@ define('API_KEY', '4f3bceed-50ba-4461-a910-518598664c08');
 define("API_URL", 'http://127.0.0.1:8000/');
 
 // Database
-define("DB_HOST", "localhost");
+define("DB_HOST", "letswork_db");
 define("DB_NAME", "letswork");
 define("DB_USER", "root");
 define("DB_PASS", "");
