@@ -7,45 +7,43 @@ Utils::checkNav();
   <div class="auth-shell">
 
     <div class="auth-brand">
-      <h1 class="auth-title">Recuperar contraseña</h1>
-      <p class="auth-subtitle">Te enviamos un link para elegir una nueva clave.</p>
+      <h1 class="page-title">Recuperar contraseña</h1>
+      <p class="page-subtitle">Te enviamos un link para elegir una nueva clave.</p>
     </div>
 
-    <div class="app-card">
+    <div class="card">
 
       <?php if (!empty($message)): ?>
         <?php
-          $alertClass = 'app-alert-error';
-          if ($type === 'success') $alertClass = 'app-alert-success';
-          elseif ($type === 'warning') $alertClass = 'app-alert-warning';
+          $alertClass = 'alert-danger';
+          if ($type === 'success') $alertClass = 'alert-success';
+          elseif ($type === 'warning') $alertClass = 'alert-warning';
         ?>
-        <div class="app-alert <?php echo $alertClass; ?>" role="alert">
+        <div class="alert <?php echo $alertClass; ?>" role="alert">
           <?php echo htmlspecialchars($message); ?>
         </div>
       <?php endif; ?>
 
       <form action="<?php echo FRONT_ROOT ?>User/sendResetPasswordEmail" method="POST">
-
-        <div class="auth-field">
-          <label class="app-label" for="email">E-mail</label>
+        <div class="form-field">
+          <label class="form-label" for="email">E-mail</label>
           <input
-            class="app-input"
+            class="form-control"
             type="email"
             name="email"
             id="email"
             placeholder="nombre@universidad.edu"
             required
           >
-          <small class="app-hint">Ingresá el correo asociado a tu cuenta.</small>
+          <small class="form-hint">Ingresá el correo asociado a tu cuenta.</small>
         </div>
 
-        <button class="app-btn-primary" type="submit" style="margin-top: 1.4rem;">
+        <button class="btn-dark-primary full" type="submit" style="margin-top: 1.4rem;">
           Enviar link de recuperación
         </button>
-
       </form>
 
-      <div class="app-divider"></div>
+      <div class="divider"></div>
 
       <a href="<?php echo FRONT_ROOT ?>Home/Index" class="auth-link">
         ← Volver al inicio de sesión
@@ -53,7 +51,9 @@ Utils::checkNav();
 
     </div>
 
-    <p class="app-footer-note">Portal académico y búsqueda laboral</p>
+    <p class="text-muted" style="text-align:center; margin-top:1.5rem; font-size:12px;">
+      Portal académico y búsqueda laboral
+    </p>
 
   </div>
 </main>

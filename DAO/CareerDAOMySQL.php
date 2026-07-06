@@ -36,9 +36,9 @@ class CareerDAOMySQL {
     // El "Sincronizador": Trae de API y guarda en BD Local
     public function refreshCareersFromApi() {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/careers'); // Ajustá a tu endpoint de la API
+        curl_setopt($ch, CURLOPT_URL, API_URL . 'careers');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('x-api-key: 4f3b75d0-055a-49a6-8480-281b32f4a434')); // Tu API KEY
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('x-api-key: ' . API_KEY));
 
         $response = curl_exec($ch);
         $decodedData = json_decode($response, true);
