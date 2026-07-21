@@ -451,4 +451,45 @@ class CompanyJobOfferController
         $message = "Hola " . $userData['firstName'] . ", te informamos que la entrevista para el puesto " . $jobOffer->getTitle() . " ha sido cancelada por la empresa.";
         MailService::send($userData['email'], $subject, $message);
     }
+
+    public function declineApplicant($studentId, $jobOfferId) {
+        try {
+            // 1. Ejecutar el cambio de estado
+            $this->applicationDAO->updateStatus($studentId, $jobOfferId, 'declined');
+
+            // 2. Traer SOLO al alumno afectado (Eficiencia pura)
+            $applicationData = $this->applicationDAO->getSpecificApplicant($studentId, $jobOfferId);
+
+            if ($applicationData) {
+                $jobOffer = $this->jobOfferRepo->getById($jobOfferId);
+                
+                // 3. Delegar el armado del mail a un método privado o Service
+                $this->sendDeclineEmail($applicationData, $jobOffer);
+            }
+
+            // 4. Redirigir con un mensaje de éxito
+            $this->showApplicants($jobOfferId, "Postulante declinado y notificado correctamente.", "success");
+
+        } catch (Exception $ex) {
+            $this->showApplicants($jobOfferId, "Error al procesar la baja: " . $ex->getMessage(), "danger");
+        }
+    }
+
+     // Método privado para no ensuciar la lógica principal
+    private function sendDeclineEmail($userData, $jobOffer) {
+        $subject = "Actualización de Postulación: " . $jobOffer->getTitle();
+        
+        // Un toque más "Pro" en el diseño del mail
+        $message = "
+            <div style='font-family: Arial, sans-serif; border: 1px solid #eee; padding: 20px;'>
+                <h2 style='color: #d9534f;'>Hola " . $userData['firstName'] . "</h2>
+                <p>Lamentamos informarte que tu postulación para la oferta 
+                <strong>" . $jobOffer->getTitle() . "</strong> ha sido declinada.</p>
+                <p>Te agradecemos por el interés y te invitamos a seguir aplicando a otras búsquedas en <strong>Let's Work</strong>.</p>
+                <hr>
+                <small>Este es un mensaje automático, por favor no lo respondas.</small>
+            </div>";
+
+        MailService::send($userData['email'], $subject, $message);
+    }
 }

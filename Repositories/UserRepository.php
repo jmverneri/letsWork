@@ -83,4 +83,13 @@ class UserRepository {
             throw $ex;
         }
     }
+
+    public function updateEmail($userId, $newEmail)
+    {
+        try {
+            $this->dao->updateEmail($userId, $newEmail);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
 }

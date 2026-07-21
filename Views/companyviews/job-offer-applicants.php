@@ -67,7 +67,7 @@ Utils::checkNav();
                     Entrevista
                   </button>
 
-                  <a href="<?= FRONT_ROOT ?>Company/declineApplicant/<?= $student['studentId'] ?>/<?= $jobOffer->getJobOfferId() ?>"
+                  <a href="<?= FRONT_ROOT ?>CompanyJobOffer/declineApplicant/<?= $student['studentId'] ?>/<?= $jobOffer->getJobOfferId() ?>"
                      class="btn-sm btn-sm-danger"
                      onclick="return confirm('¿Declinar este postulante?')">Declinar</a>
 

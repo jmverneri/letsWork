@@ -105,44 +105,61 @@ class CompanyController
     {
         if ($_POST) {
             try {
-                // 1. Validaciones básicas de seguridad
-                if (!isset($_POST['companyId'])) {
-                    throw new Exception("ID de empresa no proporcionado.");
+                // A. Verificar sesión activa
+                if (!isset($_SESSION['loggedUser'])) {
+                    throw new Exception("Debe iniciar sesión para realizar esta acción.");
                 }
-                // 2. Recuperamos la empresa existente desde el repositorio
-                // Esto garantiza que mantenemos el userId, el logo, etc., que ya teníamos
-                $company = $this->companyRepo->getById($_POST['companyId']);
+
+                $loggedUser = $_SESSION['loggedUser'];
+
+                // B. Buscar la empresa correspondiente a este usuario
+                $company = $this->companyRepo->getByUserId($loggedUser->getUserId());
 
                 if (!$company) {
-                    throw new Exception("No se encontró la empresa a editar.");
+                    throw new Exception("No se encontró la empresa asociada a su usuario.");
                 }
 
-                // 3. Actualizamos los atributos propios de la empresa
+                // C. Validar que el nuevo email no esté en uso por OTRO usuario
+                $newEmail = trim($_POST['email']);
+                $existingUser = $this->userRepo->getByEmail($newEmail);
+
+                if ($existingUser && $existingUser->getUserId() !== $loggedUser->getUserId()) {
+                    throw new Exception("El email ya se encuentra registrado por otro usuario.");
+                }
+
+                // D. Actualizar los datos de la empresa
                 $company->setName($_POST['name']);
                 $company->setCity($_POST['city'] ?? null);
                 $company->setDescription($_POST['description'] ?? null);
                 $company->setPhoneNumber($_POST['phoneNumber'] ?? null);
-                $company->setCuit($_POST['cuit'] ?? null);
 
-                // 4. Delegamos la actualización completa al repositorio.
-                // Pasamos el objeto $company modificado y el nuevo email recibido por POST.
-                // El repositorio se encargará de actualizar 'companies' y 'users'.
-                $this->companyRepo->updateCompany($company, $_POST['email']);
+                // E. Guardar cambios en la tabla 'companies'
+                $this->companyRepo->updateCompany($company);
 
-                // 5. Redirección exitosa
+                // F. Actualizar el email en la tabla 'users' y en la SESIÓN
+                $loggedUser->setEmail($newEmail);
+                $this->userRepo->updateEmail($loggedUser->getUserId(), $newEmail);
+
+                // Actualizamos el usuario guardado en sesión
+                $_SESSION['loggedUser'] = $loggedUser;
+
+                // G. Redirección exitosa
                 header("Location: " . FRONT_ROOT . "Company/profile");
                 exit();
 
             } catch (Exception $ex) {
-                // Si algo falla, capturamos el mensaje para mostrarlo en la vista
                 $message = $ex->getMessage();
                 
-                // Re-cargamos la vista de edición (asegúrate de que $company esté disponible)
+                // Re-obtener la empresa para que la vista no rompa al renderizar $company
+                if (isset($_SESSION['loggedUser'])) {
+                    $company = $this->companyRepo->getByUserId($_SESSION['loggedUser']->getUserId());
+                }
+                
                 require_once(VIEWS_PATH . "company-edit.php");
             }
         } else {
-            // Redirigir si acceden por GET sin datos
             header("Location: " . FRONT_ROOT . "Company/profile");
+            exit();
         }
     }
 }

@@ -55,7 +55,7 @@ class CompanyRepository
         }
     }
 
-    public function updateCompany(Company $company, $newEmail) 
+    public function updateCompany(Company $company) 
     {
         try {
             // 1. Actualizamos la tabla 'companies'
@@ -63,11 +63,7 @@ class CompanyRepository
 
             // 2. Actualizamos el email en la tabla 'users'
             $user = $this->userDAO->GetById($company->getUserId());
-            
-            if($user) {
-                $user->setEmail($newEmail);
-                $this->userDAO->update($user); 
-            }
+          
         } catch (Exception $ex) {
             throw $ex;
         }

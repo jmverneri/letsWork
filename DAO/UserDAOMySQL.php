@@ -239,4 +239,19 @@ class UserDAOMySQL
             throw $ex;
         }
     }
+
+    public function updateEmail($userId, $newEmail)
+    {
+        try {
+            $query = "UPDATE users SET email = :email WHERE userId = :userId";
+
+            $parameters["email"] = $newEmail;
+            $parameters["userId"] = $userId;
+
+            $this->connection = Connection::GetInstance();
+            $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
 }
