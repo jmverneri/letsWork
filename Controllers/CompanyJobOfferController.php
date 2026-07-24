@@ -130,30 +130,37 @@ class CompanyJobOfferController
                     ->setActive(true);
                     
             $flyerPath = null;
-                if (isset($_FILES['flyer']) && $_FILES['flyer']['error'] === UPLOAD_ERR_OK) {
-                    
-                    $uploadDir = 'uploads/job-offers/';
-                    
-                    // Validar que sea realmente una imagen (seguridad)
-                    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-                    $mimeType = finfo_file($fileInfo, $_FILES['flyer']['tmp_name']);
-                    $allowedTypes = ['image/jpeg', 'image/png'];
+               if (isset($_FILES['flyer']) && $_FILES['flyer']['error'] !== UPLOAD_ERR_NO_FILE) {
 
-                    if (in_array($mimeType, $allowedTypes)) {
-                        // Generar un nombre único para evitar sobreescritura
-                        $extension = ($mimeType == 'image/jpeg') ? '.jpg' : '.png';
-                        $fileName = 'flyer_' . uniqid() . $extension;
-                        $targetPath = $uploadDir . $fileName;
-
-                        // Mover el archivo del temporal al destino final
-                        if (move_uploaded_file($_FILES['flyer']['tmp_name'], $targetPath)) {
-                            $flyerPath = $fileName;
-                        }
-                    } else {
-                        throw new Exception("Invalid file type. Only JPG or PNG allowed.");
-                    }
+                if ($_FILES['flyer']['error'] !== UPLOAD_ERR_OK) {
+                    $uploadErrors = [
+                        UPLOAD_ERR_INI_SIZE  => 'El archivo es demasiado pesado para el servidor.',
+                        UPLOAD_ERR_FORM_SIZE => 'El archivo supera el tamaño máximo permitido.',
+                        UPLOAD_ERR_PARTIAL   => 'La subida se interrumpió. Probá de nuevo.',
+                    ];
+                    throw new Exception($uploadErrors[$_FILES['flyer']['error']] ?? 'Error al subir el archivo.');
                 }
 
+                $uploadDir = 'uploads/job-offers/';
+                // Validar que sea realmente una imagen (seguridad)
+                $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_file($fileInfo, $_FILES['flyer']['tmp_name']);
+                $allowedTypes = ['image/jpeg', 'image/png'];
+
+                if (in_array($mimeType, $allowedTypes)) {
+                    // Generar un nombre único para evitar sobreescritura
+                    $extension = ($mimeType == 'image/jpeg') ? '.jpg' : '.png';
+                    $fileName = 'flyer_' . uniqid() . $extension;
+                    $targetPath = $uploadDir . $fileName;
+
+                    // Mover el archivo del temporal al destino final
+                    if (move_uploaded_file($_FILES['flyer']['tmp_name'], $targetPath)) {
+                        $flyerPath = $fileName;
+                    }
+                } else {
+                    throw new Exception("Invalid file type. Only JPG or PNG allowed.");
+                }
+            }
                 // Guardamos el nombre del archivo en el objeto
                 $jobOffer->setFlyerImagePath($flyerPath);
 

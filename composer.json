@@ -1,4 +1,7 @@
 {
+    "config": {
+        "vendor-dir": "Vendor"
+    },
     "require": {
         "dompdf/dompdf": "^3.1"
     },

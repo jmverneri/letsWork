@@ -12,7 +12,6 @@ class StudentByJobOfferDAO implements IStudentByJobOfferDAO
 {
     private $jobOfferList;
     private $connection;
-    private $tableName = "job_Offer";
 
     public function __construct($connection = null) {
         $this->connection = $connection ?? Connection::GetInstance();

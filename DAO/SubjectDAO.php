@@ -128,6 +128,20 @@ class SubjectDAO
         }
     }
 
+    public function removeApprovedSubject($studentId, $subjectId)
+    {
+        try {
+            $query = "DELETE FROM student_subjects WHERE studentId = :studentId AND subjectId = :subjectId";
+
+            $parameters["studentId"] = $studentId;
+            $parameters["subjectId"] = $subjectId;
+
+            return $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
     public function getById($subjectId)
     {
         try {

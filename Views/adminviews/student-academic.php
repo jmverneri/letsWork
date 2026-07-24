@@ -69,7 +69,7 @@ Utils::checkNav();
                 <span class="badge-pill"><?= $appSub->getCreditos() ?> pts</span>
               </td>
               <td style="text-align:center">
-                <a href="<?= FRONT_ROOT ?>Admin/removeStudentSubject?studentId=<?= $student->getStudentId() ?>&subjectId=<?= $appSub->getSubjectId() ?>&dni=<?= $student->getDni() ?>"
+                <a href="<?= FRONT_ROOT ?>Admin/removeStudentSubject&studentId=<?= $student->getStudentId() ?>&subjectId=<?= $appSub->getSubjectId() ?>&dni=<?= $student->getDni() ?>"
                    class="btn-sm btn-sm-danger"
                    onclick="return confirm('¿Quitar esta materia aprobada?')">Quitar</a>
               </td>

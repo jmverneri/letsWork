@@ -202,6 +202,23 @@
             require_once(ADMIN_VIEWS . "add-subject.php");
         }
 
+        public function removeStudentSubject($params) {
+            Utils::checkAdminSession();
+
+            $studentId = (int)($params['studentId'] ?? 0);
+            $subjectId = (int)($params['subjectId'] ?? 0);
+            $dni       = $params['dni'] ?? null;
+
+            try {
+                if ($studentId > 0 && $subjectId > 0) {
+                    $this->subjectDAO->removeApprovedSubject($studentId, $subjectId);
+                }
+                $this->showStudentAcademicView($dni);
+            } catch (\Exception $ex) {
+                $this->showStudentAcademicView($dni);
+            }
+        }
+
         public function addSubject($formData) {
             Utils::checkAdminSession();
             try {
