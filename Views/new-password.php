@@ -26,7 +26,7 @@ Utils::checkNav();
         <div class="form-field">
           <label class="form-label" for="newPassword">Nueva contraseña</label>
           <input type="password" name="newPassword" id="newPassword" class="form-control"
-            minlength="4" required placeholder="Mínimo 4 caracteres">
+            minlength="6" required placeholder="Mínimo 6 caracteres">
         </div>
 
         <div class="form-field" style="margin-bottom: 1.4rem;">

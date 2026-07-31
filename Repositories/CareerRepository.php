@@ -19,13 +19,25 @@ class CareerRepository
 
     public function syncFromApi() 
     {
-        // 1. El DAOApi ya te devuelve un array de OBJETOS Career
+        // 1. El DAOApi devuelve un array de OBJETOS Career
         $careerList = $this->api->getAll();
 
         if ($careerList && is_array($careerList)) {
-            foreach ($careerList as $career) {
-                // Solo lo mandamos a la base de datos.
-                $this->db->addFromApi($career);
+            foreach ($careerList as $apiCareer) {
+                
+                // 2. Verificamos si la carrera ya existe en MySQL
+                $localCareer = $this->db->getById($apiCareer->getCareerId());
+
+                if (!$localCareer) {
+                    // Si NO existe, la insertamos
+                    $this->db->add($apiCareer);
+                } else {
+                    // Si YA existe, actualizamos solo la descripción de la API
+                    // y mantenemos el estado 'active' que tiene localmente
+                    $localCareer->setDescription($apiCareer->getDescription());
+                    
+                    $this->db->update($localCareer);
+                }
             }
             return true;
         }

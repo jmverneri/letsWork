@@ -17,7 +17,8 @@ class Router
         'StudentCompany',
         'AdminCompany',
         'Error',
-        'Notification'
+        'Notification',
+        'JobPosition'
     ];
 
     public static function Route(Request $request): void

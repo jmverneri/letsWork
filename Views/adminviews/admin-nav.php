@@ -24,6 +24,8 @@
 
     <a class="navbar-link" href="<?= FRONT_ROOT ?>Admin/showStudentList">Estudiantes</a>
 
+    <a class="navbar-link" href="<?= FRONT_ROOT ?>JobPosition/showJobPositionAddView">Puestos de trabajo</a>
+
     <a class="navbar-logout" href="<?php echo FRONT_ROOT ?>Home/Logout">Cerrar sesión</a>
 
   </div>

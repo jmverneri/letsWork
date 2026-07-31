@@ -13,7 +13,6 @@ class CareerDAOMySQL {
         $this->connection = $connection ?? Connection::GetInstance();
     }
 
-    // Busca una carrera específica en la BD Local (para el perfil del alumno)
     public function getById($careerId) {
         try {
             $query = "SELECT * FROM " . $this->tableName . " WHERE careerId = :careerId";
@@ -33,30 +32,30 @@ class CareerDAOMySQL {
         } catch (Exception $ex) { throw $ex; }
     }
 
-    // El "Sincronizador": Trae de API y guarda en BD Local
-    public function refreshCareersFromApi() {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, API_URL . 'careers');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('x-api-key: ' . API_KEY));
-
-        $response = curl_exec($ch);
-        $decodedData = json_decode($response, true);
-
-        foreach($decodedData as $careerData) {
-            $this->addFromApi($careerData);
-        }
-    }
-
-    public function addFromApi($data) {
+    // Método para INSERTAR una carrera nueva
+    public function add(Career $career) {
         try {
-            // Usamos REPLACE para que si la carrera ya existe, la actualice
-            $query = "REPLACE INTO " . $this->tableName . " (careerId, description, active) 
+            $query = "INSERT INTO " . $this->tableName . " (careerId, description, active) 
                       VALUES (:careerId, :description, :active);";
 
-            $parameters["careerId"] = $data->getCareerId();
-            $parameters["description"] = $data->getDescription();
-            $parameters["active"] = $data->getActive() ? 1 : 0;
+            $parameters["careerId"] = $career->getCareerId();
+            $parameters["description"] = $career->getDescription();
+            $parameters["active"] = $career->getActive() ? 1 : 0;
+
+            return $this->connection->ExecuteNonQuery($query, $parameters);
+        } catch (Exception $ex) { throw $ex; }
+    }
+
+    // Método para ACTUALIZAR una carrera existente (sin pisar el campo 'active')
+    public function update(Career $career) {
+        try {
+            $query = "UPDATE " . $this->tableName . " 
+                      SET description = :description, active = :active 
+                      WHERE careerId = :careerId;";
+
+            $parameters["description"] = $career->getDescription();
+            $parameters["active"] = $career->getActive() ? 1 : 0;
+            $parameters["careerId"] = $career->getCareerId();
 
             return $this->connection->ExecuteNonQuery($query, $parameters);
         } catch (Exception $ex) { throw $ex; }

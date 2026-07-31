@@ -3,77 +3,96 @@
 
     use Models\JobPosition as JobPosition;
     use Repositories\JobPositionRepository;
-    use DAO\IJobPossitionDAO as IJobPositionDAO;
+    use Repositories\CareerRepository;
     use Utils\Utils as Utils;
 
     class JobPositionController{
         private $jobPositionRepo;
+        private $careerRepo;
         private $jobsList;
 
         public function __construct()
         {
             $this->jobPositionRepo = new JobPositionRepository();
+            $this->careerRepo = new CareerRepository();
         }
 
+        // Página principal de gestión: listado + formulario de alta
         public function showJobPositionAddView($message = "")
         {
-            require_once(VIEWS_PATH . "jobPosition-add.php");
+            Utils::checkAdminSession();
+
+            $jobsList = $this->jobPositionRepo->getAll();
+            $careerList = $this->careerRepo->getAll();
+
+            require_once(ADMIN_VIEWS . "job-position-add.php");
         }
 
         public function showJobPositionView(){
-            Utils::checkSession();
+            Utils::checkAdminSession();
             $this->jobsList = $this->jobPositionRepo->getAll();
-            
-            require_once(VIEWS_PATH."jobPosition-list.php");    ///Falta crear
+
+            require_once(ADMIN_VIEWS."job-position-list.php");
         }
 
+        // Formulario de edición de un puesto puntual
         public function showJobPositionViewById($id){
-            Utils::checkSession();
+            Utils::checkAdminSession();
             $jobPosition = $this->jobPositionRepo->getById($id);
-        
-            require_once(VIEWS_PATH . "jobPosition-view.php");      ///Falta crear
+            $careerList = $this->careerRepo->getAll();
+
+            require_once(ADMIN_VIEWS . "job-position-view.php");
         }
 
         public function getJobPositionByCareerId($careerId){
-
-            $this->jobsList=$this->jobPositionRepo->searchJobPositionByCareerId($careerId);
+            $this->jobsList = $this->jobPositionRepo->searchJobPositionByCareerId($careerId);
             return $this->jobsList;
         }
 
-        public function addJobPosition($jobId, $careerId, $descrpition){
+        public function addJobPosition($formData){
             Utils::checkAdminSession();
 
-            $jobPosition = new JobPosition();
-            $jobPosition->setJobPositionId($jobId);
-            $jobPosition->setCareerId($careerId);
-            $jobPosition->setDescription($descrpition);
+            try {
+                $jobPosition = new JobPosition();
+                $jobPosition->setCareerId((int)($formData['careerId'] ?? 0));
+                $jobPosition->setDescription($formData['description'] ?? '');
 
-            $this->jobPositionRepo->add($jobPosition);
+                $this->jobPositionRepo->add($jobPosition);
 
-            $this->showJobPositionAddView("El puesto laboral fue cargado satisfactoriamente");
+                $this->showJobPositionAddView("El puesto laboral fue cargado satisfactoriamente.");
+            } catch (\Exception $ex) {
+                $this->showJobPositionAddView("Error al cargar el puesto laboral.");
+            }
         }
 
-        public function updateJobPosition($jobId, $careerId, $descrpition)
+        public function updateJobPosition($formData)
         {
-            Utils::checkSession();
-            $jobPosition = new JobPosition();
+            Utils::checkAdminSession();
 
-            $jobPosition = new JobPosition();
-            $jobPosition->setJobPositionId($jobId);
-            $jobPosition->setCareerId($careerId);
-            $jobPosition->setDescription($descrpition);
+            try {
+                $jobPosition = new JobPosition();
+                $jobPosition->setJobPositionId((int)($formData['jobPositionId'] ?? 0));
+                $jobPosition->setCareerId((int)($formData['careerId'] ?? 0));
+                $jobPosition->setDescription($formData['description'] ?? '');
 
-            $this->jobPositionRepo->update($jobPosition);
+                $this->jobPositionRepo->update($jobPosition);
 
-            $this->showJobPositionAddView("El puesto laboral fue actualizado satisfactoriamente");
+                $this->showJobPositionAddView("El puesto laboral fue actualizado satisfactoriamente.");
+            } catch (\Exception $ex) {
+                $this->showJobPositionAddView("Error al actualizar el puesto laboral.");
+            }
         }
 
         public function deleteJobPosition($jobPositionId)
         {
+            Utils::checkAdminSession();
 
-            $this->jobPositionRepo->delete($jobPositionId);
-
-            $this->showJobPositionAddView("Este puesto laboral fue borrado satisfactoriamente");
+            try {
+                $this->jobPositionRepo->delete((int)$jobPositionId);
+                $this->showJobPositionAddView("Este puesto laboral fue borrado satisfactoriamente.");
+            } catch (\Exception $ex) {
+                $this->showJobPositionAddView("Error: no se pudo borrar el puesto laboral (puede estar en uso por una oferta laboral).");
+            }
         }
     }
 ?>

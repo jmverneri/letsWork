@@ -18,7 +18,7 @@ class JobPositionDAOMySQL
     {
         try {
             $jobPositionList = array();
-            $query = "SELECT * FROM " . $this->tableName;
+            $query = "SELECT * FROM " . $this->tableName ;
 
             $resultSet = $this->connection->Execute($query);
 

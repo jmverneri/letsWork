@@ -111,7 +111,6 @@ class UserController {
         public function showNewPasswordForm($params = null) {
             try {
                 // 1. Limpieza del parámetro que viene del Router
-                // Si el Router manda ['token' => 'abc...'], extraemos solo 'abc...'
                 $token = (is_array($params)) ? ($params["token"] ?? null) : $params;
 
                 if (!$token) {
