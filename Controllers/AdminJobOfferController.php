@@ -13,6 +13,7 @@ use Models\JobOffer as JobOffer;
 use \Exception as Exception;
 use Dompdf\Dompdf;
 use Utils\MailService as MailService;
+use Utils\Utils;
 
 class AdminJobOfferController
 {
@@ -25,8 +26,10 @@ class AdminJobOfferController
     private StudentPreferenceDAO $studentPreferenceDAO;
     private NotificationDAO $notificationDAO;
 
+
     public function __construct()
     {
+        Utils::checkAdminSession();
         $this->jobOfferRepo = new JobOfferRepository();
         $this->companyRepo = new CompanyRepository();
         $this->studentRepo = new StudentRepository();

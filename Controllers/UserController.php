@@ -123,7 +123,6 @@ class UserController {
 
                 if ($user) {
                     // El token es válido, mostramos la vista
-                    // IMPORTANTE: Pasamos el $token a la vista para el input hidden
                     require_once(VIEWS_PATH . "new-password.php");
                 } else {
                     $message = "El link ha expirado o es inválido. Por favor, solicita uno nuevo.";

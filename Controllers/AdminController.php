@@ -37,7 +37,7 @@
 
         public function showStudentList($message = "")
         {
-            Utils::checkNav();
+            Utils::checkAdminSession();
 
             // 1. El Repo ahora devuelve un Array de Arrays (API + flag isRegistered)
             $studentList = $this->studentRepo->getAll(); 
@@ -74,14 +74,14 @@
 
         public function showDashboard()
         {
-            Utils::checkNav();
+            Utils::checkAdminSession();
         
             require_once(ADMIN_VIEWS . "admin-dashboard.php");
         }
 
         public function addAdmin()
         {
-            Utils::checkNav();
+            Utils::checkAdminSession();
 
             $user = new User();
             $user->setEmail($_POST["email"]);
@@ -102,7 +102,7 @@
 
         public function removeAdmin($params)
         {
-            \Utils\Utils::checkNav();
+            Utils::checkAdminSession();
 
             // 1. Extraemos el ID del array que manda el Router (desde el $_POST)
             // Usamos el nombre 'userId' porque es el que pusiste en el <input name="userId">
@@ -129,7 +129,7 @@
 
         public function restoreAdmin($params)
         {
-            \Utils\Utils::checkNav();
+            Utils::checkAdminSession();
             $userId = (isset($params['userId'])) ? (int)$params['userId'] : 0;
 
             try {
@@ -142,7 +142,7 @@
 
         public function showCreateUserForm($message = "")
         {
-            Utils::checkNav();
+            Utils::checkAdminSession();
             $this->viewMessage = $message;
             
             $allUsers = $this->userDAO->getAll();

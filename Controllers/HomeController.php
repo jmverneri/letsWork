@@ -187,10 +187,10 @@
             exit();
         }
     
-        public function redirectAdm()
+        /*public function redirectAdm()
         {
             require_once(VIEWS_PATH . "admin-view.php");
-        }
+        }*/
 
         public function Logout()
         {

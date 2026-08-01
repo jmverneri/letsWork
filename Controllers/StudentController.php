@@ -48,11 +48,6 @@
             require_once(VIEWS_PATH . "registration.php");
         }
 
-        public function showStudentProfileByMail($email)
-        {
-            $this->studentRepo->getAndSyncByEmail($email);
-        }
-
         public function showListView()
         {
             Utils::checkSession();
@@ -120,7 +115,7 @@
             }
         }
 
-        public function studentValidation($email)
+        /*public function studentValidation($email)
         {
             $student = $this->studentRepo->getAndSyncByEmail($email);
 
@@ -140,7 +135,7 @@
                 // En lugar de llamar a la vista, llama a la FUNCIÓN que carga el perfil
                 $this->showStudentProfile("Registro exitoso"); 
             }
-        }
+        }*/
 
         public function showAddView()
         {

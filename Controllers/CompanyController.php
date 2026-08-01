@@ -21,7 +21,6 @@ class CompanyController
 
     public function __construct()
     {
-        // Instanciamos directamente los Repositories
         $this->companyRepo = new CompanyRepository();
         $this->jobOfferRepo = new JobOfferRepository();
         $this->careerRepo = new CareerRepository();
@@ -55,12 +54,14 @@ class CompanyController
     }
 
     public function redirectAddForm($message = "") {
+        Utils::checkAdminSession();
         $this->message = $message;
         require_once(ADMIN_VIEWS . "company-add.php");
     }
 
     public function AddCompany($data) 
     {
+        Utils::checkAdminSession();
         try {
             // Validamos si ya existe el CUIT antes de hacer nada
             if ($this->companyRepo->getByCuit($data['cuit'])) {
