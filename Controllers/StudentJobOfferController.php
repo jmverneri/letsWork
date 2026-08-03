@@ -119,10 +119,17 @@
 
                 // 4. Filtrar: Activas + Carrera del Estudiante
                 $jobOfferList = array_filter($allOffers, function($offer) use ($studentCareerId, $positionsMap) {
+                    // Obtener la fecha actual para comparar (formato Y-m-d)
+                    $today = date('Y-m-d');
+
                     // Regla 1: Debe estar activa
                     if (!$offer->getActive()) return false;
 
-                    // Regla 2: Debe pertenecer a la carrera del alumno
+                    // Regla 2: La fecha de expiración debe ser igual o posterior a hoy
+                    // (Asumiendo que tu objeto oferta tiene un getter como getExpirationDate() o getLimitDate())
+                   if ($offer->getDeadline() < $today) return false;
+
+                    // Regla 3: Debe pertenecer a la carrera del alumno
                     $posId = $offer->getJobPositionId();
                     if (isset($positionsMap[$posId])) {
                         return $positionsMap[$posId]->getCareerId() == $studentCareerId;
