@@ -147,4 +147,43 @@ class JobPositionDAOMySQL
             throw $ex;
         }
     }
+
+    public function restore($id)
+    {
+        try {
+            $query = "UPDATE " . $this->tableName . " 
+                      SET active = 1 
+                      WHERE jobPositionId = :id";
+
+            $parameters["id"] = $id;
+
+            $this->connection->ExecuteNonQuery($query, $parameters);
+
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    public function getInactive()
+    {
+        try {
+            $jobPositionList = array();
+            $query = "SELECT * FROM " . $this->tableName . " WHERE active = 0";
+
+            $resultSet = $this->connection->Execute($query);
+
+            foreach ($resultSet as $row) {
+                $jobPosition = new JobPosition();
+                $jobPosition->setJobPositionId($row["jobPositionId"]);
+                $jobPosition->setCareerId($row["careerId"]);
+                $jobPosition->setDescription($row["description"]);
+
+                array_push($jobPositionList, $jobPosition);
+            }
+
+            return $jobPositionList;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 }

@@ -17,12 +17,13 @@
             $this->careerRepo = new CareerRepository();
         }
 
-        // Página principal de gestión: listado + formulario de alta
+        // Página principal de gestión: listado + formulario de alta + papelera
         public function showJobPositionAddView($message = "")
         {
             Utils::checkAdminSession();
 
             $jobsList = $this->jobPositionRepo->getAll();
+            $inactiveJobsList = $this->jobPositionRepo->getInactive();
             $careerList = $this->careerRepo->getAll();
 
             require_once(ADMIN_VIEWS . "job-position-add.php");
@@ -32,7 +33,7 @@
             Utils::checkAdminSession();
             $this->jobsList = $this->jobPositionRepo->getAll();
 
-            require_once(ADMIN_VIEWS."job-position-list.php");
+            require_once(ADMIN_VIEWS."jobPosition-list.php");
         }
 
         // Formulario de edición de un puesto puntual
@@ -41,7 +42,7 @@
             $jobPosition = $this->jobPositionRepo->getById($id);
             $careerList = $this->careerRepo->getAll();
 
-            require_once(ADMIN_VIEWS . "job-position-view.php");
+            require_once(ADMIN_VIEWS . "jobPosition-view.php");
         }
 
         public function getJobPositionByCareerId($careerId){
@@ -92,6 +93,18 @@
                 $this->showJobPositionAddView("Este puesto laboral fue borrado satisfactoriamente.");
             } catch (\Exception $ex) {
                 $this->showJobPositionAddView("Error: no se pudo borrar el puesto laboral (puede estar en uso por una oferta laboral).");
+            }
+        }
+
+        public function restoreJobPosition($jobPositionId)
+        {
+            Utils::checkAdminSession();
+
+            try {
+                $this->jobPositionRepo->restore((int)$jobPositionId);
+                $this->showJobPositionAddView("El puesto laboral fue restaurado satisfactoriamente.");
+            } catch (\Exception $ex) {
+                $this->showJobPositionAddView("Error al restaurar el puesto laboral.");
             }
         }
     }

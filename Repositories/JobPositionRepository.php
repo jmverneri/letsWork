@@ -50,6 +50,14 @@ class JobPositionRepository {
         $this->jobPositionDAO->delete($id);
     }
 
+    public function restore($id) {
+        $this->jobPositionDAO->restore($id);
+    }
+
+    public function getInactive() {
+        return $this->jobPositionDAO->getInactive();
+    }
+
     public function searchJobPositionByCareerId($careerId) {
         $this->jobPositionDAO->getByCareerId($careerId);
     }

@@ -49,6 +49,11 @@ Utils::checkNav();
 
     <!-- Listado -->
     <div class="table-wrap">
+        <div style="padding:1rem 1rem 0;">
+            <input type="text" id="jobPositionSearch" class="form-control"
+                   placeholder="Buscar por descripción... (ej: 'D' para Desarrollador)"
+                   onkeyup="filterJobPositions()">
+        </div>
         <table>
             <thead>
                 <tr>
@@ -57,7 +62,7 @@ Utils::checkNav();
                     <th style="text-align:center">Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="jobPositionTableBody">
                 <?php if (!empty($jobsList)):
                     foreach ($jobsList as $jobPosition):
                         $career = null;
@@ -89,6 +94,56 @@ Utils::checkNav();
     </div>
 
 </div>
+
+<script>
+function filterJobPositions() {
+    const input = document.getElementById('jobPositionSearch');
+    const filter = input.value.trim().toLowerCase();
+    const rows = document.querySelectorAll('#jobPositionTableBody tr');
+
+    rows.forEach(function (row) {
+        const firstCell = row.querySelector('td');
+        if (!firstCell) return; // fila de "No hay puestos cargados"
+
+        const description = firstCell.textContent.trim().toLowerCase();
+        row.style.display = description.startsWith(filter) ? '' : 'none';
+    });
+}
+</script>
+
+<?php if (!empty($inactiveJobsList)): ?>
+<div class="table-wrap" style="margin-top:2rem;">
+    <p style="font-size:13px; font-weight:500; color:#1c1b19; padding:1rem 1rem 0;">Puestos inactivos (papelera)</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Carrera</th>
+                <th style="text-align:center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($inactiveJobsList as $jobPosition):
+                $career = null;
+                foreach ($careerList as $c) {
+                    if ($c->getCareerId() == $jobPosition->getCareerId()) {
+                        $career = $c;
+                        break;
+                    }
+                }
+            ?>
+                <tr>
+                    <td class="text-muted"><?= htmlspecialchars($jobPosition->getDescription()) ?></td>
+                    <td class="text-muted"><?= htmlspecialchars($career?->getDescription() ?? '—') ?></td>
+                    <td style="text-align:center">
+                        <a href="<?= FRONT_ROOT ?>JobPosition/restoreJobPosition/<?= $jobPosition->getJobPositionId() ?>" class="btn-sm">Restaurar</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+<?php endif; ?>
 
 <a href="<?= FRONT_ROOT ?>Home/menuAdmin" class="page-back">← Volver al dashboard</a>
 
