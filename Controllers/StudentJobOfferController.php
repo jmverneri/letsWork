@@ -226,7 +226,7 @@
                 // 2. Obtenemos los datos complementarios para mostrar en la ficha
                 $company = $this->companyRepo->getById($jobOffer->getCompanyId());
                 $jobPosition = $this->jobPositionRepo->getById($jobOffer->getJobPositionId());
-
+                
                 // 3. Verificamos que el alumno YA NO haya aplicado (para mostrar o no el botón de Postularse)
                 $alreadyApplied = $this->applicationDAO->isStudentApplied($student->getStudentId(), $jobOfferId);
 

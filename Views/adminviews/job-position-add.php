@@ -77,10 +77,12 @@ Utils::checkNav();
                         <td style="font-weight:500;"><?= htmlspecialchars($jobPosition->getDescription()) ?></td>
                         <td class="text-muted"><?= htmlspecialchars($career?->getDescription() ?? '—') ?></td>
                         <td style="text-align:center">
-                            <a href="<?= FRONT_ROOT ?>JobPosition/showJobPositionViewById/<?= $jobPosition->getJobPositionId() ?>" class="btn-sm">Editar</a>
-                            <a href="<?= FRONT_ROOT ?>JobPosition/deleteJobPosition/<?= $jobPosition->getJobPositionId() ?>"
-                               class="btn-sm btn-sm-danger"
-                               onclick="return confirm('¿Eliminar este puesto de trabajo?')">Eliminar</a>
+                            <div class="table-actions" style="flex-wrap:nowrap; justify-content:center;">
+                                <a href="<?= FRONT_ROOT ?>JobPosition/showJobPositionViewById/<?= $jobPosition->getJobPositionId() ?>" class="btn-sm">Editar</a>
+                                <a href="<?= FRONT_ROOT ?>JobPosition/deleteJobPosition/<?= $jobPosition->getJobPositionId() ?>"
+                                class="btn-sm btn-sm-danger"
+                                onclick="return confirm('Borrar este puesto de trabajo?')">Borrar</a>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach;

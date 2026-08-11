@@ -32,14 +32,7 @@ class JobPositionRepository {
      * Busca una posición específica por su ID
      */
     public function getById($id) {
-        $this->getAll(); // Cargamos la lista si está vacía
-        
-        foreach($this->jobPositionList as $position) {
-            if($position->getJobPositionId() == $id) {
-                return $position;
-            }
-        }
-        return null;
+        return $this->jobPositionDAO->getById($id);
     }
 
     public function update(JobPosition $jobPosition) {
