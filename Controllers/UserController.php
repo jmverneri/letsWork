@@ -94,7 +94,7 @@ class UserController {
                 // Caso: El usuario existe pero está inhabilitado
                 $message = "Tu cuenta se encuentra inactiva. Por favor, contacta a Bedelía.";
                 $type = "warning";
-                require_once(VIEWS_PATH . "forgot-password.php");
+                require_once(VIEWS_PATH . "forgot-password-nueva.php");
 
             } else {
                 // Caso: El usuario no existe (mensaje genérico por seguridad)
