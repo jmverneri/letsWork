@@ -2,7 +2,7 @@
     namespace Repositories;
 
     use DAO\UserDAOMySQL as UserDAO;
-    use DAO\StudentDAOApi;
+    use DAO\StudentDAOAPI;
     use DAO\StudentDAOMySQL;
     use Models\Student;
     use Models\User;
