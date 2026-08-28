@@ -4,7 +4,7 @@ namespace DAO;
 use Models\Student;
 use DAO\IStudentDAO;
 
-class StudentDAOApi implements IStudentDAO {
+class StudentDAOAPI implements IStudentDAO {
 
     public function getByEmail($email) {
         $url = API_URL . 'students/email/' . $email;

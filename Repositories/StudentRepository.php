@@ -14,7 +14,7 @@
         private $user;
 
         public function __construct() {
-            $this->api = new StudentDAOApi();
+            $this->api = new StudentDAOAPI();
             $this->db = new StudentDAOMySQL();
             $this->userDAO = new UserDAO();
             $this->user = new User();
