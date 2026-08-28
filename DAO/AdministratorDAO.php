@@ -5,7 +5,7 @@ namespace DAO;
 use Models\Admin as Admin;
 use DAO\Connection as Connection;
 
-class AdministratorDao implements IAdministratorDAO {
+class AdministratorDAO implements IAdministratorDAO {
 
     private $connection;
     private $tableName = "administrators";
